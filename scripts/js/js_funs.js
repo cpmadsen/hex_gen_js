@@ -35,6 +35,7 @@ function select_terrain_type(number_of_hexes, terrain_types){
         terrain_type_class = terrain_types[Math.floor(Math.random() * terrain_types.length)];
         the_hex.style.backgroundPosition = 'center';
         the_hex.style.backgroundRepeat = 'no-repeat';
+        //the_hex.classList.add(terrain_type_class)
     }
 }
 

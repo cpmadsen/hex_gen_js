@@ -11,7 +11,7 @@
     <audio id = 'tile-click-noise' src = './mats/stone_sliding_short.mp3', type="audio/mp3"></audio>
 <script>
     // ## Depending on user's inputs, make x hexagons.
-    const numRows = 5; // Number of rows
+    const numRows = 10; // Number of rows
     const numCols = 10; // Number of columns
 
     function make_hex_map(numRows, numCols) {
@@ -34,7 +34,7 @@
         });
     }
 
-    //make_hex_map(numRows, numCols);
+    make_hex_map(numRows, numCols);
 
     // Listen for messages from the parent window
 window.addEventListener('message', receiveMessage, false);
