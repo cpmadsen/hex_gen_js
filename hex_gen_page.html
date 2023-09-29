@@ -11,48 +11,65 @@
     <audio id = 'tile-click-noise' src = './mats/stone_sliding_short.mp3', type="audio/mp3"></audio>
 <script>
     // ## Depending on user's inputs, make x hexagons.
-    const numRows = 10; // Number of rows
-    const numCols = 10; // Number of columns
+    const numRows = 0; // Number of rows
+    const numCols = 0; // Number of columns
+    const container_height = 500;
 
     function make_hex_map(numRows, numCols) {
         
         number_of_hexes = numRows * numCols
         const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
+        
+        //remove_old_hexes();
+        if(document.getElementsByClassName('hex-center').length > 1){
+            old_hexes = Array.from(document.getElementsByClassName('hex-center'));
+            for (let i = old_hexes.length; i > 0; i--) {
+                hex_for_removal = document.getElementById('hex_' + i)
+                hex_label_for_removal = document.getElementById('hex_label_' + i)
+                hex_for_removal.remove();
+                hex_label_for_removal.remove();
+            }
+        }
 
         // Create hexagons based on number requested.
         initialize_hexagons(number_of_hexes);
         // Choose terrain types
         select_terrain_type(number_of_hexes, terrain_types)
         // Adjust hexagon positioning etc. based on initial window size.
-        render_hexagons(numCols, numRows, window.innerHeight);
+        //render_hexagons(numCols, numRows, window.innerWidth);
+        render_hexagons(numCols, numRows, container_height);
         // Add mouseover effects to hexagons
         add_mouse_effects(number_of_hexes);
 
-        // If / when window size changes, re-render hexagons.
-        window.addEventListener("resize", function() {
-            render_hexagons(numCols, numRows, window.innerHeight)
-        });
     }
 
     make_hex_map(numRows, numCols);
+
+    // If / when window size changes, receive message from index, then re-render hexagons.
+    window.addEventListener("resize", function() {
+            render_hexagons(numRows, numCols, container_height)
+        });
 
     // Listen for messages from the parent window
 window.addEventListener('message', receiveMessage, false);
 
 function receiveMessage(event) {
   // Check the origin of the message for security purposes
-  if (event.origin !== 'https://localhost:8000') { // Replace with the actual origin
-    return;
-  }
+  //if (event.origin !== 'https://localhost:8000') { // Replace with the actual origin
+  //  return;
+  //}
 
   // Check the message data
   if (event.data.action === 'render_hex') {
     // Perform the action to update visuals based on event.data values
-    const numRows = event.data.numRows;
-    const numCols = event.data.numCols;
+    const numRows_from_index = event.data.numRows;
+    const numCols_from_index = event.data.numCols;
+    
+    console.log(numRows_from_index);
+    console.log(numCols_from_index);
 
     // Update the visuals here
-    make_hex_map(numRows, numCols);
+    make_hex_map(numRows_from_index, numCols_from_index);
   }
 }
 </script>

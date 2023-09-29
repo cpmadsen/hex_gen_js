@@ -137,3 +137,13 @@ function add_mouse_effects(number_of_hexes){
         //})
     }
 }
+
+function remove_old_hexes() {
+    old_hexes = Array.from(document.getElementsByClassName('hex-center'));
+    for (let i = old_hexes.length; i > 0; i--) {
+        hex_for_removal = document.getElementById('hex_' + i);
+        hex_label_for_removal = document.getElementById('hex_label_' + i);
+        hex_for_removal.remove();
+        hex_label_for_removal.remove();
+    }
+}

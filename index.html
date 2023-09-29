@@ -16,7 +16,7 @@
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Horizontal)</h4>
             <div class = 'row'>
               <p>1</p>
-              <input id = 'number_hex_h' type="range" min="1" max="10" value="5">
+              <input id = 'number_hex_h' type="range" min="1" max="10" value="10">
               <p>10</p>
             </div>
         </div>
@@ -24,7 +24,7 @@
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Vertical)</h4>
             <div class = 'row'>
               <p>1</p>
-              <input id = 'number_hex_v' type="range" min="1" max="10" value="5">
+              <input id = 'number_hex_v' type="range" min="1" max="10" value="6">
               <p>10</p>
             </div>
         </div>
@@ -41,7 +41,7 @@
       <!--<button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px;' onclick="showContent('char_gen_page')">Character</button>-->
       <button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px' onclick="showContent('hex_gen_page')">Hex Map</button>
       <!-- Hex Map Page -->
-      <div id = 'hex_gen_page' class = "content">
+      <div id = 'hex_gen_page' class = "content", style = 'display: block;'>
         <iframe id = 'hex_gen_iframe' src="hex_gen_page.html" style="width: 100%; height: 600px;background:rgba(250,250,250,.5);"></iframe>
       </div>
     </div>
@@ -87,28 +87,29 @@
       }
       document.getElementById('bg_music_' + audio_track).play();
     })
-    /* Play music on button click 
-    music_box = document.getElementById('roll-button');
 
-    music_box.addEventListener('click', function() {
-        document.getElementById('w2_music').play()
-        music_box.style.backgroundColor = 'purple'
-    });*/
+  //function showContent(pageId) {
+  //    // Hide all but first of content sections
+  //    var contentSections = document.querySelectorAll('.content');
+  //      contentSections[0].style.display = 'block';
+  //    for (var i = 1; i < contentSections.length; i++) {
+  //        contentSections[i].style.display = 'none';
+  //    }
+  //
+  //    // Show the selected content section
+  //    var selectedContent = document.getElementById(pageId);
+  //    if (selectedContent) {
+  //        selectedContent.style.display = 'block';
+  //    }
+  //  }
 
-  function showContent(pageId) {
-      // Hide all but first of content sections
-      var contentSections = document.querySelectorAll('.content');
-      for (var i = 0; i < contentSections.length; i++) {
-          contentSections[i].style.display = 'none';
-      }
-
-      // Show the selected content section
-      var selectedContent = document.getElementById(pageId);
-      if (selectedContent) {
-          selectedContent.style.display = 'block';
-      }
-    }
-
+    console.log("Window up!");
+    // Resize iframe on window resize.
+    window.addEventListener("resize", function() {
+      hex_gen_page = document.getElementById('hex_gen_page');
+      hex_gen_page.style.height = window.innerHeight * 0.2 + 'px';
+      //hex_gen_page.style.height = '100%';
+    });
 
     // Send message to child pages!
     // Get a reference to the iframe
@@ -118,15 +119,16 @@
     function sendMessageToIframe() {
       const numRows = document.getElementById('number_hex_v').value; // Get input value
       const numCols = document.getElementById('number_hex_h').value; // Get input value
-
+      container_height = document.getElementById('hex_gen_iframe').style.height;
       // Send a message to the iframe
       hex_gen_iframe.contentWindow.postMessage(
         {
           action: 'render_hex',
           numCols: numCols,
-          numRows: numRows
-        },
-        'https://localhost:8000' // Replace with the actual origin of the iframe
+          numRows: numRows,
+          container_height: container_height
+        }//,
+        //'https://localhost:8000' // Replace with the actual origin of the iframe
       );
     }
 

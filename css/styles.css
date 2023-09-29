@@ -77,7 +77,7 @@ font-family: "Endor";
 }
 
 .content {
-    display: none; /* Hide content initially */
+    display: block; /* Hide content initially */
     padding: 20px;
 }
 
