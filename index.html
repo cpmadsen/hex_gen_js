@@ -15,17 +15,17 @@
           <div class = 'over-background' style="text-align:center;padding-left:20%;padding-right:20%;">
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Horizontal)</h4>
             <div class = 'row'>
-              <p>1</p>
-              <input id = 'number_hex_h' type="range" min="1" max="10" value="10">
-              <p>10</p>
+              <p>3</p>
+              <input id = 'number_hex_h' type="range" min="3" max="30" value="10">
+              <p>30</p>
             </div>
         </div>
           <div class = 'over-background' style="text-align:center;padding-left:20%;padding-right:20%;">
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Vertical)</h4>
             <div class = 'row'>
-              <p>1</p>
-              <input id = 'number_hex_v' type="range" min="1" max="10" value="6">
-              <p>10</p>
+              <p>3</p>
+              <input id = 'number_hex_v' type="range" min="3" max="30" value="10">
+              <p>30</p>
             </div>
         </div>
           <div id = 'make_hex' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Create Hex Map</div>
@@ -39,7 +39,7 @@
     </div>
     <div id = 'main' class = 'main'>
       <!--<button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px;' onclick="showContent('char_gen_page')">Character</button>-->
-      <button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px' onclick="showContent('hex_gen_page')">Hex Map</button>
+      <!--<button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px' onclick="showContent('hex_gen_page')">Hex Map</button>-->
       <!-- Hex Map Page -->
       <div id = 'hex_gen_page' class = "content", style = 'display: block;'>
         <iframe id = 'hex_gen_iframe' src="hex_gen_page.html" style="width: 100%; height: 600px;background:rgba(250,250,250,.5);"></iframe>
@@ -119,14 +119,17 @@
     function sendMessageToIframe() {
       const numRows = document.getElementById('number_hex_v').value; // Get input value
       const numCols = document.getElementById('number_hex_h').value; // Get input value
-      container_height = document.getElementById('hex_gen_iframe').style.height;
+      container_height = document.getElementById('hex_gen_iframe').offsetHeight;
+      container_width = document.getElementById('hex_gen_iframe').offsetWidth;
+      //container_width = '200px';
       // Send a message to the iframe
       hex_gen_iframe.contentWindow.postMessage(
         {
           action: 'render_hex',
           numCols: numCols,
           numRows: numRows,
-          container_height: container_height
+          container_height: container_height,
+          container_width: container_width
         }//,
         //'https://localhost:8000' // Replace with the actual origin of the iframe
       );
