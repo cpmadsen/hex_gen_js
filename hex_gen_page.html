@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Soft Cell</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="./scripts/js/js_funs.js"></script>
+    <link rel="stylesheet" href="./css/hexagon_styles.css" />
+</head>
+<body>
+    <audio id = 'tile-click-noise' src = './mats/stone_sliding_short.mp3', type="audio/mp3"></audio>
+<script>
+    // ## Depending on user's inputs, make x hexagons.
+    const numRows = 5; // Number of rows
+    const numCols = 10; // Number of columns
+
+    function make_hex_map(numRows, numCols) {
+        
+        number_of_hexes = numRows * numCols
+        const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
+
+        // Create hexagons based on number requested.
+        initialize_hexagons(number_of_hexes);
+        // Choose terrain types
+        select_terrain_type(number_of_hexes, terrain_types)
+        // Adjust hexagon positioning etc. based on initial window size.
+        render_hexagons(numCols, numRows, window.innerHeight);
+        // Add mouseover effects to hexagons
+        add_mouse_effects(number_of_hexes);
+
+        // If / when window size changes, re-render hexagons.
+        window.addEventListener("resize", function() {
+            render_hexagons(numCols, numRows, window.innerHeight)
+        });
+    }
+
+    //make_hex_map(numRows, numCols);
+
+    // Listen for messages from the parent window
+window.addEventListener('message', receiveMessage, false);
+
+function receiveMessage(event) {
+  // Check the origin of the message for security purposes
+  //if (event.origin !== 'https://example.com') { // Replace with the actual origin
+  //  return;
+  //}
+
+  // Check the message data
+  if (event.data.action === 'render_hex') {
+    // Perform the action to update visuals based on event.data values
+    const numRows = event.data.numRows;
+    const numCols = event.data.numCols;
+
+    // Update the visuals here
+    make_hex_map(numRows, numCols);
+  }
+}
+</script>
+</body>
