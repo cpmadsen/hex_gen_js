@@ -15,7 +15,7 @@
     const numCols = 0; // Number of columns
     const container_height = 500;
 
-    function make_hex_map(numRows, numCols) {
+    function make_hex_map(numRows, numCols, container_height, container_width) {
         
         number_of_hexes = numRows * numCols
         const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
@@ -37,9 +37,11 @@
         select_terrain_type(number_of_hexes, terrain_types)
         // Adjust hexagon positioning etc. based on initial window size.
         //render_hexagons(numCols, numRows, window.innerWidth);
-        render_hexagons(numCols, numRows, container_height);
+        render_hexagons(numCols, numRows, container_height, container_width);
         // Add mouseover effects to hexagons
         add_mouse_effects(number_of_hexes);
+        // Ripple
+        ripple(numCols,numRows);
 
     }
 
@@ -47,7 +49,7 @@
 
     // If / when window size changes, receive message from index, then re-render hexagons.
     window.addEventListener("resize", function() {
-            render_hexagons(numRows, numCols, container_height)
+            render_hexagons(numRows, numCols, container_height, container_width)
         });
 
     // Listen for messages from the parent window
@@ -64,12 +66,14 @@ function receiveMessage(event) {
     // Perform the action to update visuals based on event.data values
     const numRows_from_index = event.data.numRows;
     const numCols_from_index = event.data.numCols;
+    const container_height_from_index = event.data.container_height;
+    const container_width_from_index = event.data.container_width;
     
-    console.log(numRows_from_index);
-    console.log(numCols_from_index);
+    //console.log(numRows_from_index);
+    //console.log(numCols_from_index);
 
     // Update the visuals here
-    make_hex_map(numRows_from_index, numCols_from_index);
+    make_hex_map(numRows_from_index, numCols_from_index, container_height_from_index, container_width_from_index);
   }
 }
 </script>

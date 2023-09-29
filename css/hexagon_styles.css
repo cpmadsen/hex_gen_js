@@ -59,7 +59,7 @@
     z-index: -1;
 }
 .hex-center:hover {
-    transform: translateY(-15%); /* Move 20px upward on hover */
+    transform: translateY(-15%) !important; /* Move 20px upward on hover */
 }
 
 .highlighted {

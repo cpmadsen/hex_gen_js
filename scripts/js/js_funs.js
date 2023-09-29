@@ -13,12 +13,10 @@ function initialize_hexagons(number_of_hexes) {
         
         // LABEL FOR HEX
         hex_label = document.createElement('div');
-        //hex_label.id = 'hex_label_' + (i + 1);
         hex_label.id = 'hex_label_' + i;
         hex_label.className = 'hex-label';
-        //hex_label.style.zIndex = 10;
-        //hex_label.textContent = 'Hex ' + (i + 1);
         hex_label.textContent = 'Hex ' + i;
+        hex_label.style.paddingTop = '60%';
 
         hexagon.appendChild(hex_label);
 
@@ -39,12 +37,25 @@ function select_terrain_type(number_of_hexes, terrain_types){
     }
 }
 
-function render_hexagons(numCols, numRows, max_dimension) {
+function render_hexagons(numCols, numRows, container_height, container_width) {
     //let max_y = window.innerHeight;
     //let max_x = max_y;
 
-    let max_y = max_dimension;
-    let max_x = max_dimension;
+    let max_y = container_height;
+    let max_x = container_width;
+
+    console.log('max_y is ' + max_y);
+    console.log('max_x is ' + max_x);
+
+    // Find which of height and width are smaller; use that.
+    if(max_y > max_x) {
+        max_y = max_x;
+    } else {
+        max_x = max_y;
+    }
+
+    console.log('max_y is ' + max_y);
+    console.log('max_x is ' + max_x);
 
     // Reverse-buffer the screen dimensions; makes sure no hex is placed right at screen edge.
     max_x = 0.95 * max_x;
@@ -68,6 +79,7 @@ function render_hexagons(numCols, numRows, max_dimension) {
             // Grab corresponding hexagon.
             hex_for_mods = document.getElementById('hex_' + uniqueID);
 
+            hex_for_mods.style.visibility = 'hidden';
             hex_for_mods.style.width = hexagon_size_x + 'px';
             hex_for_mods.style.height = hexagon_size_y + 'px';
 
@@ -95,6 +107,55 @@ function render_hexagons(numCols, numRows, max_dimension) {
         }
     }
 }
+
+function ripple_hexes_in_col_up(numCols,numRows){
+    for(let z = 1; z <= numRows; z++) {   //  your code here
+        const uniqueID = (numRows * (numCols - 1)) + z;
+        hex_for_ripple = document.getElementById('hex_' + uniqueID);
+        hex_for_ripple.style.visibility = 'visible';
+        hex_for_ripple.style.transform = 'translateY(-15%)';
+    }
+}
+
+function ripple_hexes_in_col_down(numCols,numRows){
+    for(let z = 1; z <= numRows; z++) {   //  your code here
+        const uniqueID = (numRows * (numCols - 1)) + z;
+        hex_for_ripple = document.getElementById('hex_' + uniqueID);
+        hex_for_ripple.style.visibility = 'visible';
+        hex_for_ripple.style.transform = 'translateY(+15%)';
+    }
+}
+
+function ripple(numCols,numRows) {
+    
+    var i = 1;
+
+    function myLoop() { 
+
+        ripple_hexes_in_col_up(i,numRows);
+        
+        setTimeout(function() {
+            ripple_hexes_in_col_down(i,numRows);
+            i++;                    //  increment the counter
+            if (i <= numCols) {           //  if the counter < 10, call the loop function
+            myLoop();             //  ..  again which will trigger another 
+            }    
+        }, 100)
+    }
+    myLoop();
+}
+
+//for(let i = 1; i <= numCols; i++){
+//// Row by row, find all hex ids of hexagons to ripple
+//(async function ripple_timer(i) {
+//ripple_column(i,numRows);
+//await timer(3000);
+//// Wait 0.1 of a second.
+//}
+//)(i);
+//}
+//}
+
 
 function add_mouse_effects(number_of_hexes){
 

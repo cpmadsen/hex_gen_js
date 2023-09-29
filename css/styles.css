@@ -109,12 +109,6 @@ font-family: "Endor";
     color:white;
 }
 
-.dnd-button:hover {
-    background: url(../mats/red_background.png);
-    color:white;
-    border: 3px solid #350f0f;
-}
-
 .music-button {
     filter:opacity(0.5);
     border:2px solid transparent;
