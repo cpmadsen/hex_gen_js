@@ -51,8 +51,6 @@
   <audio id = 'bg_music_3' src = "https://fi.zophar.net/soundfiles/nintendo-snes-spc/chrono-trigger/109%20Wind%20Scene.mp3?raw=true"></audio>
   <audio id = 'bg_music_4' src = "https://vgmsite.com/soundtracks/warcraft-2-tides-of-darkness-cda/llhafojenj/11%20-%20Orc%20Battle%2001.mp3"></audio>
   <audio id = 'bg_music_5' src = "https://fi.zophar.net/soundfiles/nintendo-snes-spc/chrono-trigger/119%20Frog%27s%20Theme.mp3?raw=true"></audio>
-  <py-config src="./scripts/pyscript.toml"></py-config>
-  <py-script src="./scripts/main.py"></py-script>
   <script>
 
     document.getElementById('page_content').style.height = window.innerHeight*0.97 + 'px';
@@ -127,8 +125,8 @@
           action: 'render_hex',
           numCols: numCols,
           numRows: numRows
-        }//,
-        //'https://example.com' // Replace with the actual origin of the iframe
+        },
+        'https://localhost:8000' // Replace with the actual origin of the iframe
       );
     }
 

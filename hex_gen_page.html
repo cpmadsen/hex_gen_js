@@ -41,9 +41,9 @@ window.addEventListener('message', receiveMessage, false);
 
 function receiveMessage(event) {
   // Check the origin of the message for security purposes
-  //if (event.origin !== 'https://example.com') { // Replace with the actual origin
-  //  return;
-  //}
+  if (event.origin !== 'https://localhost:8000') { // Replace with the actual origin
+    return;
+  }
 
   // Check the message data
   if (event.data.action === 'render_hex') {
