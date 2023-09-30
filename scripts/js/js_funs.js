@@ -1,3 +1,16 @@
+// Make an array from two numbers (e.g. range(2,5) gives an array 2,3,4,5)
+function range(start, end) {
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
+
+  function read_json(fileName) {
+    return fetch(fileName) // Fetch the file using a relative path
+      .then(response => response.json()) // Parse the JSON response
+      .catch(error => {
+        console.error('Error reading the JSON file:', error);
+      });
+  }
+
 function initialize_hexagons(number_of_hexes) {
     for (let i = 1; i <= number_of_hexes; i++) {
         // Create a new box element for each hexagon
@@ -25,14 +38,39 @@ function initialize_hexagons(number_of_hexes) {
     }
 }
 
-function select_terrain_type(number_of_hexes, terrain_types){
+function select_terrain_type(number_of_hexes, numCols, numRows, terrain_types){
+
+    var m_geo_stock = {
+        'goop': [0]
+    };
+
+    // Call the read_json function and update m_geo_stock when the promise resolves
+    read_json('./data/geomorphs/mountain.json')
+        .then(content => {
+        // Assign the content to your object
+        m_geo_stock = content;
+        console.log(m_geo_stock); // Check the updated object
+        });
+
+        // How many JSON dictionaries are in our m_geo_stock?
+        number_of_geomorphs = Object.keys(m_geo_stock).length;
+
+        // How many columns are in any of these? What are they?
+        cols_in_geomorph = Object.keys(m_geo_stock.mountain)
+        number_cols_in_geomorph = Object.keys(m_geo_stock.mountain).length
 
     // Select n mountain geomorphs from stock of length z to apply.
     m_geo_to_apply = m_geo_stock[Math.floor(Math.random() * m_geo_stock.length)];
 
-    for (let i = 0; i < m_geo_to_apply.length; i++) {
+    for (let i = 0; i < 1; i++) {
         // Apply mountain geo semi-randomly
-        
+        // Limit viability of rows and cols so that geomorph never runs off entire map?
+        //viableCols = range()
+        r_col_to_start = Math.floor(Math.random() * numCols) + 1;
+        r_row_to_start = Math.floor(Math.random() * numRows) + 1;
+        // Any row and col are possible here!
+        // These inform the top left corner of our geomorph's placement.
+
     }
     for (let i = 1; i <= number_of_hexes; i++) {
         the_hex = document.getElementById('hex_' + i);
