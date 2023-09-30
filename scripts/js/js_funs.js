@@ -26,6 +26,14 @@ function initialize_hexagons(number_of_hexes) {
 }
 
 function select_terrain_type(number_of_hexes, terrain_types){
+
+    // Select n mountain geomorphs from stock of length z to apply.
+    m_geo_to_apply = m_geo_stock[Math.floor(Math.random() * m_geo_stock.length)];
+
+    for (let i = 0; i < m_geo_to_apply.length; i++) {
+        // Apply mountain geo semi-randomly
+        
+    }
     for (let i = 1; i <= number_of_hexes; i++) {
         the_hex = document.getElementById('hex_' + i);
 
