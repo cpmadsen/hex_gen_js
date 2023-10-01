@@ -16,10 +16,6 @@ function select_terrain_type(numCols, numRows){
         // How many JSON dictionaries are in our m_geo_stock?
         list_of_geomorphs = Object.keys(m_geo_stock);
         number_of_geomorphs = list_of_geomorphs.length;
-        // What's the first?
-        // How many columns are in any of these? What are they?
-        //cols_in_geomorph = Object.keys(m_geo_stock[list_of_geomorphs[0]]);
-        //number_cols_in_geomorph = cols_in_geomorph.length;
 
         // Set limits //
         proportion_mountains = 0.1; // This could be a user input later on.
