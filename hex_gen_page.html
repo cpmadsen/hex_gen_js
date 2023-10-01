@@ -4,7 +4,13 @@
     <title>Soft Cell</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <script src="./scripts/js/js_funs.js"></script>
+    <script src="./scripts/js/js_utils.js"></script>
+    <script src="./scripts/js/init_hex.js"></script>
+    <script src="./scripts/js/ripple.js"></script>
+    <script src="./scripts/js/add_mouse_ef.js"></script>
+    <script src="./scripts/js/render_hex.js"></script>
+    <script src="./scripts/js/read_terrain.js"></script>
+    <script src="./scripts/js/sel_terrain.js"></script>
     <link rel="stylesheet" href="./css/hexagon_styles.css" />
 </head>
 <body>
@@ -33,8 +39,6 @@
 
         // Create hexagons based on number requested.
         initialize_hexagons(number_of_hexes);
-        // Choose terrain types
-        select_terrain_type(number_of_hexes, terrain_types)
         // Adjust hexagon positioning etc. based on initial window size.
         //render_hexagons(numCols, numRows, window.innerWidth);
         render_hexagons(numCols, numRows, container_height, container_width);
@@ -42,7 +46,6 @@
         add_mouse_effects(number_of_hexes);
         // Ripple
         ripple(numCols,numRows);
-
     }
 
     make_hex_map(numRows, numCols);
@@ -62,7 +65,7 @@ function receiveMessage(event) {
   //}
 
   // Check the message data
-  if (event.data.action === 'render_hex') {
+    if (event.data.action === 'render_hex') {
     // Perform the action to update visuals based on event.data values
     const numRows_from_index = event.data.numRows;
     const numCols_from_index = event.data.numCols;
@@ -74,7 +77,23 @@ function receiveMessage(event) {
 
     // Update the visuals here
     make_hex_map(numRows_from_index, numCols_from_index, container_height_from_index, container_width_from_index);
-  }
+    }
+
+  // Generate Terrain call
+
+    if (event.data.action === 'generate_terrain') {
+        const numRows = event.data.numRows;
+        const numCols = event.data.numCols;
+        
+        select_terrain_type(numCols, numRows);
+        //Promise.all([read_in_terrain_data()])
+        //    .then(() => {
+        //        select_terrain_type(numCols, numRows, m_geo_stock);
+        //    })
+        //    .catch(error => {
+        //        console.error('Error:', error);
+        //    });
+    }
 }
 </script>
 </body>
