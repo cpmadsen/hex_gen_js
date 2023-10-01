@@ -20,3 +20,17 @@ function read_json(fileName) {
         hex_label_for_removal.remove();
     }
 }
+
+function choose (myArray) {
+    // Generate a random index within the valid range
+    const randomIndex = Math.floor(Math.random() * myArray.length);
+
+    // Use the random index to get a random value from the array
+    const randomValue = myArray[randomIndex];
+
+    return randomValue;
+
+    //console.log(%c'randomValue'; 'font-weight: bold, font-color: red');
+    console.log(randomValue);
+
+}

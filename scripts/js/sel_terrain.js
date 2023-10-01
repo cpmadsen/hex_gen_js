@@ -27,7 +27,7 @@ function select_terrain_type(numCols, numRows){
         total_num_hexes = document.getElementsByClassName('hex-center').length;
         prop_hexes_of_this_morph = 0;
 
-        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains | i <= 4; i++) {
+        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains; i++) {
 
             for (let morph = 0; morph < number_of_geomorphs; morph++) {
 
