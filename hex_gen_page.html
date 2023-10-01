@@ -9,7 +9,6 @@
     <script src="./scripts/js/ripple.js"></script>
     <script src="./scripts/js/add_mouse_ef.js"></script>
     <script src="./scripts/js/render_hex.js"></script>
-    <script src="./scripts/js/read_terrain.js"></script>
     <script src="./scripts/js/sel_terrain.js"></script>
     <link rel="stylesheet" href="./css/hexagon_styles.css" />
 </head>
@@ -46,6 +45,12 @@
         add_mouse_effects(number_of_hexes);
         // Ripple
         ripple(numCols,numRows);
+    }
+
+    // The following (re)definition seems necessary to define the 'select_terrain_type' function in the scope of 
+    // this HTML page.
+    function use_terrain_select(numRows, numCols) {
+        select_terrain_type(numRows, numCols);
     }
 
     make_hex_map(numRows, numCols);
@@ -85,7 +90,7 @@ function receiveMessage(event) {
         const numRows = event.data.numRows;
         const numCols = event.data.numCols;
         
-        select_terrain_type(numCols, numRows);
+        use_terrain_select(numCols, numRows);
         //Promise.all([read_in_terrain_data()])
         //    .then(() => {
         //        select_terrain_type(numCols, numRows, m_geo_stock);

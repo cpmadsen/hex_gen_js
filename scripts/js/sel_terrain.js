@@ -16,11 +16,10 @@ function select_terrain_type(numCols, numRows){
         // How many JSON dictionaries are in our m_geo_stock?
         list_of_geomorphs = Object.keys(m_geo_stock);
         number_of_geomorphs = list_of_geomorphs.length;
+        // What's the first?
         // How many columns are in any of these? What are they?
-        cols_in_geomorph = Object.keys(m_geo_stock.mountain);
-        number_cols_in_geomorph = cols_in_geomorph.length;
-        first_col_name = Object.keys(m_geo_stock.mountain)[0];
-        number_rows_in_geomorph = m_geo_stock.mountain[first_col_name].length;
+        //cols_in_geomorph = Object.keys(m_geo_stock[list_of_geomorphs[0]]);
+        //number_cols_in_geomorph = cols_in_geomorph.length;
 
         // Set limits //
         proportion_mountains = 0.1; // This could be a user input later on.
@@ -28,13 +27,20 @@ function select_terrain_type(numCols, numRows){
         total_num_hexes = document.getElementsByClassName('hex-center').length;
         prop_hexes_of_this_morph = 0;
 
-        for (let morph = 0; morph < number_of_geomorphs; morph++) {
+        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains | i <= 4; i++) {
+
+            for (let morph = 0; morph < number_of_geomorphs; morph++) {
+
+            first_col_name = Object.keys(m_geo_stock[list_of_geomorphs[morph]])[0];
+            number_rows_in_geomorph = m_geo_stock[list_of_geomorphs[morph]][first_col_name].length;
+            number_cols_in_geomorph = Object.keys(m_geo_stock[list_of_geomorphs[morph]]).length;
 
             morph_name = list_of_geomorphs[morph];
+            morph_name_no_suffix = morph_name.replace(/_[0-9]+$/, '');
 
-            for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains; i++) {
+            //for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains; i++) {
 
-                number_mountains = document.getElementsByClassName(morph_name).length;
+                number_mountains = document.getElementsByClassName(morph_name_no_suffix).length;
                 prop_hexes_of_this_morph = number_mountains / total_num_hexes;
 
                 if(prop_hexes_of_this_morph <= proportion_mountains) {
@@ -74,16 +80,17 @@ function select_terrain_type(numCols, numRows){
 
                         if(m_geo_stock[morph_name]['col_' + col_number][row_number] === 1){
                             // Assign this type of geometry
-                            hex_to_mod.classList.add(morph_name)
+                            hex_to_mod.classList.add(morph_name_no_suffix)
+                            console.log('Hex ' + hex_to_mod.id + ' is a ' + morph_name_no_suffix);
                         }
                     }
                 }
             }
-        number_mountains = document.getElementsByClassName(morph_name).length;
-            prop_hexes_of_this_morph = number_mountains / total_num_hexes;
-            console.log(number_mountains);
-            console.log(total_num_hexes);
-            console.log(prop_hexes_of_this_morph);
+        number_mountains = document.getElementsByClassName(morph_name_no_suffix).length;
+        prop_hexes_of_this_morph = number_mountains / total_num_hexes;
+        console.log(number_mountains);
+        console.log(total_num_hexes);
+        console.log(prop_hexes_of_this_morph);
     }
         }
     });
