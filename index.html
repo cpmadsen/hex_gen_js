@@ -29,6 +29,7 @@
             </div>
         </div>
           <div id = 'make_hex' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Create Hex Map</div>
+          <div id = 'randomize_terrain' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Roll up Terrain</div>
           <div class = 'over-background' style="text-align:center;padding-left:20%;padding-right:20%;">
             <div class = 'row'>
               <img id = 'skip_last_audio' src = 'mats/left-arrow.svg' class = 'music-button arrows'></img>
@@ -115,8 +116,8 @@
     // Get a reference to the iframe
     const hex_gen_iframe = document.getElementById('hex_gen_iframe'); // Replace with your iframe ID
 
-    // Function to send a message to the iframe
-    function sendMessageToIframe() {
+    // Call to generate hex map
+    function send_hex_gen_call() {
       const numRows = document.getElementById('number_hex_v').value; // Get input value
       const numCols = document.getElementById('number_hex_h').value; // Get input value
       container_height = document.getElementById('hex_gen_iframe').offsetHeight;
@@ -135,8 +136,25 @@
       );
     }
 
+    // Call to randomize terrain
+    function send_terrain_gen_call() {
+      const numRows = document.getElementById('number_hex_v').value; // Get input value
+      const numCols = document.getElementById('number_hex_h').value; // Get input value
+      hex_gen_iframe.contentWindow.postMessage(
+        {
+          action: 'generate_terrain',
+          numCols: numCols,
+          numRows: numRows
+        }//,
+        //'https://localhost:8000' // Replace with the actual origin of the iframe
+      );
+    }
+
     const make_hex_button = document.getElementById('make_hex');
-    make_hex_button.addEventListener('click', sendMessageToIframe);
+    make_hex_button.addEventListener('click', send_hex_gen_call);
+
+    const random_terrain_button = document.getElementById('randomize_terrain')
+    random_terrain_button.addEventListener('click', send_terrain_gen_call);
   </script>
 </body>
 </html>
