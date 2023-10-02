@@ -24,7 +24,8 @@ function create_clouds(container_height) {
     cloud.style.background = 'url(../mats/clouds/cloud_' + cloud_image + '.png)';
     cloud.style.backgroundSize = 'cover';
     
-    cloud.style.left = range(-300,-150)[Math.floor(Math.random() * 151)] + 'px';
+    //cloud.style.left = range(-300,-150)[Math.floor(Math.random() * 151)] + 'px';
+    cloud.style.left = -100 - 10 * Math.floor(Math.random() * 10) + 'px';
     cloud.style.top = range(1,container_height)[Math.floor(Math.random() * container_height)] + 'px';
     // Append the hexagon div to the document body or another container
     cloud_container.appendChild(cloud);

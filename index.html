@@ -104,18 +104,26 @@
   //    }
   //  }
 
-    console.log("Window up!");
-    // Resize iframe on window resize.
-    window.addEventListener("resize", function() {
-      hex_gen_iframe = document.getElementById('hex_gen_iframe')
+    // Send messages to child page(s)!
 
-      //hex_gen_frame.style.height = 
-      //hex_gen_page = document.getElementById('hex_gen_page');
-      //hex_gen_page.style.height = window.innerHeight * 0.2 + 'px';
-      //hex_gen_page.style.height = '100%';
-    });
-
-    // Send message to child pages!
+    // Screen resize event.
+  // Resize iframe on window resize.
+  window.addEventListener("resize", function() {
+    const numRows = document.getElementById('number_hex_v').value; // Get input value
+    const numCols = document.getElementById('number_hex_h').value; // Get input value
+    container_height = document.getElementById('hex_gen_iframe').offsetHeight;
+    container_width = document.getElementById('hex_gen_iframe').offsetWidth;
+    hex_gen_iframe.contentWindow.postMessage(
+      {
+        action: 'resize',
+        numCols: numCols,
+        numRows: numRows,
+        container_height: container_height,
+        container_width: container_width
+      }
+    );
+  });
+  
     // Get a reference to the iframe
     const hex_gen_iframe = document.getElementById('hex_gen_iframe'); // Replace with your iframe ID
 

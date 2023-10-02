@@ -105,6 +105,10 @@ function receiveMessage(event) {
         //        console.error('Error:', error);
         //    });
     }
+    // Not sure if this event is even doing anything... maybe remove.
+    if(event.data.action === 'resize'){
+        render_hexagons(numCols, numRows, container_height, container_width);
+    }
 }
 </script>
 </body>
