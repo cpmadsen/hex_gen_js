@@ -9,6 +9,7 @@
     <script src="./scripts/js/ripple.js"></script>
     <script src="./scripts/js/add_mouse_ef.js"></script>
     <script src="./scripts/js/render_hex.js"></script>
+    <script src="./scripts/js/create_clouds.js"></script>
     <script src="./scripts/js/sel_terrain.js"></script>
     <link rel="stylesheet" href="./css/hexagon_styles.css" />
 </head>
@@ -18,9 +19,9 @@
     // ## Depending on user's inputs, make x hexagons.
     const numRows = 0; // Number of rows
     const numCols = 0; // Number of columns
-    const container_height = 500;
+    const container_height = window.innerHeight;
 
-    function make_hex_map(numRows, numCols, container_height, container_width) {
+    function make_hex_map(numRows, numCols, container_height, container_width, make_clouds) {
         
         number_of_hexes = numRows * numCols
         const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
@@ -45,6 +46,10 @@
         add_mouse_effects(number_of_hexes);
         // Ripple
         ripple(numCols,numRows);
+
+        if(make_clouds == true){
+        create_clouds(container_height);
+        }
     }
 
     // The following (re)definition seems necessary to define the 'select_terrain_type' function in the scope of 
@@ -53,12 +58,12 @@
         select_terrain_type(numRows, numCols);
     }
 
-    make_hex_map(numRows, numCols);
+    //make_hex_map(numRows, numCols, container_height, make_clouds = false);
 
     // If / when window size changes, receive message from index, then re-render hexagons.
-    window.addEventListener("resize", function() {
-            render_hexagons(numRows, numCols, container_height, container_width)
-        });
+    //window.addEventListener("resize", function() {
+    //        render_hexagons(numRows, numCols, container_height, container_width)
+    //    });
 
     // Listen for messages from the parent window
 window.addEventListener('message', receiveMessage, false);
@@ -70,18 +75,19 @@ function receiveMessage(event) {
   //}
 
   // Check the message data
-    if (event.data.action === 'render_hex') {
+    if (event.data.action === 'make_hex_map') {
     // Perform the action to update visuals based on event.data values
     const numRows_from_index = event.data.numRows;
     const numCols_from_index = event.data.numCols;
     const container_height_from_index = event.data.container_height;
     const container_width_from_index = event.data.container_width;
-    
+    const make_clouds_from_index = event.data.make_clouds;
     //console.log(numRows_from_index);
     //console.log(numCols_from_index);
 
     // Update the visuals here
-    make_hex_map(numRows_from_index, numCols_from_index, container_height_from_index, container_width_from_index);
+    make_hex_map(numRows_from_index, numCols_from_index, 
+    container_height_from_index, container_width_from_index, make_clouds = make_clouds_from_index);
     }
 
   // Generate Terrain call

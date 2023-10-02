@@ -60,3 +60,31 @@
 .highlighted {
     border: 2px solid yellow;
 }
+
+.cloud-container {
+    position: absolute;
+    top: 0;
+    left: 0%;
+    right: 120%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Allow events to pass through */
+}
+
+.cloud {
+    position: absolute;
+    opacity: 0.6;
+    background-size: cover;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% {
+        left: -50%; /* Start from the left edge of the container */
+    }
+    100% {
+        left: 100%; /* Move to the right edge of the container */
+    }
+}
