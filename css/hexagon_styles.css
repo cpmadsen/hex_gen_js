@@ -10,7 +10,7 @@
 }
 
 .desert {
-    background: url(../mats/desert_hex.jfif);
+    background: url(../mats/desert_hex.png);
     top: 12%;
     left: 12%;
     background-size: cover;
@@ -28,7 +28,7 @@
 
 }
 .open {
-    background: url(../mats/open_hex.jfif);
+    background: url(../mats/open_hex.png);
     top: 12%;
     left: 12%;
     background-size: cover;
