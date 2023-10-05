@@ -4,7 +4,17 @@
     <title>HexGen</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="./scripts/js/add_audio.js"></script>
+    <script src="./scripts/js/js_utils.js"></script>
+    <script src="./scripts/js/init_hex.js"></script>
+    <script src="./scripts/js/ripple.js"></script>
+    <script src="./scripts/js/add_mouse_ef.js"></script>
+    <script src="./scripts/js/render_hex.js"></script>
+    <script src="./scripts/js/create_clouds.js"></script>
+    <script src="./scripts/js/sel_terrain.js"></script>
+    <script src="./scripts/js/make_hex_map.js"></script>
     <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/hexagon_styles.css" />
 </head>
 <body style = 'height: 97vh;'>
   <div id = 'page_content' class = 'container'>
@@ -39,11 +49,11 @@
           </div>
     </div>
     <div id = 'main' class = 'main'>
-      <!--<button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px;' onclick="showContent('char_gen_page')">Character</button>-->
-      <!--<button class="dnd-button navbar-button" style = 'font-size: larger;margin: 10px' onclick="showContent('hex_gen_page')">Hex Map</button>-->
-      <!-- Hex Map Page -->
-      <div id = 'hex_gen_page' class = "content", style = 'display: block; height: 95%;'>
-        <iframe id = 'hex_gen_iframe' src="hex_gen_page.html" style="width: 100%; height: 100%; overflow-y: auto; background:rgba(250,250,250,.5);"></iframe>
+      <div id = 'hex_gen_page' class = "hex-gen-page">
+        <div id = 'save_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:80%;'>Save Project</div>
+        <div id = 'load_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:90%;'>Load Project</div>
+      <!-- Create a hidden file input element -->
+        <input type="file" id="fileInput" style="display: none;">
       </div>
     </div>
   </div>
@@ -52,121 +62,72 @@
   <audio id = 'bg_music_3' src = "https://fi.zophar.net/soundfiles/nintendo-snes-spc/chrono-trigger/109%20Wind%20Scene.mp3?raw=true"></audio>
   <audio id = 'bg_music_4' src = "https://vgmsite.com/soundtracks/warcraft-2-tides-of-darkness-cda/llhafojenj/11%20-%20Orc%20Battle%2001.mp3"></audio>
   <audio id = 'bg_music_5' src = "https://fi.zophar.net/soundfiles/nintendo-snes-spc/chrono-trigger/119%20Frog%27s%20Theme.mp3?raw=true"></audio>
+  <audio id = 'tile-click-noise' src = './mats/stone_sliding_short.mp3', type="audio/mp3"></audio>
   <script>
 
     document.getElementById('page_content').style.height = window.innerHeight*0.97 + 'px';
 
-    audio_track = 1;
+    add_audio();
 
-    document.getElementById('start_music').addEventListener('click', function() {
-      if(document.getElementById('bg_music_' + audio_track).paused){
-        document.getElementById('bg_music_' + audio_track).play();
-      } else {
-        document.getElementById('bg_music_' + audio_track).pause();
-      }
-    })
+    // Add functionality to 'save project' button.
+    enable_downloads('save_proj');
+    
+    // Add functionality to 'load project' button.
+    enable_data_reads('load_proj',processData);
+    var loaded_data = {};
 
-    document.getElementById('skip_next_audio').addEventListener('click', function() {
-      document.getElementById('bg_music_' + audio_track).pause();
-      document.getElementById('bg_music_' + audio_track).currentTime = 0;
-      
-      audio_track = audio_track + 1;
-      
-      if(audio_track == 6){
-        audio_track = 1;
-      }
-      document.getElementById('bg_music_' + audio_track).play();
-    })
+    function processData(data) {
+    // Assign the loaded data to the 'loaded_data' object
+    loaded_data = data;
 
-    document.getElementById('skip_last_audio').addEventListener('click', function() {
-      document.getElementById('bg_music_' + audio_track).pause();
-      document.getElementById('bg_music_' + audio_track).currentTime = 0;
-      audio_track = audio_track - 1;
-      
-      if(audio_track == 0){
-        audio_track = 5;
-      }
-      document.getElementById('bg_music_' + audio_track).play();
-    })
-  
-  //function showContent(pageId) {
-  //    // Hide all but first of content sections
-  //    var contentSections = document.querySelectorAll('.content');
-  //      contentSections[0].style.display = 'block';
-  //    for (var i = 1; i < contentSections.length; i++) {
-  //        contentSections[i].style.display = 'none';
-  //    }
-  //
-  //    // Show the selected content section
-  //    var selectedContent = document.getElementById(pageId);
-  //    if (selectedContent) {
-  //        selectedContent.style.display = 'block';
-  //    }
-  //  }
+    // Now you can use 'loaded_data' in your JavaScript code
+    console.log(loaded_data);
 
-    // Send messages to child page(s)!
-
-    // Screen resize event.
-  // Resize iframe on window resize.
-  window.addEventListener("resize", function() {
-    const numRows = document.getElementById('number_hex_v').value; // Get input value
-    const numCols = document.getElementById('number_hex_h').value; // Get input value
-    container_height = document.getElementById('hex_gen_iframe').offsetHeight;
-    container_width = document.getElementById('hex_gen_iframe').offsetWidth;
-    hex_gen_iframe.contentWindow.postMessage(
-      {
-        action: 'resize',
-        numCols: numCols,
-        numRows: numRows,
-        container_height: container_height,
-        container_width: container_width
-      }
-    );
-  });
-  
-    // Get a reference to the iframe
-    const hex_gen_iframe = document.getElementById('hex_gen_iframe'); // Replace with your iframe ID
-
-    // Call to generate hex map
-    function send_hex_gen_call() {
-      const numRows = document.getElementById('number_hex_v').value; // Get input value
-      const numCols = document.getElementById('number_hex_h').value; // Get input value
-      container_height = document.getElementById('hex_gen_iframe').offsetHeight;
-      container_width = document.getElementById('hex_gen_iframe').offsetWidth;
-      make_clouds = true;
-      // Send a message to the iframe
-      hex_gen_iframe.contentWindow.postMessage(
-        {
-          action: 'make_hex_map',
-          numCols: numCols,
-          numRows: numRows,
-          container_height: container_height,
-          container_width: container_width,
-          make_clouds: make_clouds
-        }//,
-        //'https://localhost:8000' // Replace with the actual origin of the iframe
-      );
+    // Call another function or perform actions using 'loaded_data'
+    make_hex_map_from_loaded_data(loaded_data);
     }
 
-    // Call to randomize terrain
-    function send_terrain_gen_call() {
-      const numRows = document.getElementById('number_hex_v').value; // Get input value
-      const numCols = document.getElementById('number_hex_h').value; // Get input value
-      hex_gen_iframe.contentWindow.postMessage(
-        {
-          action: 'generate_terrain',
-          numCols: numCols,
-          numRows: numRows
-        }//,
-        //'https://localhost:8000' // Replace with the actual origin of the iframe
-      );
-    }
+    var dataToSave = {
+      number_of_hexes: 0,
+      mountain_hexes: 0
+      };
 
-    const make_hex_button = document.getElementById('make_hex');
-    make_hex_button.addEventListener('click', send_hex_gen_call);
+    // ## Depending on user's inputs, make x hexagons.
+    let numRows = 0; // Number of rows
+    let numCols = 0; // Number of columns
 
-    const random_terrain_button = document.getElementById('randomize_terrain')
-    random_terrain_button.addEventListener('click', send_terrain_gen_call);
+    //const container_height = window.innerHeight;
+    //const container_width = window.innerWidth;
+    let container_height = document.getElementById('hex_gen_page').offsetHeight;
+    let container_width = document.getElementById('hex_gen_page').offsetWidth;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      numRows = number_hex_v.value;
+      numCols = number_hex_h.value;
+      container_height = document.getElementById('hex_gen_page').offsetHeight;
+      container_width = document.getElementById('hex_gen_page').offsetWidth;
+      
+      const make_hex_button = document.getElementById('make_hex');
+    
+      make_hex_button.addEventListener('click', function() {
+        make_hex_map(numRows, numCols, container_height, container_width, 
+        make_clouds = true);
+      });
+
+      const random_terrain_button = document.getElementById('randomize_terrain');
+    
+      random_terrain_button.addEventListener('click', function() {
+        select_terrain_type(numCols, numRows);
+      });
+
+      // Screen resize event.
+      //window.addEventListener("resize", function() {
+      //  render_hexagons(numCols, numRows, container_height, container_width);
+      //});
+
+      //const save_button = document.getElementById('save_button');
+
+    });
   </script>
 </body>
 </html>
