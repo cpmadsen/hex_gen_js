@@ -31,7 +31,6 @@ function choose (myArray) {
     return randomValue;
 
     //console.log(%c'randomValue'; 'font-weight: bold, font-color: red');
-    console.log(randomValue);
 
 }
 
@@ -58,10 +57,8 @@ function enable_downloads(save_button_id) {
     document.getElementById(save_button_id).addEventListener("click", function () {
     
         number_hexes = document.getElementsByClassName('hex-center').length;
-        console.log('number of hexes: ' + number_hexes);
-    
+   
         hexes_mountain = Array.from(document.getElementsByClassName('hex-center mountain')).map(element => element.id);
-        console.log('mountain hexes: ' + hexes_mountain);
     
         var dataToSave = {
         number_of_hexes: number_hexes,

@@ -1,5 +1,4 @@
 function create_clouds(container_height) {
-    console.log('Clouds are made!')
 
     // Is this not the first time this is being run? If not, 
     // we need to delete old 'cloud containers' - otherwise,

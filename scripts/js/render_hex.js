@@ -2,15 +2,10 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     //let max_y = window.innerHeight;
     //let max_x = max_y;
 
-    console.log('number of columns is ' + numCols);
-    console.log('number of rows is ' + numRows);
     // The container height and width is currently coming from the div 'hex_gen_iframe'.
 
     let max_y = container_height;
     let max_x = container_width;
-
-    console.log('max_y is ' + max_y);
-    console.log('max_x is ' + max_x);
 
     // Find which of height and width are larger; use that.
     if(max_y < max_x) {
@@ -18,9 +13,6 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     } else {
         max_x = max_y;
     }
-
-    console.log('max_y is ' + max_y);
-    console.log('max_x is ' + max_x);
 
     // Reverse-buffer the screen dimensions; makes sure no hex is placed right at screen edge.
     max_x = 0.75 * max_x;
@@ -43,7 +35,6 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
         for (let yCoord = 1; yCoord <= numRows; yCoord++) {
             // Calculate a unique ID
             const uniqueID = (numRows) * (xCoord - 1) + yCoord;
-            console.log('unique ID is ' + uniqueID);
             // Grab corresponding hexagon.
             hex_for_mods = document.getElementById('hex_' + uniqueID);
 
