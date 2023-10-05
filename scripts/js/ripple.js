@@ -19,6 +19,7 @@ function ripple_hexes_in_col_down(numCols,numRows){
 function ripple(numCols,numRows) {
     
     var i = 1;
+    ripple_speed = 500 / numCols; // In milliseconds. More columns, faster.
 
     function myLoop() { 
 
@@ -30,7 +31,7 @@ function ripple(numCols,numRows) {
             if (i <= numCols) {           //  if the counter < 10, call the loop function
             myLoop();             //  ..  again which will trigger another 
             }    
-        }, 100)
+        }, ripple_speed)
     }
     myLoop();
 }

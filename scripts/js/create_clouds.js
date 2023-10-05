@@ -1,9 +1,21 @@
 function create_clouds(container_height) {
     console.log('Clouds are made!')
 
+    // Is this not the first time this is being run? If not, 
+    // we need to delete old 'cloud containers' - otherwise,
+    // we get too many clouds!
+    if(document.getElementsByClassName('cloud-container').length >= 1){
+        old_container = Array.from(document.getElementsByClassName('cloud-container'));
+        for (let i = old_container.length; i > 0; i--) {
+            container_for_removal = document.getElementById('cloud-container');
+            container_for_removal.remove();
+        }
+    }
+
     // Create container for clouds - this allows us to NOT resize the viewing window
     // for the hexmap based on cloud position.
     const cloud_container = document.createElement('div');
+    cloud_container.id = 'cloud-container';
     cloud_container.className = 'cloud-container';
 
     for (let i = 1; i <= 6; i++) {

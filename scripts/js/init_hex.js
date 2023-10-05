@@ -21,6 +21,7 @@ function initialize_hexagons(number_of_hexes) {
         hexagon.appendChild(hex_label);
 
         // Append the hexagon div to the document body or another container
-        document.body.appendChild(hexagon);
+        hex_gen_page = document.getElementById('hex_gen_page');
+        hex_gen_page.appendChild(hexagon);
     }
 }

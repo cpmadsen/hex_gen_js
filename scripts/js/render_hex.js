@@ -2,6 +2,8 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     //let max_y = window.innerHeight;
     //let max_x = max_y;
 
+    console.log('number of columns is ' + numCols);
+    console.log('number of rows is ' + numRows);
     // The container height and width is currently coming from the div 'hex_gen_iframe'.
 
     let max_y = container_height;
@@ -41,6 +43,7 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
         for (let yCoord = 1; yCoord <= numRows; yCoord++) {
             // Calculate a unique ID
             const uniqueID = (numRows) * (xCoord - 1) + yCoord;
+            console.log('unique ID is ' + uniqueID);
             // Grab corresponding hexagon.
             hex_for_mods = document.getElementById('hex_' + uniqueID);
 
@@ -69,15 +72,15 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
 
             hex_label = document.getElementById('hex_label_' + uniqueID);
             hex_label.style.zIndex = hex_for_mods.style.zIndex + 1;
-            if(hex_for_mods.style.width <= '30px'){
-                hex_label.textContent = ' ';
-            }
-            if(hex_for_mods.style.width > '30px' & hex_for_mods.style.width <= '50px'){
-                hex_label.textContent = uniqueID;
-            } 
-            if(hex_for_mods.style.width > '50px') {
-                hex_label.textContent = 'Hex ' + uniqueID;
-            }
+            //if(hex_for_mods.style.width <= '30px'){
+            //    hex_label.textContent = ' ';
+            //}
+            //if(hex_for_mods.style.width > '30px' & hex_for_mods.style.width <= '50px'){
+            //    hex_label.textContent = uniqueID;
+            //} 
+            //if(hex_for_mods.style.width >= '50px') {
+            //    hex_label.textContent = 'Hex ' + uniqueID;
+            //}
         }
     }
 }

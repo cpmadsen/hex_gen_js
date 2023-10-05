@@ -22,8 +22,9 @@ function select_terrain_type(numCols, numRows){
         num_hexes_of_this_morph = 0;
         total_num_hexes = document.getElementsByClassName('hex-center').length;
         prop_hexes_of_this_morph = 0;
+        let viable_hexes_for_mountains = range(1,(numRows*numCols));
 
-        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains; i++) {
+        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains & i < 50; i++) {
 
             for (let morph = 0; morph < number_of_geomorphs; morph++) {
 
@@ -41,16 +42,20 @@ function select_terrain_type(numCols, numRows){
 
                 if(prop_hexes_of_this_morph <= proportion_mountains) {
 
-                r_col_to_start = Math.floor(Math.random() * (numCols - number_cols_in_geomorph)) + 1;
-                r_row_to_start = Math.floor(Math.random() * (numRows - number_rows_in_geomorph)) + 1;
+                anchor_id = Math.floor(Math.random() * viable_hexes_for_mountains.length);
+                
+                //r_col_to_start = Math.floor(Math.random() * (numCols - number_cols_in_geomorph)) + 1;
+                //r_row_to_start = Math.floor(Math.random() * (numRows - number_rows_in_geomorph)) + 1;
+
                 // We subtract the number of rows + cols from our geomorph so that the placement
                 // always lands inside our hex map.
 
                 // These inform the top left corner of our geomorph's placement.
 
                 directions = ['horizontal','vertical'];
-                let direction = 'unknown';
-                direction = directions[Math.floor(Math.random() * directions.length)];
+                //let direction = 'unknown';
+                let direction = 'vertical';
+                //direction = directions[Math.floor(Math.random() * directions.length)];
                 console.log("direction is " + direction);
                 // Calculate hex ID for this iteration of the loop.
                 // These loops' start and end integers are relative to the dimensions of the geomorph file.
@@ -58,27 +63,46 @@ function select_terrain_type(numCols, numRows){
                     for (let row_number = 1; row_number < number_rows_in_geomorph; row_number++) {
 
                         // Increase col and row number in each loop by the random start determined above.
-                        col_num_hex = col_number + r_col_to_start;
-                        row_num_hex = row_number + r_row_to_start;
+                        //col_num_hex = col_number + r_col_to_start;
+                        //row_num_hex = row_number + r_row_to_start;
+                        
+                        anchor_hex = document.getElementById('hex_' + anchor_id);
 
+                        console.log(anchor_hex);
+
+                        anchor_hex_row = anchor_id % numRows;
+                        anchor_hex_col = Math.ceil(anchor_id / numRows);
+                        //anchor_hex_col = (anchor_id - (anchor_id % numRows)) / numRows;
+
+                        console.log('row ' + anchor_hex_row + ' and col ' + anchor_hex_col);
+
+                        map_col = col_number + anchor_hex_col - 1;
+                        map_row = row_number + anchor_hex_row - 1;
+
+                        console.log('The hex to be made into mountain has col ' + map_col + ' and row ' + map_row);
                         if(direction == 'vertical'){
-                        uniqueID = (numRows) * (col_num_hex - 1) + row_num_hex;
+                            uniqueID = (numRows) * (map_col - 1) + map_row;
                         }
-                        if(direction == 'horizontal'){
-                            uniqueID = (numRows) * (row_num_hex - 1) + col_num_hex;
-                        }
-                        if(direction == 'diagonal'){
-                            // Haven't figured this one out yet...
-                        }
+                        console.log(uniqueID);
+                        //if(direction == 'horizontal'){
+                        //    uniqueID = (numRows) * (row_num_hex - 1) + col_num_hex;
+                        //}
+                        //if(direction == 'diagonal'){
+                        //    // Haven't figured this one out yet...
+                        //}
 
                         // Pull out this hexagon.
                         hex_to_mod = document.getElementById('hex_' + uniqueID);
 
+                        // Check that this hexagon exists!
+                        if(hex_to_mod != null) {
                         if(m_geo_stock[morph_name]['col_' + col_number][row_number] === 1){
                             // Assign this type of geometry
-                            hex_to_mod.classList.add(morph_name_no_suffix)
-                            console.log('Hex ' + hex_to_mod.id + ' is a ' + morph_name_no_suffix);
+                            hex_to_mod.classList.add(morph_name_no_suffix);
+                            console.log(hex_to_mod.id + ' is a ' + morph_name_no_suffix);
+                            viable_hexes_for_mountains.filter(k => k !== anchor_id);
                         }
+                    }
                     }
                 }
             }
