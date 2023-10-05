@@ -1,15 +1,5 @@
-function select_terrain_type(numCols, numRows){
-
-    var m_geo_stock = {
-        'goop': [0]
-    };
-    var number_of_geomorphs = 0; 
-    var cols_in_geomorph = 0; 
-    var first_col_name = 0;
-    var number_rows_in_geomorph = 0;
-
-    // Call the read_json function and update m_geo_stock when the promise resolves
-    read_json('./data/geomorphs/mountain.json')
+function assign_terrain(terrain_type, target_proportion, terrain_replace_list){
+    read_json('./data/geomorphs/' + terrain_type + '.json')
         .then(content => {
         // Assign the content to your object
         m_geo_stock = content;
@@ -17,14 +7,16 @@ function select_terrain_type(numCols, numRows){
         list_of_geomorphs = Object.keys(m_geo_stock);
         number_of_geomorphs = list_of_geomorphs.length;
 
+        console.log('Working on applying ' + terrain_type);
+
         // Set limits //
-        proportion_mountains = 0.1; // This could be a user input later on.
+        proportion_terrain = target_proportion; // This could be a user input later on.
         num_hexes_of_this_morph = 0;
         total_num_hexes = document.getElementsByClassName('hex-center').length;
         prop_hexes_of_this_morph = 0;
-        let viable_hexes_for_mountains = range(1,(numRows*numCols));
+        let viable_hexes_for_terrain = range(1,(numRows*numCols));
 
-        for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains & i < 50; i++) {
+        for(let i = 0; prop_hexes_of_this_morph <= proportion_terrain & i < 80; i++) {
 
             for (let morph = 0; morph < number_of_geomorphs; morph++) {
 
@@ -37,21 +29,13 @@ function select_terrain_type(numCols, numRows){
 
             //for(let i = 0; prop_hexes_of_this_morph <= proportion_mountains; i++) {
 
-                number_mountains = document.getElementsByClassName(morph_name_no_suffix).length;
-                prop_hexes_of_this_morph = number_mountains / total_num_hexes;
+                number_hexes_of_terrain = document.getElementsByClassName(morph_name_no_suffix).length;
+                prop_hexes_of_this_morph = number_hexes_of_terrain / total_num_hexes;
 
-                if(prop_hexes_of_this_morph <= proportion_mountains) {
+                if(prop_hexes_of_this_morph <= proportion_terrain) {
 
-                anchor_id = Math.floor(Math.random() * viable_hexes_for_mountains.length);
+                anchor_id = Math.floor(Math.random() * viable_hexes_for_terrain.length);
                 
-                //r_col_to_start = Math.floor(Math.random() * (numCols - number_cols_in_geomorph)) + 1;
-                //r_row_to_start = Math.floor(Math.random() * (numRows - number_rows_in_geomorph)) + 1;
-
-                // We subtract the number of rows + cols from our geomorph so that the placement
-                // always lands inside our hex map.
-
-                // These inform the top left corner of our geomorph's placement.
-
                 directions = ['horizontal','vertical'];
                 //let direction = 'unknown';
                 let direction = 'vertical';
@@ -61,15 +45,10 @@ function select_terrain_type(numCols, numRows){
                 for (let col_number = 1; col_number <= number_cols_in_geomorph; col_number++) {
                     for (let row_number = 1; row_number < number_rows_in_geomorph; row_number++) {
 
-                        // Increase col and row number in each loop by the random start determined above.
-                        //col_num_hex = col_number + r_col_to_start;
-                        //row_num_hex = row_number + r_row_to_start;
-                        
                         anchor_hex = document.getElementById('hex_' + anchor_id);
 
                         anchor_hex_row = anchor_id % numRows;
                         anchor_hex_col = Math.ceil(anchor_id / numRows);
-                        //anchor_hex_col = (anchor_id - (anchor_id % numRows)) / numRows;
 
                         map_col = col_number + anchor_hex_col - 1;
                         map_row = row_number + anchor_hex_row - 1;
@@ -90,17 +69,39 @@ function select_terrain_type(numCols, numRows){
                         // Check that this hexagon exists!
                         if(hex_to_mod != null) {
                         if(m_geo_stock[morph_name]['col_' + col_number][row_number] === 1){
+                            // Any other terrain types to replace? If so, remove here.
+                            for (i in terrain_replace_list) {
+                                terrain_to_replace = terrain_replace_list[i];
+                                console.log('Looking to replace ' + terrain_to_replace + ' with ' + morph_name_no_suffix);
+                                if(hex_to_mod.classList.contains(terrain_to_replace)){
+                                    console.log('Overwrote ' + terrain_to_replace + ' with ' + morph_name_no_suffix + ' for ' + hex_to_mod.id);
+                                    hex_to_mod.classList.remove(terrain_to_replace);
+                                }
+                            }
                             // Assign this type of geometry
                             hex_to_mod.classList.add(morph_name_no_suffix);
-                            viable_hexes_for_mountains.filter(k => k !== anchor_id);
+                            viable_hexes_for_terrain.filter(k => k !== anchor_id);
                         }
                     }
                     }
                 }
             }
-        number_mountains = document.getElementsByClassName(morph_name_no_suffix).length;
-        prop_hexes_of_this_morph = number_mountains / total_num_hexes;
+        number_of_terrain = document.getElementsByClassName(morph_name_no_suffix).length;
+        prop_hexes_of_this_morph = number_of_terrain / total_num_hexes;
     }
         }
     });
+}
+
+
+function select_terrain_type(){
+    //assign_mountains();
+    //assign_terrain('open', target_proportion = 0.6);
+    //assign_terrain('swamp', target_proportion = 0.1, terrain_replace_list = ['open']);
+    console.log('starting wooded application');
+    assign_terrain('wooded', target_proportion = 0.2, terrain_replace_list = ['open','swamp']);
+    console.log('starting desert application');
+    assign_terrain('desert', target_proportion = 0.2, terrain_replace_list = ['open','wooded','swamp']);
+    console.log('starting mountain application');
+    assign_terrain('mountain', target_proportion = 0.1, terrain_replace_list = ['open','wooded','swamp','desert']);
 }

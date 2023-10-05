@@ -100,7 +100,7 @@
     let container_height = document.getElementById('hex_gen_page').offsetHeight;
     let container_width = document.getElementById('hex_gen_page').offsetWidth;
 
-    document.addEventListener('DOMContentLoaded', function () {
+    //document.addEventListener('DOMContentLoaded', function () {
       
       const make_hex_button = document.getElementById('make_hex');
     
@@ -124,14 +124,23 @@
         container_height = document.getElementById('hex_gen_page').offsetHeight;
         container_width = document.getElementById('hex_gen_page').offsetWidth;
 
-        select_terrain_type(numCols, numRows);
+      //select_terrain_type();
+      assign_terrain('open', target_proportion = 0.6);
+      //console.log('starting swamp application');
+      //assign_terrain('swamp', target_proportion = 0.1, terrain_replace_list = ['open']);
+      //console.log('starting wooded application');
+      //assign_terrain('wooded', target_proportion = 0.2, terrain_replace_list = ['open','swamp']);
+      //console.log('starting desert application');
+      //assign_terrain('desert', target_proportion = 0.2, terrain_replace_list = ['open','wooded','swamp']);
+      //console.log('starting mountain application');
+      //assign_terrain('mountain', target_proportion = 0.1, terrain_replace_list = ['open','wooded','swamp','desert']);
       });
 
       // Screen resize event.
       //window.addEventListener("resize", function() {
       //  render_hexagons(numCols, numRows, container_height, container_width);
       //});
-    });
+    //});
   </script>
 </body>
 </html>
