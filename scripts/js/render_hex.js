@@ -63,15 +63,17 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
 
             hex_label = document.getElementById('hex_label_' + uniqueID);
             hex_label.style.zIndex = hex_for_mods.style.zIndex + 1;
-            //if(hex_for_mods.style.width <= '30px'){
+            hex_label.textContent = uniqueID;
+            //if(hex_for_mods.offsetWidth <= 30){
             //    hex_label.textContent = ' ';
+            //} else {
+            //    if(hex_for_mods.offsetWidth > 50){
+            //        hex_label.textContent = 'Hex ' + uniqueID;
+            //    } else {
+            //        hex_label.textContent = uniqueID;
+            //    }
             //}
-            //if(hex_for_mods.style.width > '30px' & hex_for_mods.style.width <= '50px'){
-            //    hex_label.textContent = uniqueID;
-            //} 
-            //if(hex_for_mods.style.width >= '50px') {
-            //    hex_label.textContent = 'Hex ' + uniqueID;
-            //}
+            
         }
     }
 }
