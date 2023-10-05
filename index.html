@@ -81,7 +81,6 @@
     loaded_data = data;
 
     // Now you can use 'loaded_data' in your JavaScript code
-    console.log(loaded_data);
 
     // Call another function or perform actions using 'loaded_data'
     make_hex_map_from_loaded_data(loaded_data);
@@ -102,14 +101,16 @@
     let container_width = document.getElementById('hex_gen_page').offsetWidth;
 
     document.addEventListener('DOMContentLoaded', function () {
-      numRows = number_hex_v.value;
-      numCols = number_hex_h.value;
-      container_height = document.getElementById('hex_gen_page').offsetHeight;
-      container_width = document.getElementById('hex_gen_page').offsetWidth;
       
       const make_hex_button = document.getElementById('make_hex');
     
       make_hex_button.addEventListener('click', function() {
+
+        numRows = number_hex_v.value;
+        numCols = number_hex_h.value;
+        container_height = document.getElementById('hex_gen_page').offsetHeight;
+        container_width = document.getElementById('hex_gen_page').offsetWidth;
+
         make_hex_map(numRows, numCols, container_height, container_width, 
         make_clouds = true);
       });
@@ -117,6 +118,12 @@
       const random_terrain_button = document.getElementById('randomize_terrain');
     
       random_terrain_button.addEventListener('click', function() {
+
+        numRows = number_hex_v.value;
+        numCols = number_hex_h.value;
+        container_height = document.getElementById('hex_gen_page').offsetHeight;
+        container_width = document.getElementById('hex_gen_page').offsetWidth;
+
         select_terrain_type(numCols, numRows);
       });
 
@@ -124,9 +131,6 @@
       //window.addEventListener("resize", function() {
       //  render_hexagons(numCols, numRows, container_height, container_width);
       //});
-
-      //const save_button = document.getElementById('save_button');
-
     });
   </script>
 </body>
