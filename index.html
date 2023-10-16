@@ -13,6 +13,7 @@
     <script src="./scripts/js/render_hex.js"></script>
     <script src="./scripts/js/create_clouds.js"></script>
     <script src="./scripts/js/sel_terrain.js"></script>
+    <script src="./scripts/js/assign_strongholds.js"></script>
     <script src="./scripts/js/make_hex_map.js"></script>
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/hexagon_styles.css" />
@@ -27,20 +28,21 @@
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Horizontal)</h4>
             <div class = 'row'>
               <p>3</p>
-              <input id = 'number_hex_h' type="range" min="3" max="30" value="25">
-              <p>30</p>
+              <input id = 'number_hex_h' type="range" min="3" max="65" value="35">
+              <p>65</p>
             </div>
         </div>
           <div class = 'over-background' style="text-align:center;padding-left:20%;padding-right:20%;">
             <h4 style="display: inline;font-family:endor;">Num. Hexagons (Vertical)</h4>
             <div class = 'row'>
               <p>3</p>
-              <input id = 'number_hex_v' type="range" min="3" max="30" value="25">
-              <p>30</p>
+              <input id = 'number_hex_v' type="range" min="3" max="45" value="25">
+              <p>45</p>
             </div>
         </div>
           <div id = 'make_hex' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Create Hex Map</div>
           <div id = 'randomize_terrain' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Roll up Terrain</div>
+          <div id = 'apply_features' class = 'dnd-button' style="font-size: x-large;margin: 15px; padding: 10px;">Generate Features</div>
           <div class = 'over-background' style="text-align:center;padding-left:20%;padding-right:20%;">
             <div class = 'row'>
               <img id = 'skip_last_audio' src = 'mats/left-arrow.svg' class = 'music-button arrows'></img>
@@ -116,6 +118,34 @@
         make_clouds = true);
       });
 
+      /*
+      // Chat code to fix async problem....
+      const random_terrain_button = document.getElementById('randomize_terrain');
+      const features_button = document.getElementById('apply_features');
+
+      random_terrain_button.addEventListener('click', async function () {
+        numRows = number_hex_v.value;
+        numCols = number_hex_h.value;
+        container_height = document.getElementById('hex_gen_page').offsetHeight;
+        container_width = document.getElementById('hex_gen_page').offsetWidth;
+      
+        await select_terrain_type({
+          terrain_types: ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+          terrain_proportions: [0.4418, 0.0685, 0.1937, 0.0345, 0.000001],
+          terrain_replace_list: [[], ['wooded'], ['wooded', 'desert'], ['wooded', 'desert', 'mountain'], []],
+          delay: 500,
+        });
+      
+        await apply_strongholds({
+          on_which_terrain_types: ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+          chance_for_stronghold: [0.008245877061, 0, 0.01049475262, 0.0007496251874, 0],
+          delay: 500,
+        });
+      }); 
+      */
+            
+      
+      
       const random_terrain_button = document.getElementById('randomize_terrain');
     
       random_terrain_button.addEventListener('click', function() {
@@ -127,22 +157,53 @@
 
       //select_terrain_type();
       select_terrain_type(
-        terrain_types = ['swamp','wooded','desert','mountain'],
-        terrain_proportions = [0.1,0.3,0.05,0.1],
+        terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+        // ideal proportions = [0.2976, 0.0585, 0.1837, 0.0345, 0.4257871064],
+        terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.000001], // we increase the earlier types because so many are overwritten
         terrain_replace_list = [
-          [], 
-          ['swamp'], // 'Wooded' replaces 'Swamp'
-          ['swamp','wooded'],
-          ['swamp','wooded','desert']],
-          delay = 1000 // this number is in milliseconds, and is totally optional; could be 0.
+          [],   // wooded first, replaces nothing 
+          ['wooded'], 
+          ['wooded','desert'],
+          ['wooded','desert','mountain'] // 'swamp' replaces all 
+          ], 
+          delay = 500 // this number is in milliseconds, and is totally optional; could be 0.
       );
     });
 
-      // Screen resize event.
-      //window.addEventListener("resize", function() {
-      //  render_hexagons(numCols, numRows, container_height, container_width);
-      //});
-    //});
+       
+    const features_button = document.getElementById('apply_features');
+    
+      features_button.addEventListener('click', function() {
+        
+        numRows = number_hex_v.value;
+        numCols = number_hex_h.value;
+        container_height = document.getElementById('hex_gen_page').offsetHeight;
+        container_width = document.getElementById('hex_gen_page').offsetWidth;
+        
+      apply_strongholds(
+        on_which_terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+        chance_for_SH = [0.02770780856, 0, 0.05714285714, 0.02173913043, 0], 
+        chance_for_town = [0.002518891688, 0, 0, 0, 0.01408450704],
+        delay = 250 // this number is in milliseconds, and is totally optional; could be 0.
+      );
+    });
+    
+
+
+    
+
+    // Screen resize event.
+    // Needs to smoothly resize hex grid, but leave sidebar as it is...
+    /*
+    window.addEventListener("resize", function() {
+      numRows = number_hex_v.value;
+      numCols = number_hex_h.value;
+      container_height = document.getElementById('hex_gen_page').offsetHeight;
+      container_width = document.getElementById('hex_gen_page').offsetWidth;
+      render_hexagons(numCols, numRows, container_height, container_width);
+    });
+    */
+    
   </script>
 </body>
 </html>
