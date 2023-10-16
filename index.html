@@ -75,24 +75,12 @@
     // Add functionality to 'save project' button.
     enable_downloads('save_proj');
     
-    // Add functionality to 'load project' button.
-    enable_data_reads('load_proj',processData);
-    var loaded_data = {};
-
-    function processData(data) {
-    // Assign the loaded data to the 'loaded_data' object
-    loaded_data = data;
-
-    // Now you can use 'loaded_data' in your JavaScript code
-
-    // Call another function or perform actions using 'loaded_data'
-    make_hex_map_from_loaded_data(loaded_data);
+    function read_saved_data(data) {
+    // Read in data file and make hex map from that.
+    make_hex_map_from_loaded_data(data);
     }
-
-    var dataToSave = {
-      number_of_hexes: 0,
-      mountain_hexes: 0
-      };
+    // Add functionality to 'load project' button.
+    enable_data_reads('load_proj',read_saved_data);
 
     // ## Depending on user's inputs, make x hexagons.
     let numRows = 0; // Number of rows
@@ -157,9 +145,11 @@
 
       //select_terrain_type();
       select_terrain_type(
-        terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+        //terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+        terrain_types = ['wooded', 'desert', 'mountain', 'swamp'],
         // ideal proportions = [0.2976, 0.0585, 0.1837, 0.0345, 0.4257871064],
-        terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.000001], // we increase the earlier types because so many are overwritten
+        //terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.000001], // we increase the earlier types because so many are overwritten
+        terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345], // we increase the earlier types because so many are overwritten
         terrain_replace_list = [
           [],   // wooded first, replaces nothing 
           ['wooded'], 
@@ -170,7 +160,6 @@
       );
     });
 
-       
     const features_button = document.getElementById('apply_features');
     
       features_button.addEventListener('click', function() {

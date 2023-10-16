@@ -28,17 +28,48 @@ function enable_downloads(save_button_id) {
         // Attach click event to the "Save" button
     document.getElementById(save_button_id).addEventListener("click", function () {
     
-        number_hexes = document.getElementsByClassName('hex-center').length;
+        all_hexes = document.getElementsByClassName('hex-center')
+
+        number_hexes = all_hexes.length;
    
-        hexes_mountain = Array.from(document.getElementsByClassName('hex-center mountain')).map(element => element.id);
-    
-        var dataToSave = {
-        number_of_hexes: number_hexes,
-        numRows: number_hex_v.value,
-        numCols: number_hex_h.value,
-        mountain_hexes: hexes_mountain
+        // Steps:
+        // 1. Get unique IDS and class names for each hexagon. 
+        // 2. Combine into dictionary-like object, dropping the class name of 'hex-center'.
+        // 3. Drop We will save everything except 'open'.
+        // =========
+        // Step 1.
+        all_hexagon_ids = Array.from(all_hexes).map(el => el.id);
+        all_class_names = Array.from(all_hexes).map(el => el.classList.value.replace('hex-center ',''));
+
+        // =========
+        // Step 2.
+        var hex_classes_to_save = {
+            unique_ids: all_hexagon_ids,
+            class_names: all_class_names
         };
-        promptForFilenameAndSave(dataToSave);
+        // =========
+        // Step 3.
+        const class_to_drop = 'open';
+        hex_classes_to_save_f = {
+            // Note: the '_' in the first filter is a common convention when we are using a method on an array
+            // but are NOT concerned with the value of that element, only its index.
+            unique_ids: hex_classes_to_save.unique_ids.filter((_, index) => hex_classes_to_save.class_names[index] !== class_to_drop),
+            class_names: hex_classes_to_save.class_names.filter(value => value !== class_to_drop)
+        };
+
+        //hexes_mountain = Array.from(document.getElementsByClassName('hex-center mountain')).map(element => element.id);
+    
+        //var dataToSave = {
+        //number_of_hexes: number_hexes,
+        //numRows: number_hex_v.value,
+        //numCols: number_hex_h.value,
+        //mountain_hexes: hexes_mountain
+        //};
+        hex_classes_to_save_f.number_of_hexes = number_hexes;
+        hex_classes_to_save_f.numRows = number_hex_v.value;
+        hex_classes_to_save_f.numCols = number_hex_h.value;
+
+        promptForFilenameAndSave(hex_classes_to_save_f);
     });
 }
 
