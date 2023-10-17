@@ -31,14 +31,14 @@ async function apply_strongholds (
                                 if (roll <= stronghold_chance) {
                                     hex_to_mod_for_SH.classList.remove(this_SH_terrain);
                                     hex_to_mod_for_SH.classList.add(`${this_SH_terrain}_stronghold`);
-                                    console.log(`Added stronghold to ${hex_to_mod_for_SH.id}`);
+                                    //console.log(`Added stronghold to ${hex_to_mod_for_SH.id}`);
                                 }
                                 let roll2 = Math.random(0, 1);
                                 if (roll2 <= town_chance) {
                                     hex_to_mod_for_SH.classList.remove(this_SH_terrain);
                                     hex_to_mod_for_SH.classList.remove(`${this_SH_terrain}_stronghold`);
                                     hex_to_mod_for_SH.classList.add(`${this_SH_terrain}_town`);
-                                    console.log(`Added town to ${hex_to_mod_for_SH.id}`);
+                                    //console.log(`Added town to ${hex_to_mod_for_SH.id}`);
                                 }
                             }) 
                         }
