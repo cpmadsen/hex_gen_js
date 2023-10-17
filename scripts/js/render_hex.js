@@ -64,6 +64,9 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
             hex_label = document.getElementById('hex_label_' + uniqueID);
             hex_label.style.zIndex = hex_for_mods.style.zIndex + 1;
             let current_hex_row = uniqueID % numRows;
+            if (current_hex_row == 0) {
+                current_hex_row = numRows;
+            };
             let current_hex_col = Math.ceil(uniqueID / numRows);
             hex_label.textContent = `${padWithZeroes(current_hex_col)}${padWithZeroes(current_hex_row)}`;
             hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';
