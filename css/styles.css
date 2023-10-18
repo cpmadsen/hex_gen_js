@@ -93,16 +93,6 @@ font-family: "Endor";
     margin-right:10px;
 }
 
-.dnd-button {
-    background: url(../mats/red_background.png);
-    color: goldenrod;
-    border: 3px solid #350f0f;
-}
-
-.dnd-button::first-letter {
-    color:white;
-}
-
 .music-button {
     filter:opacity(0.5);
     border:2px solid transparent;
