@@ -19,18 +19,19 @@ font-family: "Endor";
 }
 
 .sidebar {
-    width: 20%;
+    width: 190px;
+    flex: none;
     background: url(../mats/stone_wall_2.png);
     border: 10px solid transparent;
     padding: 5px;
     border-image: url(../mats/wood_frame_crop.png) 75 round;
     border-image-width: 10px;
     max-height: 100%; /* Set a maximum height equal to the viewport height */
-    overflow-y: auto; 
+    overflow-y: hidden; /* Want to get rid of the scrollbar */ 
 }
 
 .main {
-    width: 80%;
+    flex: 1;
     background: url(../mats/lake_forest_background.jpg);
     background-size: cover;
     max-height: 100%;
