@@ -69,27 +69,67 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
             };
             let current_hex_col = Math.ceil(uniqueID / numRows);
             hex_label.textContent = `${padWithZeroes(current_hex_col)}${padWithZeroes(current_hex_row)}`;
-            hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';
-
-            //const fontSize = Math.min(hexagon_size_x, hexagon_size_y) * 0.1; // Adjust the scaling factor as needed
-            //const fontSize = hexagon_size_y * 0.1;
-            // Apply the new font size to the text element
-            //text.style.fontSize = fontSize + 'px';
-            
-            //if(hex_for_mods.offsetWidth <= 30){
-            //    hex_label.textContent = ' ';
-            //} else {
-            //    if(hex_for_mods.offsetWidth > 50){
-            //        hex_label.textContent = 'Hex ' + uniqueID;
-            //    } else {
-            //        hex_label.textContent = uniqueID;
-            //    }
-            //}
-
-            
-            
+            hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';            
         }
     }
+    
+    // Setting up the lava background for the hexes to float over - turn it from hidden to visible
+    const lava_background = document.getElementById('lava-gradient-box');
+    lava_background.style.display = 'block'; // turns it visible; css has it 'hidden' so it doesn't show up til the button is pressed
+    
+
+    
+    const first_hex = document.getElementById('hex_' + 1);
+    const last_hex = document.getElementById('hex_' + numRows*numCols);
+
+    // For the height and width:
+    const lava_box_height = last_hex.offsetTop - first_hex.offsetTop;
+    const lava_box_width = last_hex.offsetLeft - first_hex.offsetLeft; // coordinates relative to the parent
+    console.log(`lava box ht ${lava_box_height} and width ${lava_box_width}`);
+
+    lava_background.style.height = lava_box_height + 'px';
+    lava_background.style.width = lava_box_width + 'px';
+    
+    
+    const rect = first_hex.getBoundingClientRect();
+    console.log(`Left: ${rect.left}, Top: ${rect.top}`);
+    /*
+    // To position the lava box:
+    const globalTop = first_hex.getOffsetTop(); // Global top coordinate
+    const globalLeft = first_hex.getOffsetLeft(); // Global left coordinate
+    console.log(`offset top ${globalTop} and left ${globalLeft}`);
+    */
+    
+    lava_background.style.top = rect.top + 'px';
+    lava_background.style.left = rect.left + 'px';
+    
+
+
+
+    /*
+    // coordinates x = xCoord * hexagon_size_x - hexagon_size_x*0.26*xCoord + 'px';
+    // coordinates y = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
+    
+    // lava width = hex coordinates of last column - of 1st column 
+    lava_background.style.width = (numCols * hexagon_size_x - hexagon_size_x*0.26*numCols) - (hexagon_size_x - hexagon_size_x*0.26) + 'px';
+    // lava height = coordinates of last row - first row
+    lava_background.style.height = ((numRows + 0.45) * hexagon_size_y - (numRows)*hexagon_size_y*0.085 - hexagon_size_y*0.5) - (hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5) + 'px';
+    // lava left = coordinates of first column
+    lava_background.style.left = (hexagon_size_x - hexagon_size_x*0.26) + 'px';
+    // lava top = coordinates of first row EXCEPT left and top must be relative to the inner container or whatever, not the page itself.
+    lava_background.style.top = (hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5) + 'px';
+    */
+
+    /*
+    lava_takeout_height = 2 * hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5;
+    lava_background.style.height = (document.getElementById('hex_gen_page').offsetHeight - lava_takeout_height) + 'px';
+    
+    lava_takeout_width = (2 * hexagon_size_x - hexagon_size_x*0.26); 
+    lava_background.style.width = (document.getElementById('hex_gen_page').offsetWidth - lava_takeout_width) + 'px';
+    
+    lava_background.style.left = (1 * hexagon_size_x - hexagon_size_x*0.26) + 'px'; 
+    lava_background.style.top = (1) * hexagon_size_y - (1)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
+    */
 }
 
 function padWithZeroes(value) {
@@ -132,3 +172,7 @@ adjustFontSize();
 // Add an event listener to handle font size adjustments when the window is resized
 window.addEventListener('resize', adjustFontSize);
 */
+
+
+
+
