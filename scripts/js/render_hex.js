@@ -85,24 +85,28 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     // For the height and width:
     const lava_box_height = last_hex.offsetTop - first_hex.offsetTop;
     const lava_box_width = last_hex.offsetLeft - first_hex.offsetLeft; // coordinates relative to the parent
-    console.log(`lava box ht ${lava_box_height} and width ${lava_box_width}`);
+    console.log(`lava box height ${lava_box_height}px and width ${lava_box_width}px.`);
 
     lava_background.style.height = lava_box_height + 'px';
     lava_background.style.width = lava_box_width + 'px';
     
     
     const rect = first_hex.getBoundingClientRect();
-    console.log(`Left: ${rect.left}, Top: ${rect.top}`);
+    //console.log(`Left: ${rect.left}, Top: ${rect.top}`);
+    
     /*
     // To position the lava box:
-    const globalTop = first_hex.getOffsetTop(); // Global top coordinate
-    const globalLeft = first_hex.getOffsetLeft(); // Global left coordinate
+    const globalTop = first_hex.getOffsetTop; // Global top coordinate
+    const globalLeft = first_hex.getOffsetLeft; // Global left coordinate
     console.log(`offset top ${globalTop} and left ${globalLeft}`);
     */
     
     lava_background.style.top = rect.top + 'px';
-    lava_background.style.left = rect.left + 'px';
+    lava_background.style.left = rect.left - 221 + 'px';    // Sloppy solution 
     
+    
+    //lava_background.style.top = globalTop + 'px';
+    //lava_background.style.left = globalLeft + 'px';
 
 
 

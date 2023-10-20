@@ -10,6 +10,7 @@ font-family: "Endor";
 .h4 {
     font-family: 'Endor';
 }
+
 /* Define the column layout*/
 .container {
     width: 100%;
@@ -44,7 +45,7 @@ font-family: "Endor";
     color: red;
     background: linear-gradient(to bottom, #f06, rgb(255, 0, 0));
     display: none;
-
+    overflow-y: hidden;
     z-index: 1;
 }
 
