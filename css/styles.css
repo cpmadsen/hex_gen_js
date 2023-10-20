@@ -44,16 +44,8 @@ font-family: "Endor";
     position: absolute;
     color: red;
     background: linear-gradient(to bottom, #f06, rgb(255, 0, 0));
-<<<<<<< HEAD
     display: none;
     overflow-y: hidden;
-=======
-    display: block;
-    height: 84%;
-    width: 74%;
-    top: 8%;
-    left: 22%;
->>>>>>> 69f4b8ec102b037184f135ef2dd78b9ceeae6ae8
     z-index: 1;
 }
 
