@@ -77,8 +77,6 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     const lava_background = document.getElementById('lava-gradient-box');
     lava_background.style.display = 'block'; // turns it visible; css has it 'hidden' so it doesn't show up til the button is pressed
     
-
-    
     const first_hex = document.getElementById('hex_' + 1);
     const last_hex = document.getElementById('hex_' + numRows*numCols);
 

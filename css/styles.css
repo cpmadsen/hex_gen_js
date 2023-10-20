@@ -44,9 +44,114 @@ font-family: "Endor";
     position: absolute;
     color: red;
     background: linear-gradient(to bottom, #f06, rgb(255, 0, 0));
+<<<<<<< HEAD
     display: none;
     overflow-y: hidden;
+=======
+    display: block;
+    height: 84%;
+    width: 74%;
+    top: 8%;
+    left: 22%;
+>>>>>>> 69f4b8ec102b037184f135ef2dd78b9ceeae6ae8
     z-index: 1;
+}
+
+.lava-goop {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #00000070;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    filter: blur(15px) contrast(30);
+}
+
+
+
+.lava-bubbles {
+    position: relative !important;
+    background: darkred;
+    border-radius: 50%;
+    animation: bubble 2s infinite;
+    animation-timing-function: ease-in-out;
+    /* animation: move 7s ease-in-out infinite alternate; */
+    /* animation: grow 5s ease-in-out forwards infinite; */
+}
+
+/* keyframes move can be used to move shapes around with just CSS */
+/* This section is not currently applied to anything on our page */
+@keyframes move {
+    0%{
+        border-radius: 75% 25% 20% 80% / 34% 47% 53% 66%;
+        transform: translateY(-50%);
+    }
+    100% {
+        border-radius: 50%;
+        transform: translateY(50%);
+    }
+}
+
+/* Here we animate the +'ve and -'ve growth and Y translation of lava bubbles */
+@keyframes grow {
+    0% {
+        width: 0;
+        height: 0;
+        background-color: transparent;
+        transform: translateY(0);
+    }
+    50% {
+        width: 3%;
+        height: 3%;
+        background-color: orange;
+        transform: translateY(-3%);
+    }
+    70% {
+        width: 4%;
+        height: 4%;
+        background-color: rgb(255, 225, 148);
+        transform: translateY(-4%);
+    }
+    100% {
+        width: 0;
+        height: 0;
+        background-color: transparent;
+        transform: translateY(2%);
+    }
+}
+
+/* This 'bubbling' animation is also applied to the lava bubbles */
+@keyframes bubble {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05) translateY(-5px);
+        background-color: #FF0000; /* Darker lava color */
+    }
+    100% {
+        transform: scale(1);
+        background-color: #FF4500;
+    }
+}
+
+/* This texture animation is applied to the lava-goop container for the lava bubbles */
+@keyframes texture {
+    0%, 100% {
+        background: linear-gradient(to bottom, #FF4500, #FF4500);
+    }
+    25% {
+        background: linear-gradient(to bottom, #FF4500, #FF0000, #FF4500);
+    }
+    50% {
+        background: linear-gradient(to bottom, #FF4500, #FF0000, #FF4500);
+    }
+    75% {
+        background: linear-gradient(to bottom, #FF4500, #FF0000, #FF4500);
+    }
 }
 
 /* Style for rows*/
