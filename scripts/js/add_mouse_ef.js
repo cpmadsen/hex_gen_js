@@ -28,11 +28,13 @@ function add_mouse_effects(number_of_hexes){
             //}, 1000);
         })
 
+        /* FOR SOUND EFFECTS ON HOVER:
         the_hex_label.addEventListener('mouseenter', function() {
        //     the_hex.classList.add('highlighted');
                 //the_hex.classList.toggle('highlighted');
                 tile_click_audio.play();
         })
+        */
 
         //the_hex.addEventListener('mouseleave', function() {
         //    the_hex.classList.remove("highlighted");
