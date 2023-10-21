@@ -157,6 +157,9 @@ font-family: "Endor";
     background: url(../mats/red_background.png);
     color: goldenrod;
     border: 3px solid #350f0f;
+    font-size: large;
+    margin: 15px; 
+    padding: 10px;
 }
 
 .dnd-button::first-letter {
