@@ -58,10 +58,16 @@
     </div>
     <div id = 'main' class = 'main'>
       <div id = 'hex_gen_page' class = "hex-gen-page">
-        <div id = 'save_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:80%;'>Save Project</div>
-        <div id = 'load_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:90%;'>Load Project</div>
+      <div id= "lava-gradient-box" class = 'lava-background'>
+        <div id = 'lava_goop' class = 'lava-goop'>
+        <div id = 'lava_veins' class = 'lava-veins'></div>
+        </div>
+      </div>
+      </div> <!-- It's empty for now, render_hex.js gives it a class  -->
+      <div id = 'save_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:80%;'>Save Project</div>
+      <div id = 'load_proj' class = 'dnd-button navbar-button' style = 'position:absolute; width: 8%; left:90%;'>Load Project</div>
       <!-- Create a hidden file input element -->
-        <input type="file" id="fileInput" style="display: none;">
+      <input type="file" id="fileInput" style="display: none;">
       </div>
     </div>
   </div>
@@ -110,34 +116,6 @@
         make_hex_map(numRows, numCols, container_height, container_width, 
         make_clouds = true);
       });
-
-      /*
-      // Chat code to fix async problem....
-      const random_terrain_button = document.getElementById('randomize_terrain');
-      const features_button = document.getElementById('apply_features');
-
-      random_terrain_button.addEventListener('click', async function () {
-        numRows = number_hex_v.value;
-        numCols = number_hex_h.value;
-        container_height = document.getElementById('hex_gen_page').offsetHeight;
-        container_width = document.getElementById('hex_gen_page').offsetWidth;
-      
-        await select_terrain_type({
-          terrain_types: ['wooded', 'desert', 'mountain', 'swamp', 'open'],
-          terrain_proportions: [0.4418, 0.0685, 0.1937, 0.0345, 0.000001],
-          terrain_replace_list: [[], ['wooded'], ['wooded', 'desert'], ['wooded', 'desert', 'mountain'], []],
-          delay: 500,
-        });
-      
-        await apply_strongholds({
-          on_which_terrain_types: ['wooded', 'desert', 'mountain', 'swamp', 'open'],
-          chance_for_stronghold: [0.008245877061, 0, 0.01049475262, 0.0007496251874, 0],
-          delay: 500,
-        });
-      }); 
-      */
-            
-      
       
       const random_terrain_button = document.getElementById('randomize_terrain');
     
@@ -182,9 +160,26 @@
       );
     });
     
+    // Make some lava bubbles! We can move this to a separate script once we're happy with it.
+    number_of_desired_lava_bubbles = 10;
+    lava_goop_div = document.getElementById('lava_goop');
 
+    for(i = 1; i <= number_of_desired_lava_bubbles; i++){
 
-    
+        animation_time = Math.floor(Math.random() * 6) + 5;
+        rel_position_top = Math.floor(Math.random() * 90) + -45;
+        rel_position_left = Math.floor(Math.random() * 90) + -45;
+
+        lava_bubble = document.createElement('div');
+        lava_bubble.id = 'lava_bubble_' + i;
+        lava_bubble.classList.add('lava-bubbles');
+        lava_bubble.style.animation = 'grow ' + animation_time + 's ease-in-out forwards infinite';
+        //lava_bubble.style.position = 'relative !important';
+        lava_bubble.style.top = rel_position_top + '%';
+        lava_bubble.style.left = rel_position_left + '%';
+        lava_goop_div.appendChild(lava_bubble);
+        console.log('top: ' + rel_position_top + ' and left ' + rel_position_left); 
+    }
 
     // Screen resize event.
     // Needs to smoothly resize hex grid, but leave sidebar as it is...
