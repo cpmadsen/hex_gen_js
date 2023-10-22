@@ -25,7 +25,7 @@ function make_hex_map(numRows, numCols, container_height, container_width, make_
     //render_hexagons(numCols, numRows, window.innerWidth);
     render_hexagons(numCols, numRows, container_height, container_width);
     // Add mouseover effects to hexagons
-    add_mouse_effects(number_of_hexes);
+    //add_mouse_effects(number_of_hexes);
     // Ripple
     ripple(numCols,numRows);
 
@@ -69,7 +69,7 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
     //render_hexagons(numCols, numRows, window.innerWidth);
     render_hexagons(numCols, numRows, container_height, container_width);
     // Add mouseover effects to hexagons
-    add_mouse_effects(number_of_hexes);
+    //add_mouse_effects(number_of_hexes);
     // Add ripple effect.
     ripple(numCols,numRows);
 
