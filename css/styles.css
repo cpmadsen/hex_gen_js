@@ -1,10 +1,28 @@
 @font-face {  
-src: url('../mats/ENDOR.ttf');
-font-family: "Endor";
+    src: url('../mats/ENDOR.ttf');
+    font-family: "Endor";
+}
+
+@font-face {
+    src: url('../mats/fonts/SouvenirB.ttf');
+    font-family: "Souvenir_Bold";
 }
 
 .endor {
     font-family: 'Endor';
+}
+
+.souvenirB {
+    font-family: 'Souvenir_Bold';
+}
+
+.mapLabel {
+    font-family: 'Souvenir_Bold';
+    font-size: 1.25 rem;    /* try to use rem for all text elements? */
+    color: black;
+    text-shadow: 2px 2px 0 white;
+    position: relative;
+    z-index: 2;
 }
 
 .h4 {
