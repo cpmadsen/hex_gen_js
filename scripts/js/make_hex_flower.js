@@ -21,7 +21,7 @@ function make_hex_flower(hex_size_rel_to_container){
     for (i = 1; i <= 19; i++){
     const hexagon_flower = document.createElement('div');
     hexagon_flower.className = 'hex-flower';
-    //hexagon_flower.classList.add('hex-invisible');
+    hexagon_flower.classList.add('hex-invisible');
     hexagon_flower.id = 'hex_flower_' + i
     hexagon_flower.style.width = hex_width_rel_to_container + 'px';
     hexagon_flower.style.height = hex_height_rel_to_container + 'px';
