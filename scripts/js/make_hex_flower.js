@@ -6,18 +6,26 @@ function make_hex_flower(hex_size_rel_to_container){
     flower_container_width = hex_flower_container.offsetWidth;
     flower_container_height = hex_flower_container.offsetHeight;
 
+    // Depending on the ratio of screen width to height, there is a variable correction factor
+    // we need to apply to the width of the hexagon flower petals.
+    width_correction_factor = 1.05 * (flower_container_height/flower_container_width);
+
     // Use hex size rel to container to determine hex dimensions in pixels.
-    hex_width_rel_to_container = hex_size_rel_to_container * flower_container_width;
-    hex_height_rel_to_container = 1.2*hex_size_rel_to_container * flower_container_height;
+    hex_height_rel_to_container = hex_size_rel_to_container * flower_container_height;
+    //hex_width_rel_to_container = 0.585 * hex_size_rel_to_container * flower_container_width;
+    //hex_width_rel_to_container = 0.83 * hex_size_rel_to_container * flower_container_width;
+    hex_width_rel_to_container = width_correction_factor * hex_size_rel_to_container * flower_container_width;
+
+    console.log('width: ' + flower_container_width + ', height: ' + flower_container_height);
 
     for (i = 1; i <= 19; i++){
     const hexagon_flower = document.createElement('div');
     hexagon_flower.className = 'hex-flower';
-    hexagon_flower.classList.add('hex-invisible');
+    //hexagon_flower.classList.add('hex-invisible');
     hexagon_flower.id = 'hex_flower_' + i
     hexagon_flower.style.width = hex_width_rel_to_container + 'px';
     hexagon_flower.style.height = hex_height_rel_to_container + 'px';
-    hexagon_flower.style.background = 'url(..mats/blank_hex.png)';
+    hexagon_flower.style.background = 'url(mats/blank_hex.png)';
 
     nudge_x =  0.5*flower_container_width
 
