@@ -1,6 +1,6 @@
 .hex-center {
     background: url(../mats/blank_hex_w_base_small.png);
-    background-size: cover;
+    background-size: cover !important;
     transition: transform 0.3s ease;
 }
 .hex-label {
@@ -10,142 +10,149 @@
     padding-left: 24%;
 }
 
-.desert {
-    background: url(../mats/desert_hex.png);
-    top: 12%;
-    left: 12%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -1;
-
+.hex-invisible{
+    visibility: hidden !important;
+    pointer-events: none;
 }
-.mountain {
-    background: url(../mats/mountain_hex.png);
+
+.desert {
+    background: url(../mats/desert_hex.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
+}
 
+.mountain {
+    background: url(../mats/mountain_hex.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
 }
 .open {
-    background: url(../mats/open_hex.png);
+    background: url(../mats/open_hex.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .swamp {
-    background: url(../mats/swamp_hex.png);
+    background: url(../mats/swamp_hex.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .wooded {
-    background: url(../mats/wooded_hex.png);
+    background: url(../mats/wooded_hex.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
 }
 
 .desert_stronghold {
-    background: url(../mats/desert_stronghold.png);
+    background: url(../mats/desert_stronghold.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .mountain_stronghold {
-    background: url(../mats/mountain_stronghold.png);
+    background: url(../mats/mountain_stronghold.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .open_stronghold {
-    background: url(../mats/open_stronghold.png);
+    background: url(../mats/open_stronghold.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .swamp_stronghold {
-    background: url(../mats/swamp_stronghold.png);
+    background: url(../mats/swamp_stronghold.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .wooded_stronghold {
-    background: url(../mats/wooded_stronghold.png);
+    background: url(../mats/wooded_stronghold.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
 }
-
 
 .desert_town {
-    background: url(../mats/desert_town.png);
+    background: url(../mats/desert_town.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .mountain_town {
-    background: url(../mats/mountain_town.png);
+    background: url(../mats/mountain_town.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .open_town {
-    background: url(../mats/open_town.png);
+    background: url(../mats/open_town.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .swamp_town {
-    background: url(../mats/swamp_town.png);
+    background: url(../mats/swamp_town.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
-
 }
+
 .wooded_town {
-    background: url(../mats/wooded_town.png);
+    background: url(../mats/wooded_town.png) !important;
     top: 12%;
     left: 12%;
-    background-size: cover;
+    background-size: cover !important;
     background-repeat: no-repeat;
-    z-index: -1;
 }
-
+.vector_wooded   {background: url(../mats/vector_wooded_hex.png) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+.vector_open     {background: url(../mats/vector_open_hex.png) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+.vector_swamp    {background: url(../mats/vector_swamp_hex.png) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+.vector_mountain {background: url(../mats/vector_mountain_hex.png) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+.vector_desert   {background: url(../mats/vector_desert_hex.png) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
 
 
 .hex-center:hover {
@@ -173,7 +180,7 @@
 .cloud {
     position: absolute;
     opacity: 0.6;
-    background-size: cover;
+    background-size: cover !important;
     z-index: 1000;
     pointer-events: none;
 }
@@ -185,4 +192,20 @@
     100% {
         left: 100%; /* Move to the right edge of the container */
     }
+}
+
+.hex-flower-container {
+    width: 98%; 
+    height: 98%; 
+    background:rgba(250,250,250,.5);
+    position: relative;
+    left: 1%;
+    top: 1%;
+    overflow: hidden;
+}
+
+.hex-flower {
+    position: absolute;
+    background-size: cover !important;
+    background-repeat: no-repeat;
 }
