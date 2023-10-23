@@ -138,12 +138,21 @@
         terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345], // we increase the earlier types because so many are overwritten                                                                          
         terrain_replace_list = [
           [],   // wooded first, replaces nothing 
-          ['wooded'], 
-          ['wooded','desert'],
+          ['wooded'], // desert
+          ['wooded','desert'], // mountain
           ['wooded','desert','mountain'] // 'swamp' replaces all
           //['wooded','desert','mountain', 'swamp'] // optional open iteration breaks up some of the geomorphs unpredictably 
+          ],
+        elevation_classes = ['elevation_3', 'elevation_2', 'elevation_6', 'elevation_1'], // elevation classes for terrain types
+        elevation_replacements = [
+          [], // woods
+          ['elevation_3'], // desert
+          ['elevation_3','elevation_2'], // mountain
+          ['elevation_3','elevation_2','elevation_6'] // swamp
+          //['elevation_3','elevation_2','elevation_6', 'elevation_1'] // optional open 
+
           ], 
-          delay = 500 // this number is in milliseconds, and is totally optional; could be 0.
+        delay = 200 // this number is in milliseconds, and is totally optional; could be 0.
       );
     });
 

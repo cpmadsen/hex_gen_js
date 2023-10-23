@@ -1,4 +1,4 @@
-function assign_terrain(terrain_type, target_proportion, terrain_replace_list) {
+function assign_terrain(terrain_type, target_proportion, terrain_replace_list, elevation_type, elevation_replace_list) {
     //return new Promise((resolve, reject) => {
         
         read_json('./data/geomorphs/' + terrain_type + '.json')
@@ -136,10 +136,17 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list) {
                                             // Inform user in console log.
                                             //console.log('Overwrote ' + terrain_to_replace + ' with ' + morph_name_no_suffix + ' for ' + hex_to_mod.id);
                                         }
+                                        elevation_replace_list.forEach((elevation_to_replace) => {
+                                            if(hex_to_mod.classList.contains(elevation_to_replace)){
+                                                hex_to_mod.classList.remove(elevation_to_replace);
+                                            }
+                                        })
                                     }
                                     // After the check of other terrain types above,
                                     // here we just add the terrain type of this function run to the hex in question.
                                     hex_to_mod.classList.add(morph_name_no_suffix);
+                                    // elevation type added as well.
+                                    hex_to_mod.classList.add(elevation_type);
                                     // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration)
                                     viable_hexes_for_terrain.filter(k => k !== hex_to_mod);     // hex_to_mod replaces uniqueID
                                 }
@@ -194,7 +201,7 @@ function find_adjacent (hex_id) {
 
 }
 
-function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replacement_type) {
+function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replacement_type, disallowed_elevations, replacement_elevation) {
     console.log(`Replacing ${disallowed_neighbors}s near ${target__terrain_type}s with ${replacement_type}.`);
     
     // make list of all hexes with the target terrain type
@@ -210,13 +217,20 @@ function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replaceme
         neighboring_hexes = Array.from(find_adjacent(id_number));
         // ... and replace unwanted types with a new type.
         disallowed_neighbors.forEach((disallowed_type) => {
-            neighboring_hexes.forEach((hex) => {
-                if (hex != null) {
-                    if (hex.classList.contains(disallowed_type)) {
-                        hex.classList.remove(disallowed_type);
-                        hex.classList.add(replacement_type);
-                    }
-                } 
+            disallowed_elevations.forEach((disallowed_elevation) => {
+                neighboring_hexes.forEach((hex) => {
+                    if (hex != null) {
+                        if (hex.classList.contains(disallowed_type)) {
+                            hex.classList.remove(disallowed_type);
+                            hex.classList.add(replacement_type);
+                        }
+                        if (hex.classList.contains(disallowed_elevation)) {
+                            hex.classList.remove(disallowed_elevation);
+                            hex.classList.add(replacement_elevation);
+                        }
+                    } 
+            })
+            
             })
         });
     }
@@ -246,6 +260,8 @@ function apply_snowcaps (chance_for_snowcaps) {
                             //console.log(`applying snowcap to hex_${id_number}`);
                             target_mountain.classList.remove('mountain');
                             target_mountain.classList.add('snowcap');
+                            target_mountain.classList.remove('elevation_6');
+                            target_mountain.classList.add('elevation_7');
                         }
                         
                     }
@@ -262,8 +278,8 @@ async function select_terrain_type(
     terrain_types,
     terrain_proportions,
     terrain_replace_list,
-    //stronghold_chances,
-    //town_chances,
+    elevation_classes,
+    elevation_replacements,
     delay
     ){
     return new Promise((resolve) => {
@@ -273,6 +289,8 @@ async function select_terrain_type(
             this_terrain = terrain_types[i];
             this_proportion = parseFloat(terrain_proportions[i]);
             this_replacement_list = terrain_replace_list[i];
+            this_elevation = elevation_classes[i];
+            this_elevation_replace_list = elevation_replacements[i];
             //stronghold_probability = stronghold_chances[i];
             //town_probability = town_chances[i]
         
@@ -281,7 +299,7 @@ async function select_terrain_type(
             setTimeout(function() {  
                 if (i < terrain_types.length) {            //  if the counter is less than the # of terrain types to add,
                 //    console.log(`About to apply ${this_terrain} from terrain application loop.`);
-                    assign_terrain(this_terrain, this_proportion, this_replacement_list);
+                    assign_terrain(this_terrain, this_proportion, this_replacement_list, this_elevation, this_elevation_replace_list);
                     delay;
                     i++;                                    //  increment the counter
                     terrain_application_loop();             //   do loop again.
@@ -296,10 +314,13 @@ async function select_terrain_type(
                         });
                     });
                     open_hexes.map(k => k.classList.add('open'));
-                    delay;
+                    open_hexes.map(k => k.classList.add('elevation_2'));
 
-                    cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded');    // (type to look at; disallowed neighbors; replacement type)
-                    cleanup_adjacent('desert', ["wooded"], 'open'); 
+                    delay;
+                    
+                    // (type to look at, disallowed neighbors, replacement type, disallowed elevations, replacement elevation)
+                    cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
+                    cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
                     apply_snowcaps(.5);
                     delay;
@@ -316,96 +337,3 @@ async function select_terrain_type(
         resolve();
     });
 }            
-  
-
-
-
-
-
-
-
-// ATTEMPT AT MERGING ASYNC AND THE DELAY
-/*
-function select_terrain_type(
-    terrain_types,
-    terrain_proportions,
-    terrain_replace_list,
-    stronghold_chances,
-    //town_chances,
-    delay
-    ){                
-    function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function terrain_application_loop(i, terrain_types) {
-        if (i < terrain_types.length) {
-            this_terrain = terrain_types[i];
-            this_proportion = terrain_proportions[i];
-            this_replacement_list = terrain_replace_list[i];
-            stronghold_probability = stronghold_chances[i];
-            //town_probability = town_chances[i]       
-            await assign_terrain(this_terrain, this_proportion, this_replacement_list);
-            assign_strongholds(this_terrain, stronghold_probability);      
-            await delay(delay); // Ie. duration set by the call from index.html    
-            i++;
-            terrain_application_loop(i, terrain_types);
-        } else {
-            all_hexes = Array.from(document.getElementsByClassName('hex-center'));
-            excluded_terrain_types = ["wooded", "swamp", "desert", "mountain"];
-            open_hexes = all_hexes.filter(function (element) {
-                return !excluded_terrain_types.some(function (excluded_terrain_types) {
-                return element.classList.contains(excluded_terrain_types);
-                });
-            });
-            open_hexes.map(k => k.classList.add('open'));
-            delay;
-
-            cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded');    // (type to look at; disallowed neighbors; replacement type)
-            cleanup_adjacent('desert', ["wooded"], 'open'); 
-            delay;
-            // final count data:
-            let terrain_table = []
-            for(k in terrain_types) {
-                terrain_table.push({TerrainType: terrain_types[k], Proportion: final_count_proportion(terrain_types[k])});
-            }
-            console.table(terrain_table);  
-        }
-
-    }
-
-    terrain_application_loop(0, terrain_types);
-
-}
-*/
-
-
-
-
-/*
-function assign_strongholds(this_SH_terrain, stronghold_chance) {
-    // Find all hexes of our terrain type
-    const target_hexes = Array.from(document.getElementsByClassName(this_SH_terrain));
-    console.log(`Assigning SHs to ${this_SH_terrain}, ${target_hexes}`);
-
-    // Loop through them and roll a chance for having a stronghold
-    target_hexes.forEach(function(hex_to_mod_for_SH) {
-        //console.log(hex_to_mod_for_SH);
-        let roll = Math.random(0, 1);
-        //console.log(`Roll is ${roll}`)
-        if (roll <= stronghold_chance) {
-            hex_to_mod_for_SH.classList.add('stronghold');
-            //console.log(`Added stronghold to ${hex_to_mod_for_SH}`);
-        }
-    }) 
-    /* 
-    for (k in target_hexes) {
-        hex_to_mod = target_hexes[k];
-        console.log(hex_to_mod);
-        let roll = Math.random();
-        if (roll <= this_proportion) {
-            hex_to_mod.classList.add('stronghold');
-        }
-    }
-    
-}   */
