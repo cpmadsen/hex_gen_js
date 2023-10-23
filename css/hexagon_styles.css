@@ -142,7 +142,13 @@
     background-repeat: no-repeat;
 }
 
-
+.wooded_hills {
+    background: url(../mats/wooded_hills_hex.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
 
 .vector_wooded   {background: url(../mats/vector_wooded_hex.png) !important;
     background-size: cover !important;

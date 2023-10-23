@@ -265,12 +265,45 @@ function apply_snowcaps (chance_for_snowcaps) {
                         }
                         
                     }
+                } else {
+                    target_mountain.classList.remove('elevation_6');
+                    target_mountain.classList.add('elevation_5');
                 }
             }
         } 
     }
 }
 
+// Mountain-Adjacent Woods to Wooded Hills
+// not sure why it's applying only some of the time
+function apply_wooded_hills (chance_for_wooded_hills) {
+    console.log(`Applying wooded hills at ${chance_for_wooded_hills * 100}% chance.`);
+    let all_woods = document.getElementsByClassName('wooded');
+    for (let i = 0; i < all_woods.length; i++) { 
+        const target_wooded = all_woods[i];     // pull out div
+        hex_name = target_wooded.id;              // access "hex_xyz"
+        //console.log(hex_name);
+        id_number = hex_name.slice(4);  // just the ID number
+        neighboring_hexes = Array.from(find_adjacent(id_number)); 
+        for (let i = 0; i < neighboring_hexes.length; i++) {
+            if (neighboring_hexes[i] != null) {
+                //if (!neighboring_hexes[i].classList.contains('mountain')) {
+                //    console.log(`Hex at ${i} is not a mountain...`);
+                //} else 
+                if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
+                    //if (Math.random(0,1) <= chance_for_wooded_hills) {
+                        //console.log(`applying snowcap to hex_${id_number}`);
+                        target_wooded.classList.remove('wooded');
+                        target_wooded.classList.add('wooded_hills');
+                        target_wooded.classList.remove('elevation_3');
+                        target_wooded.classList.add('elevation_4');
+                        // return true;
+                    //}        
+                }
+            }
+        }
+    } 
+}
 
 
 
@@ -324,6 +357,7 @@ async function select_terrain_type(
                     delay;
                     apply_snowcaps(.5);
                     delay;
+                    apply_wooded_hills(1);
                     // final count data:
                     let terrain_table = []
                     for(k in terrain_types) {
