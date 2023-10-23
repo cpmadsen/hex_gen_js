@@ -229,7 +229,7 @@ function apply_snowcaps (chance_for_snowcaps) {
     for (let i = 0; i < all_mountains.length; i++) { 
         const target_mountain = all_mountains[i];     // pull out div
         hex_name = target_mountain.id;              // access "hex_xyz"
-        console.log(hex_name);
+        //console.log(hex_name);
         id_number = hex_name.slice(4);  // just the ID number
         neighboring_hexes = Array.from(find_adjacent(id_number)); 
         let mountain_counter = 1;
@@ -240,10 +240,10 @@ function apply_snowcaps (chance_for_snowcaps) {
                 //} else 
                 if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
                     mountain_counter += 1;
-                    console.log(mountain_counter);
+                    //console.log(mountain_counter);
                     if (mountain_counter == 6) {
                         if (Math.random(0,1) <= chance_for_snowcaps) {
-                            console.log(`applying snowcap to hex_${id_number}`);
+                            //console.log(`applying snowcap to hex_${id_number}`);
                             target_mountain.classList.remove('mountain');
                             target_mountain.classList.add('snowcap');
                         }
