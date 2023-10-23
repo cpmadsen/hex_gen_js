@@ -222,6 +222,42 @@ function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replaceme
     }
 }
 
+// Mountains to Snowcaps
+function apply_snowcaps (chance_for_snowcaps) {
+    console.log(`Applying snowcaps at ${chance_for_snowcaps * 100}% chance.`);
+    let all_mountains = document.getElementsByClassName('mountain');
+    for (let i = 0; i < all_mountains.length; i++) { 
+        const target_mountain = all_mountains[i];     // pull out div
+        hex_name = target_mountain.id;              // access "hex_xyz"
+        console.log(hex_name);
+        id_number = hex_name.slice(4);  // just the ID number
+        neighboring_hexes = Array.from(find_adjacent(id_number)); 
+        let mountain_counter = 1;
+        for (let i = 1; i < neighboring_hexes.length; i++) {
+            if (neighboring_hexes[i] != null) {
+                //if (!neighboring_hexes[i].classList.contains('mountain')) {
+                //    console.log(`Hex at ${i} is not a mountain...`);
+                //} else 
+                if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
+                    mountain_counter += 1;
+                    console.log(mountain_counter);
+                    if (mountain_counter == 6) {
+                        if (Math.random(0,1) <= chance_for_snowcaps) {
+                            console.log(`applying snowcap to hex_${id_number}`);
+                            target_mountain.classList.remove('mountain');
+                            target_mountain.classList.add('snowcap');
+                        }
+                        
+                    }
+                }
+            }
+        } 
+    }
+}
+
+
+
+
 async function select_terrain_type(
     terrain_types,
     terrain_proportions,
@@ -264,6 +300,8 @@ async function select_terrain_type(
 
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded');    // (type to look at; disallowed neighbors; replacement type)
                     cleanup_adjacent('desert', ["wooded"], 'open'); 
+                    delay;
+                    apply_snowcaps(.5);
                     delay;
                     // final count data:
                     let terrain_table = []
