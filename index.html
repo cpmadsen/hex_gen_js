@@ -143,16 +143,16 @@
           ['wooded','desert','mountain'] // 'swamp' replaces all
           //['wooded','desert','mountain', 'swamp'] // optional open iteration breaks up some of the geomorphs unpredictably 
           ],
-        elevation_classes = ['elevation_3', 'elevation_2', 'elevation_6', 'elevation_1'], // elevation classes for terrain types
+        elevation_classes = ['elevation_3', 'elevation_4', 'elevation_6', 'elevation_1'], // elevation classes for terrain types
         elevation_replacements = [
           [], // woods
           ['elevation_3'], // desert
-          ['elevation_3','elevation_2'], // mountain
-          ['elevation_3','elevation_2','elevation_6'] // swamp
-          //['elevation_3','elevation_2','elevation_6', 'elevation_1'] // optional open 
+          ['elevation_3','elevation_4'], // mountain
+          ['elevation_3','elevation_4','elevation_6'] // swamp
+          //['elevation_3','elevation_4','elevation_6', 'elevation_1'] // optional open 
 
           ], 
-        delay = 200 // this number is in milliseconds, and is totally optional; could be 0.
+        delay = 500 // this number is in milliseconds, and is totally optional; could be 0.
       );
     });
 

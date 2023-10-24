@@ -180,22 +180,22 @@ function find_adjacent (hex_id) {
     // if the current hex is on an even (sagging) column:
     if(current_hex_col % 2 === 0) {
         let neighbors = [
-        document.getElementById(`hex_${hex_id - 1}`),                           // N  
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                           // N  
         document.getElementById(`hex_${hex_id_as_int + num_row_count}`),        // NE
         document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),    // SE
         document.getElementById(`hex_${hex_id_as_int + 1}`),                    // S
-        document.getElementById(`hex_${hex_id - numRows + 1}`),                 // SW
-        document.getElementById(`hex_${hex_id - numRows}`)]                     // NW
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                 // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows}`)]                     // NW
         return neighbors;
     } else {
         // hex is odd
         let neighbors = [
-        document.getElementById(`hex_${hex_id - 1}`),                           // N
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                           // N
         document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),    // NE
         document.getElementById(`hex_${hex_id_as_int + num_row_count}`),        // SE
         document.getElementById(`hex_${hex_id_as_int + 1}`),                    // S
-        document.getElementById(`hex_${hex_id - numRows}`),                     // SW
-        document.getElementById(`hex_${hex_id - numRows - 1}`)]                 // NW
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                     // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)]                 // NW
         return neighbors;     
     }
 
@@ -237,8 +237,8 @@ function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replaceme
 }
 
 // Mountains to Snowcaps
-function apply_snowcaps (chance_for_snowcaps) {
-    console.log(`Applying snowcaps at ${chance_for_snowcaps * 100}% chance.`);
+function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
+    //console.log(`Applying snowcaps at ${chance_for_snowcaps * 100}% chance.`);
     let all_mountains = document.getElementsByClassName('mountain');
     for (let i = 0; i < all_mountains.length; i++) { 
         const target_mountain = all_mountains[i];     // pull out div
@@ -247,7 +247,7 @@ function apply_snowcaps (chance_for_snowcaps) {
         id_number = hex_name.slice(4);  // just the ID number
         neighboring_hexes = Array.from(find_adjacent(id_number)); 
         let mountain_counter = 1;
-        for (let i = 1; i < neighboring_hexes.length; i++) {
+        for (let i = 0; i < neighboring_hexes.length; i++) {
             if (neighboring_hexes[i] != null) {
                 //if (!neighboring_hexes[i].classList.contains('mountain')) {
                 //    console.log(`Hex at ${i} is not a mountain...`);
@@ -262,50 +262,25 @@ function apply_snowcaps (chance_for_snowcaps) {
                             target_mountain.classList.add('snowcap');
                             target_mountain.classList.remove('elevation_6');
                             target_mountain.classList.add('elevation_7');
-                        }
-                        
+                        }                        
+                    }
+                } else if (neighboring_hexes[i].classList.contains('wooded')) {
+                    if (Math.random(0,1) <= chance_wooded_hills) {     
+                        target_mountain.classList.remove('elevation_6'); // lower mountain to foothill
+                        target_mountain.classList.add('elevation_5');
+                        neighboring_hexes[i].classList.remove('wooded');
+                        neighboring_hexes[i].classList.add('wooded_hills');
+                        neighboring_hexes[i].classList.remove('elevation_3');
+                        neighboring_hexes[i].classList.add('elevation_4');
                     }
                 } else {
-                    target_mountain.classList.remove('elevation_6');
+                    target_mountain.classList.remove('elevation_6'); // lower mountain to foothill
                     target_mountain.classList.add('elevation_5');
                 }
             }
         } 
     }
 }
-
-// Mountain-Adjacent Woods to Wooded Hills
-// not sure why it's applying only some of the time
-function apply_wooded_hills (chance_for_wooded_hills) {
-    console.log(`Applying wooded hills at ${chance_for_wooded_hills * 100}% chance.`);
-    let all_woods = document.getElementsByClassName('wooded');
-    for (let i = 0; i < all_woods.length; i++) { 
-        const target_wooded = all_woods[i];     // pull out div
-        hex_name = target_wooded.id;              // access "hex_xyz"
-        //console.log(hex_name);
-        id_number = hex_name.slice(4);  // just the ID number
-        neighboring_hexes = Array.from(find_adjacent(id_number)); 
-        for (let i = 0; i < neighboring_hexes.length; i++) {
-            if (neighboring_hexes[i] != null) {
-                //if (!neighboring_hexes[i].classList.contains('mountain')) {
-                //    console.log(`Hex at ${i} is not a mountain...`);
-                //} else 
-                if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
-                    //if (Math.random(0,1) <= chance_for_wooded_hills) {
-                        //console.log(`applying snowcap to hex_${id_number}`);
-                        target_wooded.classList.remove('wooded');
-                        target_wooded.classList.add('wooded_hills');
-                        target_wooded.classList.remove('elevation_3');
-                        target_wooded.classList.add('elevation_4');
-                        // return true;
-                    //}        
-                }
-            }
-        }
-    } 
-}
-
-
 
 async function select_terrain_type(
     terrain_types,
@@ -355,9 +330,10 @@ async function select_terrain_type(
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
                     cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
-                    apply_snowcaps(.5);
                     delay;
-                    apply_wooded_hills(1);
+                    apply_special_mountains(.5, 1);
+                    delay;
+                    delay;
                     // final count data:
                     let terrain_table = []
                     for(k in terrain_types) {
