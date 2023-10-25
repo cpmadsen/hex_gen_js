@@ -109,6 +109,58 @@ function find_adjacent (hex_id) {
         return neighbors;         
 }   }
 
+function find_adjacent_two (hex_id) {                               
+    let current_hex_col = Math.ceil(hex_id / numRows);
+    hex_id_as_int = parseInt(hex_id);
+    num_row_count = parseInt(numRows);
+    
+    // if the current hex is on an even (sagging) column:
+    if(current_hex_col % 2 === 0) {
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),            // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                  // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // NW
+        document.getElementById(`hex_${hex_id_as_int - 2}`),
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),   
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count)}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) + 1}`),             
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 2}`), 
+        document.getElementById(`hex_${hex_id_as_int + 2}`),                           
+        document.getElementById(`hex_${hex_id_as_int - numRows + 2}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows)}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) + 1}`),                  
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)
+        ]
+        return neighbors;
+    } else {    // hex is odd
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),            // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`),                  // NW
+        document.getElementById(`hex_${hex_id_as_int - 2}`),
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 2}`),   
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count)}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) + 1}`),             
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`), 
+        document.getElementById(`hex_${hex_id_as_int + 2}`),                           
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows)}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) + 1}`),                  
+        document.getElementById(`hex_${hex_id_as_int - numRows - 2}`)
+        ] 
+        return neighbors;         
+}   }
+
 function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replacement_type, disallowed_elevations, replacement_elevation) {
     console.log(`Replacing ${disallowed_neighbors}s near ${target__terrain_type}s with ${replacement_type}.`);
     let target_list = document.getElementsByClassName(target__terrain_type);
@@ -146,21 +198,15 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
     for (let i = 0; i < all_mountains.length; i++) { 
         const target_mountain = all_mountains[i];     // pull out div
         hex_name = target_mountain.id;              // access "hex_xyz"
-        //console.log(hex_name);
         id_number = hex_name.slice(4);  // just the ID number
         neighboring_hexes = Array.from(find_adjacent(id_number)); 
         let mountain_counter = 1;
         for (let i = 0; i < neighboring_hexes.length; i++) {
             if (neighboring_hexes[i] != null) {
-                //if (!neighboring_hexes[i].classList.contains('mountain')) {
-                //    console.log(`Hex at ${i} is not a mountain...`);
-                //} else 
                 if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
                     mountain_counter += 1;
-                    //console.log(mountain_counter);
                     if (mountain_counter == 6) {
                         if (Math.random(0,1) <= chance_for_snowcaps) {
-                            //console.log(`applying snowcap to hex_${id_number}`);
                             target_mountain.classList.remove('mountain');
                             target_mountain.classList.add('snowcap');
                             target_mountain.classList.remove('elevation_6');
@@ -179,11 +225,7 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                 } else {
                     target_mountain.classList.remove('elevation_6'); // lower mountain to foothill
                     target_mountain.classList.add('elevation_5');
-                }
-            }
-        } 
-    }
-}
+}   }   }   }   }
 
 async function select_terrain_type(
     terrain_types,

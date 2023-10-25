@@ -17,7 +17,7 @@ async function apply_strongholds (
                 setTimeout(function() {  
                     delay;
                     if (counter < on_which_terrain_types.length) {            
-                        console.log(`Applying strongholds to ${this_terrain}...`)
+                        console.log(`Applying settlements to ${this_terrain}...`)
                         function assign_strongholds(this_SH_terrain, stronghold_chance, town_chance) {
                             // Find all hexes of our terrain type
                             const target_hexes = Array.from(document.getElementsByClassName(this_SH_terrain));
