@@ -44,7 +44,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                         map_row = anchor_hex_row + temp_row_number;     
                         uniqueID = (numRows) * (map_col - 1) + map_row;
                         // map_col and _row are the positions on the hexmap of the particular hex being overwritten
-                        // temp_col and _row are intermediaries that exist only in this nested loop
+                        // temp_col and _row are intermediaries that exist only in this nested loop and track on geomorph
                          
                         // Pull out this hexagon ('hex_to_modify') //
                         hex_to_mod = document.getElementById('hex_' + uniqueID);
@@ -67,7 +67,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 hex_to_mod.classList.add(morph_name_no_suffix);
                                 hex_to_mod.classList.add(elevation_type);
                                 // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration)
-                                viable_hexes_for_terrain.filter(k => k !== hex_to_mod);     // hex_to_mod replaces uniqueID
+                                viable_hexes_for_terrain.filter(k => k !== hex_to_mod);   
                 }   }   }   }   
             // Recalculate the running terrain proportion to see if we should run loop again //
             number_of_terrain = document.getElementsByClassName(morph_name_no_suffix).length;
@@ -191,7 +191,6 @@ function cleanup_adjacent (target__terrain_type, disallowed_neighbors, replaceme
         });    
 }   }
 
-// Mountains to Snowcaps
 function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
     //console.log(`Applying snowcaps at ${chance_for_snowcaps * 100}% chance.`);
     let all_mountains = document.getElementsByClassName('mountain');
@@ -247,15 +246,13 @@ async function select_terrain_type(
 
             // Apply the loop with a delay between rounds.
             setTimeout(function() {  
-                if (i < terrain_types.length) {            //  if the counter is less than the # of terrain types to add,
-                //    console.log(`About to apply ${this_terrain} from terrain application loop.`);
+                if (i < terrain_types.length) {            
                     assign_terrain(this_terrain, this_proportion, this_replacement_list, this_elevation, this_elevation_replace_list);
                     delay;
-                    i++;                                    //  increment the counter
-                    terrain_application_loop();             //   do loop again.
+                    i++;                                    
+                    terrain_application_loop();             
                          } else {
-                    // Any hexes that are left over and didn't get any terrain type applied?
-                    // Make them into 'open' type!
+                    // Any hexes that are left over are made into 'open' //
                     all_hexes = Array.from(document.getElementsByClassName('hex-center'));
                     excluded_terrain_types = ["wooded", "swamp", "desert", "mountain"];
                     open_hexes = all_hexes.filter(function (element) {
@@ -267,7 +264,7 @@ async function select_terrain_type(
                     open_hexes.map(k => k.classList.add('elevation_2'));
 
                     delay;
-                    // final count data:
+                    // final count is made. //
                     let terrain_table = []
                     for(k in terrain_types) {
                         terrain_table.push({TerrainType: terrain_types[k], Proportion: final_count_proportion(terrain_types[k])});
@@ -275,11 +272,13 @@ async function select_terrain_type(
                     console.table(terrain_table);  
                     delay;
 
+                    // Adjacent hexes to swamps and deserts are turned into certain types. //
                     // (type to look at, disallowed neighbors, replacement type, disallowed elevations, replacement elevation)
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
                     cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
                     delay;
+                    // Snowcaps and wooded hills are applied around mountains. //
                     apply_special_mountains(.5, 1);
                     delay;
                 }
