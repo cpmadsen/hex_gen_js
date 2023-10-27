@@ -145,6 +145,39 @@ async function apply_strongholds (
             total_num_hexes = document.getElementsByClassName('hex-center').length;
             let counter = 0;
 
+            
+            // Delete old strongholds and towns. //
+            delay;
+            let previous_strongholds = [];
+            let previous_towns = [];
+            for (let i = 0; i < on_which_terrain_types.length; i++) {
+                let terrain = on_which_terrain_types[i];
+                //console.log(`removing settlements from ${terrain}`);
+                previous_strongholds = Array.from(document.getElementsByClassName(`${terrain}_stronghold`));  
+                if (previous_strongholds.length > 0) {
+                        console.log(`removing strongholds from ${terrain}`);
+                        for (let i = 0; i < previous_strongholds.length; i++) {
+                            let hex = previous_strongholds[i];
+                            hex.classList.remove(`${terrain}_stronghold`);
+                            hex.classList.add(terrain);
+                            console.log(`removed SH from ${previous_strongholds[i].id}`);
+                        }
+                    }
+                previous_towns = Array.from(document.getElementsByClassName(`${terrain}_town`));  
+                if (previous_towns.length > 0) {
+                        console.log(`removing towns from ${terrain}`);
+                        for (let i = 0; i < previous_towns.length; i++) {
+                            let hex = previous_towns[i];
+                            hex.classList.remove(`${terrain}_town`);
+                            hex.classList.add(terrain);
+                            console.log(`removed town from ${previous_towns[i].id}`);
+                        }
+                    }
+                delay;
+            }
+
+            
+
             function stronghold_application_loop() {
                 this_terrain = on_which_terrain_types[counter];
                 SH_proportion = chance_for_SH[counter];
@@ -166,7 +199,8 @@ async function apply_strongholds (
             resolve();
 
         });
-}     
+
+    }     
 
 
 
