@@ -164,7 +164,7 @@ function delete_features(terrain_types) {
     }
 }
 
-// Apply strongholds and towns, using probabilities from index
+// Apply strongholds and towns, using probabilities from index. //
 async function apply_strongholds (
     on_which_terrain_types, 
     chance_for_SH,
