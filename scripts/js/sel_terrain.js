@@ -2,14 +2,55 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
         read_json('./data/geomorphs/' + terrain_type + '.json')
             .then(content => {
             m_geo_stock = content;
-            list_of_geomorphs = Object.keys(m_geo_stock);
-            number_of_geomorphs = list_of_geomorphs.length;
+            let list_of_geomorphs = Object.keys(m_geo_stock);
+            let number_of_geomorphs = list_of_geomorphs.length;
             
             // Set limits //
             total_num_hexes = document.getElementsByClassName('hex-center').length;
             proportion_terrain = target_proportion; // This could be a user input later on.
             let prop_hexes_of_this_morph = 0;
             let viable_hexes_for_terrain = range(1,(total_num_hexes));
+
+            /*
+            // Extra, initial few morphs placed on left-hand side //
+            
+            
+            // This function determines a number of morphs to apply just to the first column.
+            // It first finds how many to apply, multiplying the terrain proportion by a fixed
+            // number. Ie. if woods is 40% of the map, it has a 40% chance for each x rows
+            // to show up once on the first column.
+            // Then we apply that number of morphs, at a random morph row & column, to a random
+            // anchor hex on the 1st map column.
+            // We need this first-column approach to still work with the counts and loop present
+            // later in the function.
+
+            // Numbers of morphs to apply to the first column //
+            const terrain_density_proportion = numRows / 7; 
+            const terrain_type_frequency = terrain_density_proportion * proportion_terrain;
+            //console.log(`${terrain_type_frequency} of ${terrain_type} applied to 1st column`);
+            const chance_of_morph = terrain_type_frequency % 1;
+            const number_of_morphs = terrain_type_frequency - chance_of_morph;
+            //console.log(`Guaranteed number of ${terrain_type} morphs: ${number_of_morphs}.`)
+            //console.log(`Chance of a single morph: ${chance_of_morph}.`)
+            for (let i = 0; i < number_of_morphs; i++) {
+                morph = Math.floor(Math.random() * number_of_geomorphs);
+                number_rows_in_geomorph = Object.keys(m_geo_stock[list_of_geomorphs[morph]]).length;   
+                number_cols_in_geomorph = m_geo_stock[list_of_geomorphs[morph]][first_row_name].length;
+
+                random_odd_row = Math.floor(Math.random(0, 1) * number_rows_in_geomorph);
+                first_row_applied = Object.keys(m_geo_stock[list_of_geomorphs[morph]])[random_odd_row]; 
+
+                random_odd_col = Math.floor(Math.random(0, 1) * number_cols_in_geomorph);
+                if (random_odd_col % 2 == 0) {random_odd_col++;}
+
+                // Morph name and terrain type //
+                morph_name = list_of_geomorphs[morph];
+                morph_name_no_suffix = morph_name.replace(/_[0-9]+$/, '');
+
+            }
+            
+            */
+
 
             // Geomorph application to random anchor //
             for(let i = 0; prop_hexes_of_this_morph <= proportion_terrain & i < 3000; i++) {
@@ -63,7 +104,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                         }
                                     })
                                 }
-                                // After the check of other terrain types above, add terrain class to targetted hex //
+                                // After the check of other terrain types above, add terrain class to targeted hex //
                                 hex_to_mod.classList.add(morph_name_no_suffix);
                                 hex_to_mod.classList.add(elevation_type);
                                 // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration)
@@ -226,6 +267,11 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     target_mountain.classList.add('elevation_5');
 }   }   }   }   }
 
+/*
+function initial_woodsnmountains () {
+
+}
+*/
 async function select_terrain_type(
     terrain_types,
     terrain_proportions,
