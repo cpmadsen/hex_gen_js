@@ -133,7 +133,37 @@ function assign_towns(this_town_terrain, town_chance) {
         }
     }
 }
-    
+ 
+function delete_features(terrain_types) {
+    let previous_strongholds = [];
+    let previous_towns = [];
+        for (let i = 0; i < terrain_types.length; i++) {
+            let terrain = terrain_types[i];
+            //console.log(`removing settlements from ${terrain}`);
+            previous_strongholds = Array.from(document.getElementsByClassName(`${terrain}_stronghold`));  
+            if (previous_strongholds.length > 0) {
+                    console.log(`removing strongholds from ${terrain}`);
+                    for (let i = 0; i < previous_strongholds.length; i++) {
+                        let hex = previous_strongholds[i];
+                        hex.classList.remove(`${terrain}_stronghold`);
+                        hex.classList.add(terrain);
+                        console.log(`removed SH from ${previous_strongholds[i].id}`);
+                    }
+                }
+            previous_towns = Array.from(document.getElementsByClassName(`${terrain}_town`));  
+            if (previous_towns.length > 0) {
+                    console.log(`removing towns from ${terrain}`);
+                    for (let i = 0; i < previous_towns.length; i++) {
+                        let hex = previous_towns[i];
+                        hex.classList.remove(`${terrain}_town`);
+                        hex.classList.add(terrain);
+                        console.log(`removed town from ${previous_towns[i].id}`);
+                    }
+                }
+        delay;
+    }
+}
+
 // Apply strongholds and towns, using probabilities from index
 async function apply_strongholds (
     on_which_terrain_types, 
@@ -145,38 +175,9 @@ async function apply_strongholds (
             total_num_hexes = document.getElementsByClassName('hex-center').length;
             let counter = 0;
 
-            
             // Delete old strongholds and towns. //
+            delete_features(on_which_terrain_types);
             delay;
-            let previous_strongholds = [];
-            let previous_towns = [];
-            for (let i = 0; i < on_which_terrain_types.length; i++) {
-                let terrain = on_which_terrain_types[i];
-                //console.log(`removing settlements from ${terrain}`);
-                previous_strongholds = Array.from(document.getElementsByClassName(`${terrain}_stronghold`));  
-                if (previous_strongholds.length > 0) {
-                        console.log(`removing strongholds from ${terrain}`);
-                        for (let i = 0; i < previous_strongholds.length; i++) {
-                            let hex = previous_strongholds[i];
-                            hex.classList.remove(`${terrain}_stronghold`);
-                            hex.classList.add(terrain);
-                            console.log(`removed SH from ${previous_strongholds[i].id}`);
-                        }
-                    }
-                previous_towns = Array.from(document.getElementsByClassName(`${terrain}_town`));  
-                if (previous_towns.length > 0) {
-                        console.log(`removing towns from ${terrain}`);
-                        for (let i = 0; i < previous_towns.length; i++) {
-                            let hex = previous_towns[i];
-                            hex.classList.remove(`${terrain}_town`);
-                            hex.classList.add(terrain);
-                            console.log(`removed town from ${previous_towns[i].id}`);
-                        }
-                    }
-                delay;
-            }
-
-            
 
             function stronghold_application_loop() {
                 this_terrain = on_which_terrain_types[counter];
@@ -197,33 +198,5 @@ async function apply_strongholds (
             }
             stronghold_application_loop();
             resolve();
-
         });
-
     }     
-
-
-
-/* OLD WORKING CODE: flat percentile roll for each hex in type. Ugly because many adjacent settlements.
-    
-    /*
-    // Loop through them and roll a chance for having a stronghold
-    target_hexes.forEach(function(hex_to_mod_for_SH) {
-        //console.log(hex_to_mod_for_SH);
-        let roll = Math.random(0, 1);
-        //console.log(`Roll is ${roll}`)
-        if (roll <= stronghold_chance) {
-            hex_to_mod_for_SH.classList.remove(this_SH_terrain);
-            hex_to_mod_for_SH.classList.add(`${this_SH_terrain}_stronghold`);
-            //console.log(`Added stronghold to ${hex_to_mod_for_SH.id}`);
-        }
-        let roll2 = Math.random(0, 1);
-        if (roll2 <= town_chance) {
-            hex_to_mod_for_SH.classList.remove(this_SH_terrain);
-            hex_to_mod_for_SH.classList.remove(`${this_SH_terrain}_stronghold`);
-            hex_to_mod_for_SH.classList.add(`${this_SH_terrain}_town`);
-            //console.log(`Added town to ${hex_to_mod_for_SH.id}`);
-        }
-    }) 
-}
-*/
