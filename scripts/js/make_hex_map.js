@@ -62,6 +62,10 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
             hex_label_for_removal.remove();
         }
     }
+    // Remove current lavabox?
+    if(document.getElementsByClassName('lava-background').length == 1){
+        document.getElementById('lava-gradient-box').remove();
+    } // Not currently working! Ugh.
 
     // Create hexagons based on number requested.
     initialize_hexagons(number_of_hexes);

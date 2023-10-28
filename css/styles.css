@@ -65,6 +65,7 @@
     display: none;
     overflow-y: hidden;
     z-index: 1;
+    animation: smooth 1s ease-in;
 }
 
 .lava-goop {
@@ -162,6 +163,12 @@
     75% {
         background: linear-gradient(to bottom, #FF4500, #FF0000, #FF4500);
     }
+}
+
+@keyframes smooth {
+    0% { opacity: 0;}
+    50% { opacity: 0.25;}
+    100% { opacity: 1;}
 }
 
 /* Style for rows*/

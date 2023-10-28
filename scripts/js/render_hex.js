@@ -8,15 +8,15 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     let max_x = container_width;
 
     // Find which of height and width are larger; use that.
-    if(max_y < max_x) {
+    if(max_y > max_x) {
         max_y = max_x;
     } else {
         max_x = max_y;
     }
 
     // Reverse-buffer the screen dimensions; makes sure no hex is placed right at screen edge.
-    max_x = 0.75 * max_x;
-    max_y = 0.75 * max_y;
+    max_x = 0.98 * max_x;
+    max_y = 0.98 * max_y;
 
     hexagon_size_x = max_x / numCols; //* hex_proportionality_const;
     hexagon_size_y = max_y / numRows; //* hex_proportionality_const; // to maintain hex proportions
@@ -81,14 +81,15 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     const last_hex = document.getElementById('hex_' + numRows*numCols);
 
     // For the height and width:
-    const lava_box_height = last_hex.offsetTop - first_hex.offsetTop;
-    const lava_box_width = last_hex.offsetLeft - first_hex.offsetLeft; // coordinates relative to the parent
+    const lava_box_height = 0.98*(last_hex.offsetTop - first_hex.offsetTop);
+    const lava_box_width = 0.98*(last_hex.offsetLeft - first_hex.offsetLeft); // coordinates relative to the parent
     console.log(`lava box height ${lava_box_height}px and width ${lava_box_width}px.`);
 
     lava_background.style.height = lava_box_height + 'px';
     lava_background.style.width = lava_box_width + 'px';
     
-    
+    lava_background.style.animation = 'smooth 5s ease-in';
+
     const rect = first_hex.getBoundingClientRect();
     //console.log(`Left: ${rect.left}, Top: ${rect.top}`);
     
@@ -99,8 +100,8 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     console.log(`offset top ${globalTop} and left ${globalLeft}`);
     */
     
-    lava_background.style.top = rect.top + 'px';
-    lava_background.style.left = rect.left - 221 + 'px';    // Sloppy solution 
+    lava_background.style.top = first_hex.offsetHeight/2 + rect.top + 'px';
+    lava_background.style.left = first_hex.offsetWidth/2 + rect.left - 221 + 'px';    // Sloppy solution 
     
     
     //lava_background.style.top = globalTop + 'px';
