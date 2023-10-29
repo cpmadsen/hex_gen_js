@@ -68,7 +68,11 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
                 current_hex_row = numRows;
             };
             let current_hex_col = Math.ceil(uniqueID / numRows);
-            hex_label.textContent = `${padWithZeroes(current_hex_col)}${padWithZeroes(current_hex_row)}`;
+            //hex_label.textContent = `${padWithZeroes(current_hex_col)}${padWithZeroes(current_hex_row)}`;
+
+            // THE ABOVE IS FOR THE HEX LABEL TO DISPLAY NICELY, TURN IT BACK ON!!!!
+
+
             hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';            
         }
     }

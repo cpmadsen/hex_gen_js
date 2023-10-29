@@ -12,7 +12,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
             let viable_hexes_for_terrain = range(1,(total_num_hexes));
 
             /*
-            // Extra, initial few morphs placed on left-hand side //
+            // Extra, initial few morphs placed on left-hand side and top edge (1st col/row) //
             
             
             // This function determines a number of morphs to apply just to the first column.
@@ -77,39 +77,55 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                 if(anchor_hex_col % 2 === 0) {
                     anchor_hex_col ++;  // To deal with even-row sag all morphs start on an odd column //
                 }
-            
+                
+                  // row_check saves the map_row in the loop below, allowing us to ensure it always goes up.
+                                    // this solves our problem where geomorphs fill both top and bottom of map.
+
                 // Calculate hex IDs through the geomorph 'lattice' //
                 for (let temp_col_number = 0; temp_col_number <= number_cols_in_geomorph; temp_col_number++) {
-                    for (let temp_row_number = 0; temp_row_number < number_rows_in_geomorph; temp_row_number++) {                        
+                    let row_check = 0;
+                    row_loop: for (let temp_row_number = 0; temp_row_number < number_rows_in_geomorph; temp_row_number++) {                        
                         map_col = anchor_hex_col + temp_col_number;  
                         map_row = anchor_hex_row + temp_row_number;     
                         uniqueID = (numRows) * (map_col - 1) + map_row;
-                        // map_col and _row are the positions on the hexmap of the particular hex being overwritten
-                        // temp_col and _row are intermediaries that exist only in this nested loop and track on geomorph
-                         
+                        // map_col and _row feed into finding the id the map hex being overwritten
+                        // temp_col and _row are intermediaries that exist only in this nested loop and track on the geomorph
+                        
+                        true_map_row = uniqueID % numRows;  // map_row is not the real position on the hexmap; must calculate it via uniqueID   
+                        if (true_map_row == 0) {true_map_row = numRows;}    // to correct for modulus on last row returning zero     
+                        
                         // Pull out this hexagon ('hex_to_modify') //
                         hex_to_mod = document.getElementById('hex_' + uniqueID);
                         geo_row_value = temp_row_number + 1;
+
                         if(hex_to_mod != null) {
-                            // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                            if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {    
-                                for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
-                                    terrain_to_replace = terrain_replace_list[i];
-                                    if(hex_to_mod.classList.contains(terrain_to_replace)) {
-                                        hex_to_mod.classList.remove(terrain_to_replace);
-                                    }
-                                    elevation_replace_list.forEach((elevation_to_replace) => {
-                                        if(hex_to_mod.classList.contains(elevation_to_replace)){
-                                            hex_to_mod.classList.remove(elevation_to_replace);
+                            if (true_map_row > row_check) {
+                                row_check = map_row;    // Save the currect map_row to check again next iteration
+
+                                // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {    
+                                    for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
+                                        terrain_to_replace = terrain_replace_list[i];
+                                        if(hex_to_mod.classList.contains(terrain_to_replace)) {
+                                            hex_to_mod.classList.remove(terrain_to_replace);
                                         }
-                                    })
+                                        elevation_replace_list.forEach((elevation_to_replace) => {
+                                            if(hex_to_mod.classList.contains(elevation_to_replace)){
+                                                hex_to_mod.classList.remove(elevation_to_replace);
+                                            }
+                                        })
+                                    }
+                                    // After the check of other terrain types above, add terrain class to targeted hex //
+                                    hex_to_mod.classList.add(morph_name_no_suffix);
+                                    hex_to_mod.classList.add(elevation_type);
+                                    // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration)
+                                    viable_hexes_for_terrain.filter(k => k !== hex_to_mod);   
                                 }
-                                // After the check of other terrain types above, add terrain class to targeted hex //
-                                hex_to_mod.classList.add(morph_name_no_suffix);
-                                hex_to_mod.classList.add(elevation_type);
-                                // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration)
-                                viable_hexes_for_terrain.filter(k => k !== hex_to_mod);   
-                }   }   }   }   
+                            } else {        // uniqueID has looped up to the first row and is not > row_check
+                                row_check = 0;  // resets so that the next column will resume placing terrain 
+                                break row_loop;
+                            }     
+                }   }   }      
             // Recalculate the running terrain proportion to see if we should run loop again //
             number_of_terrain = document.getElementsByClassName(morph_name_no_suffix).length;
             prop_hexes_of_this_morph = number_of_terrain / total_num_hexes;

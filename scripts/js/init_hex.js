@@ -15,7 +15,8 @@ function initialize_hexagons(number_of_hexes) {
         hex_label = document.createElement('div');
         hex_label.id = 'hex_label_' + i;
         hex_label.className = 'hex-label';
-        //hex_label.textContent = 'Hex ' + i;
+        //hex_label.textContent = 'Hex ' + i;             // TURN THIS OFF UNLESS YOU WANT HEX XYZ AS THE LABEL!!!!
+        hex_label.textContent = i;
         hex_label.style.paddingTop = '58%';
 
         hexagon.appendChild(hex_label);
