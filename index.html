@@ -70,9 +70,10 @@
         <div id = 'lava_veins' class = 'lava-veins'></div>
         </div>
       </div>
-      <div id = 'hex_flower_container', class = 'hex-flower-container'></div>
-      </div> <!-- It's empty for now, render_hex.js gives it a class  -->
-      <!-- Create a hidden file input element -->
+      <div id = 'hex_flower_container' class = 'hex-flower-container'></div>
+      <div id = 'waterways' class = 'waterways'></div>
+      <div id = 'zoom_layer' class = 'zoomlayer'></div>
+      </div>
       <input type="file" id="fileInput" style="display: none;">
       </div>
     </div>
@@ -168,6 +169,56 @@
     // Create hexagon flower for Arneson cells. Make it draggable by mouse.
     make_hex_flower(0.8);
     make_hex_flower_draggable();
+    get_terr_for_hex_flower(hexagon_map_container);
+
+//   // Temporary section for adding scroll zoom.
+//   // Resume later!
+//   let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
+//   let current_zoom_unbinned = 0;
+//   let lastKnownScrollPosition = 0;
+//   let min_zoom = 1;
+//   let max_zoom = 10;
+//
+//   // Add mouse scroll event listener to the 'main' div.
+//   document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
+//     current_zoom_unbinned = lastKnownScrollPosition + event.deltaY * 0.01;
+//     lastKnownScrollPosition = current_zoom_unbinned;
+//     
+//     if(current_zoom_unbinned <= -2 && current_zoom > min_zoom){
+//       current_zoom = current_zoom - 1;
+//       current_zoom_unbinned = 0;
+//       lastKnownScrollPosition = 0;
+//       console.log(current_zoom);
+//       // Adjust hexagon sizes.
+//       
+//       Array.from(document.getElementsByClassName('hex-center')).forEach((el) => {
+//         el.style.width = current_zoom * 100 + '%';
+//         el.style.height = current_zoom * 100 + '%';
+//         el.style.top = current_zoom * parseInt(el.style.top) + 'px';
+//         el.style.left = current_zoom * parseInt(el.style.left) + 'px';
+//       });
+//     }
+//
+//     if(current_zoom_unbinned >= 2 && current_zoom < max_zoom){
+//       current_zoom = current_zoom + 1;
+//       current_zoom_unbinned = 0;
+//       lastKnownScrollPosition = 0;
+//       console.log(current_zoom);
+//
+//       // Check for whoosh
+//       if(current_zoom == 6){
+//         console.log('whoosh!')
+//       }
+//
+//       // Adjust hexagon sizes.
+//       Array.from(document.getElementsByClassName('hex-center')).forEach((el) => {
+//         el.style.width = current_zoom * 100 + '%';
+//         el.style.height = current_zoom * 100 + '%';
+//         el.style.top = current_zoom * parseInt(el.style.top) + 'px';
+//         el.style.left = current_zoom * parseInt(el.style.left) + 'px';
+//       });
+//     }
+//   });
   </script>
 </body>
 </html>
