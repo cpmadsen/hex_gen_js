@@ -61,27 +61,89 @@
 .lava-background {
     position: absolute;
     color: red;
-    background: linear-gradient(to bottom, #f06, rgb(255, 0, 0));
+    /*background: linear-gradient(to bottom, #f06, rgb(255, 0, 0));*/
+    background: url(../mats/lava_piece.png);
+    background-size: 5%;
     display: none;
+    width: 100%;
+    height: 100%;
     overflow-y: hidden;
     z-index: 1;
-    animation: smooth 1s ease-in;
+    animation: smooth 5s ease-in;
+    background-blend-mode: lighten;
 }
 
 .lava-goop {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #00000070;
+    background: url(../mats/black_ink_blotches.jpg);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    filter: blur(15px) contrast(30);
+    filter: blur(1px) contrast(30);
+    animation: moveNoise 3s ease-in-out infinite, strobe 1s ease-in-out infinite;
+    animation-timing-function: ease-in-out;
+    mix-blend-mode: color;
 }
 
+@keyframes strobe {
+    0%{
+        opacity: 0
+    }
+    50%{
+        opacity: 0.3
+    }
+    100%{
+        opacity: 0
+    }
+}
 
+@keyframes moveNoise {
+    0% {
+        transform: translate(0, 0);
+    }
+    20% {
+        transform: translate(5px, 5px);
+    }
+    40% {
+        transform: translate(2px, -5px);
+    }
+    60% {
+        transform: translate(-7px, 2px);
+    }
+    80% {
+        transform: translate(2px, 2px);
+    }
+    100% {
+        transform: translate(-2px, -4px);
+    }
+}
+
+@keyframes grow {
+    0% {
+        width: 100%;
+        height: 100%;
+    }
+    25% {
+        width: 125%;
+        height: 125%;
+    }
+    50% {
+        width: 75%;
+        height: 75%;
+    }
+    75% {
+        width: 90%;
+        height: 90;
+    }
+    100% {
+        width: 100%;
+        height: 100%;
+    }
+}
 
 .lava-bubbles {
     position: relative !important;
@@ -89,22 +151,10 @@
     border-radius: 50%;
     animation: bubble 2s infinite;
     animation-timing-function: ease-in-out;
-    /* animation: move 7s ease-in-out infinite alternate; */
-    /* animation: grow 5s ease-in-out forwards infinite; */
 }
 
 /* keyframes move can be used to move shapes around with just CSS */
 /* This section is not currently applied to anything on our page */
-@keyframes move {
-    0%{
-        border-radius: 75% 25% 20% 80% / 34% 47% 53% 66%;
-        transform: translateY(-50%);
-    }
-    100% {
-        border-radius: 50%;
-        transform: translateY(50%);
-    }
-}
 
 /* Here we animate the +'ve and -'ve growth and Y translation of lava bubbles */
 @keyframes grow {
