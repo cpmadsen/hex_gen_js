@@ -401,11 +401,7 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     target_mountain.classList.add('elevation_5');
 }   }   }   }   }
 
-/*
-function initial_woodsnmountains () {
 
-}
-*/
 async function select_terrain_type(
     terrain_types,
     terrain_proportions,

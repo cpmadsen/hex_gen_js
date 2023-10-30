@@ -39,7 +39,7 @@
 }
 
 .sidebar {
-    width: 190px;
+    width: clamp(110px, 15%, 190px);
     flex: none;
     background: url(../mats/stone_wall_2.png);
     border: 10px solid transparent;
