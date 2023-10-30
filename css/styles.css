@@ -292,3 +292,22 @@
 .music-button:hover {
     border:2px solid goldenrod;
 }
+
+.waterways {
+    background: lightblue;
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px
+}
+
+.zoomlayer {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px
+}

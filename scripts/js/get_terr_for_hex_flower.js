@@ -1,4 +1,5 @@
-hexagon_map_container.addEventListener("click", function (event) {
+function get_terr_for_hex_flower(map_container) {
+  map_container.addEventListener("click", function (event) {
       // The following conditions must be met:
       // There is a target.
       // The target is a div
@@ -65,3 +66,4 @@ hexagon_map_container.addEventListener("click", function (event) {
           //}
       }
     });
+  }
