@@ -232,7 +232,7 @@
     background: url(../mats/red_background.png);
     color: goldenrod;
     border: 3px solid #350f0f;
-    font-size: large;
+    font-size: clamp(small, medium, large);
     margin: 15px; 
     margin-top: 5px !important;
     margin-bottom: 5px !important;
