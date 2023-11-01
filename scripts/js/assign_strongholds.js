@@ -1,5 +1,5 @@
 let town_farms = true;              // Set to a user input (toggle)
-let farm_chance = 0.66666;          // User input
+let farm_chance = 0.5;          // User input
 
 function assign_strongholds(this_SH_terrain, stronghold_chance) {
     const target_hexes = Array.from(document.getElementsByClassName(this_SH_terrain));
