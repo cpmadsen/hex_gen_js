@@ -18,7 +18,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
             const terrain_frequency_1stcol = (numRows / 3) * proportion_terrain;
             const chance_of_1stcol_morph = terrain_frequency_1stcol % 1;
             let guaranteed_1stcol_morphs = terrain_frequency_1stcol - chance_of_1stcol_morph;
-            if (Math.random (0, 1) <= chance_of_1stcol_morph) {                             // REMOVE THESE .FLOORS
+            if (Math.random (0, 1) <= chance_of_1stcol_morph) {                             
                 guaranteed_1stcol_morphs++;
             }
             
@@ -26,7 +26,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
             const terrain_frequency_1strow = (numCols / 3) * proportion_terrain;
             const chance_of_1strow_morph = terrain_frequency_1strow % 1;
             let guaranteed_1strow_morphs = terrain_frequency_1strow - chance_of_1strow_morph;
-            if (Math.random (0, 1) <= chance_of_1strow_morph) {                             //
+            if (Math.random (0, 1) <= chance_of_1strow_morph) {                             
                 guaranteed_1strow_morphs++;
             }
             

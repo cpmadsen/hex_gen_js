@@ -2,7 +2,9 @@ function apply_waterways () {
     // To be accurate to the Outdoor Survival map, method is:
     /* 
     Swamps generate the rivers backwards. Each swamp can be fed by up to (2 to)3 rivers.
-        Within swamp, the rivers might join up, forming a knot, or they might all trail off into the swamp in a squiggle graphic.
+        Either have to have the geomorph put out a flag that the rivers can attach to (from its centre essentially, using a 2 instead of a 1)
+        Or a method using find adjacent and so on to get a count of the overall size of a swamp, then find how many rivers it will spawn by its size.
+        Within swamp, the rivers might join up, forming a knot in the centre, or they might all trail off at the swamp borders in a squiggle graphic.
     The rivers travel away in a mostly-straight line to a map edge. In OS, map edges are higher and swamps are lower. 
     Rivers crawl away from the swamp, preferring lower elevations to higher.
     If forced through woods adjacent to the swamp, the river lowers their elevation to open level.
@@ -17,6 +19,8 @@ function apply_waterways () {
 
 
     // The Delving Deeper method could work very very similarly, just with the difference that rivers could feed down from snowcaps.
+    // And rivers could end in the ocean, seas, etc.
+
 
 
     */
@@ -33,5 +37,7 @@ function apply_paths () {
     //  2) gently curved
     //  3) meandering. (squiggly)
     // That said even straight paths might have a bend (single curve).
-    
+
+    // Paths may not cross Snowcaps.
+
 }
