@@ -153,7 +153,7 @@ function assign_towns(this_town_terrain, town_chance) {
 function delete_features(terrain_types) {
     let previous_strongholds = [];
     let previous_towns = [];
-    let town_farms = [];
+    let previous_town_farms = [];
         for (let i = 0; i < terrain_types.length; i++) {
             let terrain = terrain_types[i];
             //console.log(`removing settlements from ${terrain}`);
