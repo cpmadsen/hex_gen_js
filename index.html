@@ -55,6 +55,7 @@
         </div>
           <div id = 'make_hex' class = 'dnd-button'>Create Hex Map</div>
           <div id = 'randomize_terrain' class = 'dnd-button'>Roll up Terrain</div>
+          <div id = 'apply_waterways' class = 'dnd-button'>Add Rivers & Paths</div>
           <div id = 'apply_features' class = 'dnd-button'>Generate Features</div>
           <div class = 'over-background' style="text-align:center">
             <div class = 'row'>
@@ -130,7 +131,7 @@
     select_terrain_type(
       terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
       // ideal/finished proportions = [0.2976, 0.0585, 0.1837, 0.0345, 0.4257871064],
-      terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.01], // we increase the earlier types because so many are overwritten                                                                          
+      terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.001], // we increase the earlier types because so many are overwritten                                                                          
       terrain_replace_list = [
         [],   // wooded first, replaces nothing 
         ['wooded'], // desert
@@ -151,8 +152,22 @@
     );
   });
 
+  const rivers_button = document.getElementById('apply_waterways');
+  rivers_button.addEventListener('click', function() {
+    numRows = number_hex_v.value;
+    numCols = number_hex_h.value;
+    container_height = document.getElementById('hex_gen_page').offsetHeight;
+    container_width = document.getElementById('hex_gen_page').offsetWidth;
+        
+    apply_waterways(
+      //on_which_terrain_types = ['wooded', 'wooded_hills', 'desert', 'mountain', 'swamp', 'open'],
+      //chance_for_SH = [0.0303030303, 0.01492537313, 0, 0.06140350877, 0.02173913043, 0], 
+      //chance_for_town = [0.002518891688, 0, 0, 0, 0, 0.01408450704],
+      //delay = 250 // this number is in milliseconds, and is totally optional; could be 0.
+    );
+  });
+
   const features_button = document.getElementById('apply_features');
-    
   features_button.addEventListener('click', function() {
         
     numRows = number_hex_v.value;

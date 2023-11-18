@@ -1,3 +1,6 @@
+let town_farms = false;                 // Set to a user input (toggle)
+let farm_chance = 0.5;                  // User input
+
 function assign_strongholds(this_SH_terrain, stronghold_chance) {
     const target_hexes = Array.from(document.getElementsByClassName(this_SH_terrain));
     let running_total_SHs = 0;
@@ -130,6 +133,19 @@ function assign_towns(this_town_terrain, town_chance) {
             running_total_town_prop = running_total_towns / target_hexes.length;
             //console.log(`Running town proportion = ${running_total_town_prop}`);    
             //console.log(`${running_total_town_prop} < ${town_chance}`); 
+            if (town_farms) {
+                console.log(`Applying farms to ${hex_to_mod}.`);
+                immediate_surrounds.forEach((hex) => {
+                    if (hex != null) {
+                        if (hex.classList.contains('open')) { 
+                            if (Math.random(0, 1) <= farm_chance) {
+                                hex.classList.remove('open');
+                                hex.classList.add('open_farm');
+                            } 
+                        } 
+                   }    
+                });
+            }
         }
     }
 }
@@ -137,6 +153,7 @@ function assign_towns(this_town_terrain, town_chance) {
 function delete_features(terrain_types) {
     let previous_strongholds = [];
     let previous_towns = [];
+    let previous_town_farms = [];
         for (let i = 0; i < terrain_types.length; i++) {
             let terrain = terrain_types[i];
             //console.log(`removing settlements from ${terrain}`);
@@ -147,7 +164,7 @@ function delete_features(terrain_types) {
                         let hex = previous_strongholds[i];
                         hex.classList.remove(`${terrain}_stronghold`);
                         hex.classList.add(terrain);
-                        console.log(`removed SH from ${previous_strongholds[i].id}`);
+                        //console.log(`removed SH from ${previous_strongholds[i].id}`);
                     }
                 }
             previous_towns = Array.from(document.getElementsByClassName(`${terrain}_town`));  
@@ -157,9 +174,17 @@ function delete_features(terrain_types) {
                         let hex = previous_towns[i];
                         hex.classList.remove(`${terrain}_town`);
                         hex.classList.add(terrain);
-                        console.log(`removed town from ${previous_towns[i].id}`);
+                        //console.log(`removed town from ${previous_towns[i].id}`);
                     }
                 }
+            previous_town_farms = Array.from(document.getElementsByClassName(`${terrain}_farm`));
+            if (previous_town_farms.length > 0) {
+                for (let i = 0; i < previous_town_farms.length; i++) {
+                    let hex = previous_town_farms[i];
+                    hex.classList.remove(`${terrain}_farm`);
+                    hex.classList.add(terrain);
+                }
+            }
         delay;
     }
 }
