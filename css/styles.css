@@ -39,7 +39,9 @@
 }
 
 .sidebar {
-    width: clamp(110px, 15%, 190px);
+    /* width: clamp(110px, 15%, 190px); */
+    width: 200px;
+    height: 100vh;
     flex: none;
     background: url(../mats/stone_wall_2.png);
     border: 10px solid transparent;
@@ -48,6 +50,8 @@
     border-image-width: 10px;
     max-height: 100%; /* Set a maximum height equal to the viewport height */
     overflow-y: hidden; /* Want to get rid of the scrollbar */ 
+    /* TEST */
+    float: left;
 }
 
 .main {
@@ -70,8 +74,10 @@
     overflow-y: hidden;
     overflow-x: hidden;
     z-index: 1;
+    /*
     animation: smooth 5s ease-in;
     background-blend-mode: lighten;
+    */
 }
 
 .lava-goop {
@@ -255,11 +261,24 @@
     width: 98%; 
     height: 98%; 
     /* overflow-y: auto; */
-    overflow: hidden;
+    
+    /*
+    width: calc(100% - 200px);
+    height: 100vh;
+    NOT NECESSARY BECAUSE THIS DIV IS ALREADY SEPERATE FROM SIDEBAR */
+
+    float: left;
+    overflow: auto;
+    /* overflow: hidden; */ /* Apply once panning works */
     background:rgba(250,250,250,.5);
     position: relative;
     left: 1%;
     top: 1%;
+    transition: transform 0.3s ease;
+}
+
+.zoomed {
+    transform: scale(1.5); /* Adjust the zoom level as needed */
 }
 
 .content {

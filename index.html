@@ -36,20 +36,20 @@
               <div class = 'over-background' style="text-align:center;padding-left:5%;padding-right:5%;">
               <h4 style="display: inline;font-family:endor;">Horizontal<br></h4>
               <div class = 'row'>
-                <p>3</p>
+                <p>24</p>
                 <!--<input id = 'number_hex_h' type="range" id="slider1" min="3" max="65" value="35" step="1">-->
                 <!--<span id="slider-value1">35</span>-->
-                <input id = 'number_hex_h' type="range" min="3" max="65" value="10" step="1">
+                <input id = 'number_hex_h' type="range" min="24" max="65" value="24" step="1">
                 <p>65</p>
               </div>
           </div>
             <div class = 'over-background' style="text-align:center;padding-left:5%;padding-right:5%;">
               <h4 style="display: inline;font-family:endor;">Vertical<br></h4>
               <div class = 'row'>
-                <p>3</p>
+                <p>15</p>
                 <!--<input id = 'number_hex_v' type="range" id="slider2" min="3" max="45" value="25" step="1">-->
                 <!--<span id="slider-value2">25</span>-->
-                <input id = 'number_hex_v' type="range" min="3" max="45" value="8" step="1">
+                <input id = 'number_hex_v' type="range" min="15" max="45" value="15" step="1">
                 <p>45</p>
             </div>
         </div>
@@ -68,12 +68,12 @@
     <div id = 'main' class = 'main'>
       <div id = 'hex_gen_page' class = "hex-gen-page">
       <div id= "lava-gradient-box" class = 'lava-background'>
-        <div id = 'lava_goop' class = 'lava-goop'>
-        <div id = 'lava_veins' class = 'lava-veins'></div>
-        </div>
+        <!--<div id = 'lava_goop' class = 'lava-goop'>-->
+        <!--<div id = 'lava_veins' class = 'lava-veins'></div>
+        </div>-->
       </div>
       <div id = 'hex_layer' class = 'hex-layer'></div>
-      <div id = 'hex_flower_container' class = 'hex-flower-container'></div>
+      <div id = 'hex_flower_container' class = 'hex-flower-container'></div> 
       <div id = 'waterways' class = 'waterways'></div>
       <div id = 'zoom_layer' class = 'zoomlayer'></div>
       </div>
@@ -246,14 +246,14 @@
    // Temporary section for adding scroll zoom.
    // Resume later!
     let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
-    let current_zoom_unbinned = 0;
+    let current_zoom_unbinned = 2;
     let lastKnownScrollPosition = 0;
     let min_zoom = 1;
     let max_zoom = 10;
   
     // Add mouse scroll event listener to the 'zoom_layer' div.
     document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
-      current_zoom_unbinned = lastKnownScrollPosition + event.deltaY * 0.01;
+      current_zoom_unbinned = lastKnownScrollPosition - event.deltaY * 0.01;
       lastKnownScrollPosition = current_zoom_unbinned;
       
       //mouse_x = event.clientX - (window.innerWidth - document.getElementById('zoom_layer').offsetWidth);
@@ -262,15 +262,17 @@
 
       //mouse_x = hovered_hexagon.offsetLeft + (hovered_hexagon.offsetWidth/2);
       //mouse_y = hovered_hexagon.offsetTop + (hovered_hexagon.offsetHeight/2);
-      //console.log(current_zoom_unbinned);
+      console.log(`current_zoom_unbinned: ${current_zoom_unbinned}`);
       //console.log(current_zoom);
 
       // ZOOM OUT
-      if(current_zoom_unbinned <= -2 && current_zoom > min_zoom){
+      if(current_zoom_unbinned <= -1 && current_zoom > min_zoom){
         current_zoom = current_zoom - 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
-        console.log(current_zoom);
+        console.log(`current_zoom ${current_zoom}`);
+        //document.getElementById('hex_gen_page').classList.toggle('zoomed');
+        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
         // Adjust hexagon sizes.
         
         //Array.from(document.getElementsByClassName('hex-center')).forEach((el) => {
@@ -289,11 +291,14 @@
       }
  
       // ZOOM IN
-      if(current_zoom_unbinned >= 2 && current_zoom < max_zoom){
+      if(current_zoom_unbinned >= 1 && current_zoom < max_zoom){
         current_zoom = current_zoom + 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
-        console.log(current_zoom);
+        console.log(`current_zoom ${current_zoom}`);
+        //document.getElementById('hex_gen_page').classList.toggle('zoomed');
+        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
+        
  
         // Check for whoosh
         if(current_zoom == 6){
@@ -316,6 +321,11 @@
 
       // If current zoom unbinned is getting ridiculously negative or positive, set back to 0.
       if(current_zoom_unbinned < -2.5 | current_zoom_unbinned > 2.5){
+        current_zoom_unbinned = 0;
+        lastKnownScrollPosition = 0;
+      }
+
+      if(current_zoom == 1 & current_zoom_unbinned < 0) {
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
       }
