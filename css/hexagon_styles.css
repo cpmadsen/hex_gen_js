@@ -187,7 +187,11 @@
 
 
 .hex-center:hover {
-    transform: translateY(-15%) !important; /* Move 20px upward on hover */
+    transform: translateY(-15%) !important;
+}
+
+.hovered {
+    transform: translateY(-15%) !important;
 }
 
 .highlighted {

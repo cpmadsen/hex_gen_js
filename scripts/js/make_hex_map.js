@@ -28,6 +28,8 @@ function make_hex_map(numRows, numCols, container_height, container_width, make_
     //add_mouse_effects(number_of_hexes);
     // Ripple
     ripple(numCols,numRows);
+    // Add lava background
+    add_lava(numCols, numRows);
 
     if(make_clouds == true){
     create_clouds(container_height);
@@ -71,11 +73,13 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
     initialize_hexagons(number_of_hexes);
     // Adjust hexagon positioning etc. based on initial window size.
     //render_hexagons(numCols, numRows, window.innerWidth);
-    render_hexagons(numCols, numRows, container_height, container_width);
+    render_hexagons(numCols, numRows, container_height, container_width, rerender = false);
     // Add mouseover effects to hexagons
     //add_mouse_effects(number_of_hexes);
     // Add ripple effect.
     ripple(numCols,numRows);
+    // Add lava background
+    add_lava(numCols, numRows);
 
     if(make_clouds == true){
         create_clouds(container_height);

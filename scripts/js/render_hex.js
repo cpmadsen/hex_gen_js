@@ -1,11 +1,7 @@
-function render_hexagons(numCols, numRows, container_height, container_width) {
-    //let max_y = window.innerHeight;
-    //let max_x = max_y;
-
-    // The container height and width is currently coming from the div 'hex_gen_iframe'.
-
-    let max_y = container_height;
-    let max_x = container_width;
+function render_hexagons(numCols, numRows, container_height, container_width, current_zoom = 1, rerender) {
+    
+    let max_y = container_height * current_zoom;
+    let max_x = container_width * current_zoom;
 
     // Find which of height and width are larger; use that.
     if(max_y > max_x) {
@@ -18,16 +14,36 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
     max_x = 0.98 * max_x;
     max_y = 0.98 * max_y;
 
-    hexagon_size_x = max_x / numCols; //* hex_proportionality_const;
-    hexagon_size_y = max_y / numRows; //* hex_proportionality_const; // to maintain hex proportions
-
-    if(hexagon_size_x > hexagon_size_y){
-        hexagon_size_y = hexagon_size_x
+    // Find the mid-point of the container; we'll zoom in and out based on that point.
+    if(current_zoom == 1){
+        mid_y = 0;
+        mid_x = 0;
     } else {
-        hexagon_size_x = hexagon_size_y
-    }
+        mid_y = 0.5 * (max_y / 2);
+        mid_x = 0.5 * max_x / 2;
+    } 
 
+    // Calculate hexagon dimensions (width and height) based on how many rows and cols of hexagons 
+    // will be fit into max X and Y dimensions of container.
+    hexagon_size_x = max_x / numCols;
+    hexagon_size_y = max_y / numRows;
+
+    //if(hexagon_size_x > hexagon_size_y){
+    //    hexagon_size_y = hexagon_size_x
+    //} else {
+    //    hexagon_size_x = hexagon_size_y
+    //}
+
+    // Hexagon width must always be slightly larger than hexagon height, for the PNG to not get cut off.
     hexagon_size_x = 1.075 * hexagon_size_y;
+
+    // Determine gutter width (margin on left and right of hex map)
+    hex_map_width = hexagon_size_x * numCols;
+    hex_map_height = hexagon_size_y * numRows;
+
+    // Find amount of empty space on both sides; divide by 2.
+    horizontal_buffer = (max_x - hex_map_width) / 2 - hexagon_size_x/2;
+    vertical_buffer = (max_y - hex_map_height) / 2;
 
     // For each row...
     for (let xCoord = 1; xCoord <= numCols; xCoord++) {
@@ -38,7 +54,9 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
             // Grab corresponding hexagon.
             hex_for_mods = document.getElementById('hex_' + uniqueID);
 
+            if(rerender == false){
             hex_for_mods.style.visibility = 'hidden';
+            }
             hex_for_mods.style.width = hexagon_size_x + 'px';
             hex_for_mods.style.height = hexagon_size_y + 'px';
 
@@ -52,13 +70,13 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
                 hex_for_mods.style.zIndex = (yCoord) * 2 + 1;
             }
 
-            hex_for_mods.style.left = xCoord * hexagon_size_x - hexagon_size_x*0.26*xCoord + 'px';
+            hex_for_mods.style.left = (xCoord-1) * hexagon_size_x - hexagon_size_x*0.26*xCoord - horizontal_buffer + 'px';
             // If this is an even row (2, 4, 6, etc.),
             // apply a vertical offset of half the hex width.
             if(xCoord % 2 === 0) {
-                hex_for_mods.style.top = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
+                hex_for_mods.style.top = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
             } else {
-                hex_for_mods.style.top = (yCoord) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
+                hex_for_mods.style.top = (yCoord) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
             }
 
             hex_label = document.getElementById('hex_label_' + uniqueID);
@@ -76,67 +94,6 @@ function render_hexagons(numCols, numRows, container_height, container_width) {
             hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';            
         }
     }
-    
-    // Setting up the lava background for the hexes to float over - turn it from hidden to visible
-    const lava_background = document.getElementById('lava-gradient-box');
-    lava_background.style.display = 'block'; // turns it visible; css has it 'hidden' so it doesn't show up til the button is pressed
-    
-    const first_hex = document.getElementById('hex_' + 1);
-    const last_hex = document.getElementById('hex_' + numRows*numCols);
-
-    // For the height and width:
-    const lava_box_height = 0.98*(last_hex.offsetTop - first_hex.offsetTop);
-    const lava_box_width = 0.98*(last_hex.offsetLeft - first_hex.offsetLeft); // coordinates relative to the parent
-    console.log(`lava box height ${lava_box_height}px and width ${lava_box_width}px.`);
-
-    lava_background.style.height = lava_box_height + 'px';
-    lava_background.style.width = lava_box_width + 'px';
-    
-    lava_background.style.animation = 'smooth 5s ease-in';
-
-    const rect = first_hex.getBoundingClientRect();
-    //console.log(`Left: ${rect.left}, Top: ${rect.top}`);
-    
-    /*
-    // To position the lava box:
-    const globalTop = first_hex.getOffsetTop; // Global top coordinate
-    const globalLeft = first_hex.getOffsetLeft; // Global left coordinate
-    console.log(`offset top ${globalTop} and left ${globalLeft}`);
-    */
-    
-    lava_background.style.top = first_hex.offsetHeight/2 + rect.top + 'px';
-    lava_background.style.left = first_hex.offsetWidth/2 + rect.left - 221 + 'px';    // Sloppy solution 
-    
-    
-    //lava_background.style.top = globalTop + 'px';
-    //lava_background.style.left = globalLeft + 'px';
-
-
-
-    /*
-    // coordinates x = xCoord * hexagon_size_x - hexagon_size_x*0.26*xCoord + 'px';
-    // coordinates y = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
-    
-    // lava width = hex coordinates of last column - of 1st column 
-    lava_background.style.width = (numCols * hexagon_size_x - hexagon_size_x*0.26*numCols) - (hexagon_size_x - hexagon_size_x*0.26) + 'px';
-    // lava height = coordinates of last row - first row
-    lava_background.style.height = ((numRows + 0.45) * hexagon_size_y - (numRows)*hexagon_size_y*0.085 - hexagon_size_y*0.5) - (hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5) + 'px';
-    // lava left = coordinates of first column
-    lava_background.style.left = (hexagon_size_x - hexagon_size_x*0.26) + 'px';
-    // lava top = coordinates of first row EXCEPT left and top must be relative to the inner container or whatever, not the page itself.
-    lava_background.style.top = (hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5) + 'px';
-    */
-
-    /*
-    lava_takeout_height = 2 * hexagon_size_y - hexagon_size_y*0.085 - hexagon_size_y*0.5;
-    lava_background.style.height = (document.getElementById('hex_gen_page').offsetHeight - lava_takeout_height) + 'px';
-    
-    lava_takeout_width = (2 * hexagon_size_x - hexagon_size_x*0.26); 
-    lava_background.style.width = (document.getElementById('hex_gen_page').offsetWidth - lava_takeout_width) + 'px';
-    
-    lava_background.style.left = (1 * hexagon_size_x - hexagon_size_x*0.26) + 'px'; 
-    lava_background.style.top = (1) * hexagon_size_y - (1)*hexagon_size_y*0.085 - hexagon_size_y*0.5 + 'px';
-    */
 }
 
 function padWithZeroes(value) {
