@@ -1,4 +1,4 @@
-function render_hexagons(numCols, numRows, container_height, container_width, current_zoom = 1, rerender) {
+function render_hexagons(numCols, numRows, container_height, container_width, current_zoom = 1, rerender = false) {
     
     let max_y = container_height * current_zoom;
     let max_x = container_width * current_zoom;
@@ -42,8 +42,8 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
     hex_map_height = hexagon_size_y * numRows;
 
     // Find amount of empty space on both sides; divide by 2.
-    horizontal_buffer = (max_x - hex_map_width) / 2 - hexagon_size_x/2;
-    vertical_buffer = (max_y - hex_map_height) / 2;
+    //horizontal_buffer = (max_x - hex_map_width) / 2 - hexagon_size_x/2;
+    //vertical_buffer = (max_y - hex_map_height) / 2;
 
     // For each row...
     for (let xCoord = 1; xCoord <= numCols; xCoord++) {
@@ -70,13 +70,16 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
                 hex_for_mods.style.zIndex = (yCoord) * 2 + 1;
             }
 
-            hex_for_mods.style.left = (xCoord-1) * hexagon_size_x - hexagon_size_x*0.26*xCoord - horizontal_buffer + 'px';
+            //hex_for_mods.style.left = (xCoord-1) * hexagon_size_x - hexagon_size_x*0.26*xCoord - horizontal_buffer + 'px';
+            hex_for_mods.style.left = (xCoord-1) * hexagon_size_x - hexagon_size_x*0.26*xCoord + hexagon_size_y*2 + 'px';
             // If this is an even row (2, 4, 6, etc.),
             // apply a vertical offset of half the hex width.
             if(xCoord % 2 === 0) {
-                hex_for_mods.style.top = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
+                hex_for_mods.style.top = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 + hexagon_size_y/4 + 'px';
+                //hex_for_mods.style.top = (yCoord + 0.45) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
             } else {
-                hex_for_mods.style.top = (yCoord) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
+                hex_for_mods.style.top = (yCoord) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 + hexagon_size_y/4 + 'px';
+                //hex_for_mods.style.top = (yCoord) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 - hexagon_size_y - vertical_buffer + 'px';
             }
 
             hex_label = document.getElementById('hex_label_' + uniqueID);
