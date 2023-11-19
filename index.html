@@ -67,12 +67,13 @@
     </div>
     <div id = 'main' class = 'main'>
       <div id = 'hex_gen_page' class = "hex-gen-page">
-      <div id= "lava-gradient-box" class = 'lava-background'>
-        <!--<div id = 'lava_goop' class = 'lava-goop'>-->
-        <!--<div id = 'lava_veins' class = 'lava-veins'></div>
-        </div>-->
+      <div id = 'hex_layer' class = 'hex-layer'>
+        <div id= "lava-gradient-box" class = 'lava-background'>
+          <div id = 'lava_goop' class = 'lava-goop'>
+          <div id = 'lava_veins' class = 'lava-veins'></div>
+          </div>
+        </div>
       </div>
-      <div id = 'hex_layer' class = 'hex-layer'></div>
       <div id = 'hex_flower_container' class = 'hex-flower-container'></div> 
       <div id = 'waterways' class = 'waterways'></div>
       <div id = 'zoom_layer' class = 'zoomlayer'></div>
@@ -195,11 +196,75 @@
     //  }
     //});
 
-
-    // Add in hexagon hovering selection THROUGH the zoom layer...
     hovered_hexagon = null;
 
+    // Add mouse click event listener for click and unclick, which gets used to pan map.
+    let mouse_clicked = false;
+    
+    let initial_mousedown_x = 0;
+    let initial_mousedown_y = 0;
+    let previous_mousedown_x = 0;
+    let previous_mousedown_y = 0;
+    let previous_translate_x = 0;
+    let previous_translate_y = 0;
+
+    document.getElementById('zoom_layer').addEventListener('mousedown', (event) => {
+      mouse_clicked = true;
+      initial_mousedown_x = event.clientX
+      initial_mousedown_y = event.clientY
+      console.log(mouse_clicked);
+    });
+    document.getElementById('zoom_layer').addEventListener('mouseup', (event) => {
+      mouse_clicked = false;
+
+      // If hex_layer is getting shunted too far off screen, bring it back towards center.
+      if(parseFloat(move_x) >= 500 | parseFloat(move_x) <= -500 | parseFloat(move_y) >= 400 | parseFloat(move_y) <= -400){
+        move_x = parseFloat(move_x)*0.5 + 'px';
+        move_y = parseFloat(move_y)*0.5 + 'px';
+        document.getElementById('hex_layer').style.transition = "transform 1s ease-in-out";
+        document.getElementById('hex_layer').style.transform = `translateY(${move_y}) translateX(${move_x})`;
+        document.getElementById('hex_layer').style.zIndex = 1;
+        document.getElementById('hex_layer').style.position = 'relative';
+      }
+
+      // Note that transformation that was applied to the hex_layer div at the moment
+      // of un-clicking the mouse.
+      previous_translate_x = move_x;
+      previous_translate_y = move_y;
+      console.log(mouse_clicked,', and previous translateX was: ' + previous_translate_x);
+    });
+
     document.getElementById('zoom_layer').addEventListener('mousemove', (event) => {
+
+    // PAN HEXAGON MAP SECTION //
+    if(mouse_clicked){
+      
+      // Calculate how much mouse has moved since it was clicked
+      mouse_delta_x = event.clientX - initial_mousedown_x;
+      mouse_delta_y = event.clientY - initial_mousedown_y;
+      
+      //move_x = event.clientX - initial_mousedown_x + 'px';
+      move_x = mouse_delta_x + previous_mousedown_x;
+      //move_y = event.clientY - initial_mousedown_y + 'px';
+      move_y = mouse_delta_y + previous_mousedown_y;
+      
+      // Apply zoom to reduce speed when zoomed in.
+      move_x = move_x / current_zoom
+      move_y = move_y / current_zoom;
+
+      // Add in whatever translateX / translateY was applied in previous 
+      // pan events, if any.
+      move_x = move_x + parseFloat(previous_translate_x) + 'px';
+      move_y = move_y + parseFloat(previous_translate_y) + 'px';
+
+      document.getElementById('hex_layer').style.transition = "none";
+      document.getElementById('hex_layer').style.transform = `translateY(${move_y}) translateX(${move_x})`;
+      document.getElementById('hex_layer').style.zIndex = 1;
+      document.getElementById('hex_layer').style.position = 'relative';
+    }
+
+    // POP UP HEXAGON UNDER MOUSE CURSOR SECTION //
+
     // Check if the target is a "hex" div
     if (event.target && event.target.classList.contains('zoomlayer')) {
 
@@ -241,6 +306,20 @@
             }
           }
         }
+
+        // Move lava background piece to sit behind hovered, floating hexagon.
+        lava_background = document.getElementById('lava-gradient-box');
+        lava_highlights = document.getElementById('lava_goop');
+
+        lava_background.style.top = hovered_hexagon.style.top;
+        lava_background.style.left = hovered_hexagon.style.left;
+        lava_background.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
+        lava_background.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
+
+        lava_highlights.style.top = hovered_hexagon.style.top;
+        lava_highlights.style.left = hovered_hexagon.style.left;
+        lava_highlights.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
+        lava_highlights.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
     }
     });
    // Temporary section for adding scroll zoom.
@@ -255,68 +334,31 @@
     document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
       current_zoom_unbinned = lastKnownScrollPosition - event.deltaY * 0.01;
       lastKnownScrollPosition = current_zoom_unbinned;
-      
-      //mouse_x = event.clientX - (window.innerWidth - document.getElementById('zoom_layer').offsetWidth);
-      //mouse_y = event.clientY - (window.innerHeight - document.getElementById('zoom_layer').offsetHeight);
-      //hovered_hexagon = Array.from(document.getElementsByClassName('hovered'))[0];
-
-      //mouse_x = hovered_hexagon.offsetLeft + (hovered_hexagon.offsetWidth/2);
-      //mouse_y = hovered_hexagon.offsetTop + (hovered_hexagon.offsetHeight/2);
-      console.log(`current_zoom_unbinned: ${current_zoom_unbinned}`);
-      //console.log(current_zoom);
-
+      //console.log(`current_zoom_unbinned: ${current_zoom_unbinned}`);
       // ZOOM OUT
       if(current_zoom_unbinned <= -1 && current_zoom > min_zoom){
         current_zoom = current_zoom - 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
         console.log(`current_zoom ${current_zoom}`);
-        //document.getElementById('hex_gen_page').classList.toggle('zoomed');
         document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
-        // Adjust hexagon sizes.
-        
-        //Array.from(document.getElementsByClassName('hex-center')).forEach((el) => {
-        //  el.style.width = current_zoom * 100 + '%';
-        //  el.style.height = current_zoom * 100 + '%';
-        //  el.style.top = current_zoom * parseInt(el.style.top) + 'px';
-        //  el.style.left = current_zoom * parseInt(el.style.left) + 'px';
-        //});
-
         numRows = number_hex_v.value;
         numCols = number_hex_h.value;
-        //container_height = document.getElementById('hex_gen_page').offsetHeight * current_zoom;
-        //container_width = document.getElementById('hex_gen_page').offsetWidth * current_zoom;
-        // Adjust hexagon sizes.
-        //render_hexagons(numCols, numRows, container_height, container_width, current_zoom, rerender = true);
       }
- 
       // ZOOM IN
       if(current_zoom_unbinned >= 1 && current_zoom < max_zoom){
         current_zoom = current_zoom + 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
         console.log(`current_zoom ${current_zoom}`);
-        //document.getElementById('hex_gen_page').classList.toggle('zoomed');
         document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
         
- 
         // Check for whoosh
         if(current_zoom == 6){
           console.log('whoosh!')
         }
- 
         numRows = number_hex_v.value;
         numCols = number_hex_h.value;
-        //container_height = document.getElementById('hex_gen_page').offsetHeight * current_zoom;
-        //container_width = document.getElementById('hex_gen_page').offsetWidth * current_zoom;
-        // Adjust hexagon sizes.
-        //render_hexagons(numCols, numRows, container_height, container_width, current_zoom, rerender = true);
-        //Array.from(document.getElementsByClassName('hex-center')).forEach((el) => {
-        //  el.style.width = current_zoom * 100 + '%';
-        //  el.style.height = current_zoom * 100 + '%';
-        //  el.style.top = current_zoom * parseInt(el.style.top) + 'px';
-        //  el.style.left = current_zoom * parseInt(el.style.left) + 'px';
-        //});
       }
 
       // If current zoom unbinned is getting ridiculously negative or positive, set back to 0.
@@ -325,6 +367,7 @@
         lastKnownScrollPosition = 0;
       }
 
+      // If already at most zoomed out possible, don't allow negative zoom values to build up.
       if(current_zoom == 1 & current_zoom_unbinned < 0) {
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
