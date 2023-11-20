@@ -1,11 +1,20 @@
 function apply_waterways () {
     // To be accurate to the Outdoor Survival map, method is:
     /* 
+    XXX = actionable 
 
     Rivers are a sprite that sits on top of each hex, not a line that stretches between hex-centers (since that would destroy the hover-up over lava
         concept)
-    The easiest way to implement would be saving various sprites as a single hex tile, ie. open_river_1-3 (from face 1 to face 3 of hex)...
-    But this method will involve a substantial time drain, especially as new tilesets are developed... 
+            XXX method to attach sprites to hex tile: see init_hex for how it appends hex labels 
+        Alternate way to implement would be saving various sprites as a single hex tile, ie. open_river_1-3 (from face 1 to face 3 of hex)...
+        But this method will involve a substantial time drain, especially as new tilesets are developed... 
+
+    XXX How the river sprites work: they will be ripped from the OS map. 
+        Each will be oriented with the river coming 'in' from the top face and out one of the others.
+            Numbered 2-6 on the other faces, so you'd have river types 1-2, 1-3, 1-4, 1-5, 1-6. If branching, both faces listed after, e.g. 1-24.
+            Then all the variants must be saved too. Perhaps 1-2_1, 1-2_2, 1-2_3 etc.
+        They get rotated the proper number of degrees (60, 120, 180...) so that their 1 matches up with their placement on the map.
+        Depending on changes in direction, brances, etc. the code calls for their numbers like so: `river1-${exit_face}_${randomInt}`
 
     Swamps generate the rivers backwards. Each swamp can be fed by up to (2 to)3 rivers.
         Either have to have the geomorph put out a flag that the rivers can attach to (from its centre essentially, using a 2 instead of a 1)
