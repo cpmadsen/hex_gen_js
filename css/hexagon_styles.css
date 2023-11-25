@@ -15,6 +15,12 @@
     pointer-events: none;
 }
 
+.hex-faded {
+    opacity: 0.1;
+    background: url(../mats/blank_hex.png);
+    background-size: cover !important;
+}
+
 .desert {
     background: url(../mats/desert_hex.png) !important;
     top: 12%;

@@ -17,8 +17,7 @@
     <script src="./scripts/js/assign_strongholds.js"></script>
     <script src="./scripts/js/make_hex_map.js"></script>
     <script src="./scripts/js/make_hex_flower.js"></script>
-    <script src="./scripts/js/make_hex_flower_draggable.js"></script>
-    <script src="./scripts/js/get_terr_for_hex_flower.js"></script>
+    <script src="./scripts/js/add_mouse_ef.js"></script>
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/hexagon_styles.css" />
 </head>
@@ -27,7 +26,6 @@
     <div id = 'sidebar' class = 'sidebar center-text'>
           <h1 class="over-background endor">HexGen</h3>
           <h3 class = 'over-background endor'>Project Name:</h5>
-          <!--<div id = 'switch_zoom' class = 'dnd-button' style = 'position: absolute; top: 50px; left: 50px;'>Switch Zoom</div>-->
             <input type="text" style = 'width:80%;height:25px;opacity:0.8;border-radius:3px;margin-top: -2rem;'></input>
             <div class = 'row' style = 'width: 100%;'>
               <div id = 'save_proj' class = 'dnd-button navbar-button' style = 'position:relative; width: 75%; left: 0%; margin-right: 5px !important;'>Save</div>
@@ -37,8 +35,6 @@
               <h4 style="display: inline;font-family:endor;">Horizontal<br></h4>
               <div class = 'row'>
                 <p>24</p>
-                <!--<input id = 'number_hex_h' type="range" id="slider1" min="3" max="65" value="35" step="1">-->
-                <!--<span id="slider-value1">35</span>-->
                 <input id = 'number_hex_h' type="range" min="24" max="65" value="24" step="1">
                 <p>65</p>
               </div>
@@ -47,8 +43,6 @@
               <h4 style="display: inline;font-family:endor;">Vertical<br></h4>
               <div class = 'row'>
                 <p>15</p>
-                <!--<input id = 'number_hex_v' type="range" id="slider2" min="3" max="45" value="25" step="1">-->
-                <!--<span id="slider-value2">25</span>-->
                 <input id = 'number_hex_v' type="range" min="15" max="45" value="15" step="1">
                 <p>45</p>
             </div>
@@ -90,9 +84,31 @@
   <audio id = 'tile-click-noise' src = './mats/notification-sound-7062.mp3', type="audio/mp3"></audio>
   <script>
 
+    // Identify page elements for interactivity.
+    const hexagon_map_container = document.getElementById('hex_gen_page');
+    const make_hex_button = document.getElementById('make_hex');
+    const random_terrain_button = document.getElementById('randomize_terrain');
+    const rivers_button = document.getElementById('apply_waterways');
+    const features_button = document.getElementById('apply_features');
+    
+    // Establish static values and variables.
+    let container_height = hexagon_map_container.offsetHeight;
+    let container_width = hexagon_map_container.offsetWidth;
+    let hovered_hexagon = null;
+    let numRows = 0; 
+    let numCols = 0; 
+    let mouse_clicked = false;
+    let initial_mousedown_x = 0;
+    let initial_mousedown_y = 0;
+    let previous_mousedown_x = 0;
+    let previous_mousedown_y = 0;
+    let previous_translate_x = 0;
+    let previous_translate_y = 0;
     document.getElementById('page_content').style.height = window.innerHeight*0.97 + 'px';
 
+    // Use functions from javascript files to add functionality to page.
     add_audio();
+
     enable_downloads('save_proj');
     
     function read_saved_data(data) {
@@ -100,281 +116,19 @@
     }
     enable_data_reads('load_proj',read_saved_data);
 
-    let numRows = 0; 
-    let numCols = 0; 
-    let container_height = document.getElementById('hex_gen_page').offsetHeight;
-    let container_width = document.getElementById('hex_gen_page').offsetWidth;
-    hexagon_map_container = document.getElementById('hex_gen_page');
-
-    const make_hex_button = document.getElementById('make_hex');
+    add_button_effects();
     
-    make_hex_button.addEventListener('click', function() {
+    enable_zoom_and_pan();
 
-      numRows = number_hex_v.value;
-      numCols = number_hex_h.value;
-      container_height = document.getElementById('hex_gen_page').offsetHeight;
-      container_width = document.getElementById('hex_gen_page').offsetWidth;
-
-      make_hex_map(numRows, numCols, container_height, container_width, 
-      make_clouds = true);
-    });
-      
-    const random_terrain_button = document.getElementById('randomize_terrain');
-    
-    random_terrain_button.addEventListener('click', function() {
-
-      numRows = number_hex_v.value;
-      numCols = number_hex_h.value;
-      container_height = document.getElementById('hex_gen_page').offsetHeight;
-      container_width = document.getElementById('hex_gen_page').offsetWidth;
-
-    //select_terrain_type();
-    select_terrain_type(
-      terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
-      // ideal/finished proportions = [0.2976, 0.0585, 0.1837, 0.0345, 0.4257871064],
-      terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.001], // we increase the earlier types because so many are overwritten                                                                          
-      terrain_replace_list = [
-        [],   // wooded first, replaces nothing 
-        ['wooded'], // desert
-        ['wooded','desert'], // mountain
-        ['wooded','desert','mountain'], // 'swamp' replaces all
-        ['wooded','desert','mountain', 'swamp'] // optional open iteration breaks up some of the geomorphs unpredictably 
-        ],
-      elevation_classes = ['elevation_3', 'elevation_4', 'elevation_6', 'elevation_1', 'elevation_2'], // elevation classes for terrain types
-      elevation_replacements = [
-        [], // woods
-        ['elevation_3'], // desert
-        ['elevation_3','elevation_4'], // mountain
-        ['elevation_3','elevation_4','elevation_6'], // swamp
-        ['elevation_3','elevation_4','elevation_6','elevation_1'] // optional open 
-
-        ], 
-      delay = 500 // this number is in milliseconds, and is totally optional; could be 0.
-    );
-  });
-
-  const rivers_button = document.getElementById('apply_waterways');
-  rivers_button.addEventListener('click', function() {
-    numRows = number_hex_v.value;
-    numCols = number_hex_h.value;
-    container_height = document.getElementById('hex_gen_page').offsetHeight;
-    container_width = document.getElementById('hex_gen_page').offsetWidth;
-        
-    apply_waterways(
-      //on_which_terrain_types = ['wooded', 'wooded_hills', 'desert', 'mountain', 'swamp', 'open'],
-      //chance_for_SH = [0.0303030303, 0.01492537313, 0, 0.06140350877, 0.02173913043, 0], 
-      //chance_for_town = [0.002518891688, 0, 0, 0, 0, 0.01408450704],
-      //delay = 250 // this number is in milliseconds, and is totally optional; could be 0.
-    );
-  });
-
-  const features_button = document.getElementById('apply_features');
-  features_button.addEventListener('click', function() {
-        
-    numRows = number_hex_v.value;
-    numCols = number_hex_h.value;
-    container_height = document.getElementById('hex_gen_page').offsetHeight;
-    container_width = document.getElementById('hex_gen_page').offsetWidth;
-        
-    apply_strongholds(
-      on_which_terrain_types = ['wooded', 'wooded_hills', 'desert', 'mountain', 'swamp', 'open'],
-      chance_for_SH = [0.0303030303, 0.01492537313, 0, 0.06140350877, 0.02173913043, 0], 
-      chance_for_town = [0.002518891688, 0, 0, 0, 0, 0.01408450704],
-      delay = 250 // this number is in milliseconds, and is totally optional; could be 0.
-    );
-  });
-            
     // Create hexagon flower for Arneson cells. Make it draggable by mouse.
-    make_hex_flower(0.8);
-    make_hex_flower_draggable();
-    get_terr_for_hex_flower(hexagon_map_container);
+    //make_hex_flower(0.8);
+    //make_hex_flower_draggable();
+    //get_terr_for_hex_flower(hexagon_map_container);
 
-    // Temporary section for adding hexagon selection mouse-over event.
-    //document.getElementById('zoom_layer').addEventListener('mouseover', (event) => {
-    //  if(event.target && event.target.tagName === "DIV" && event.parentNode.children[1].id == 'hex_layer'){
-    //    event.target.parentNode.children[1].
-    //  }
-    //});
 
-    hovered_hexagon = null;
-
-    // Add mouse click event listener for click and unclick, which gets used to pan map.
-    let mouse_clicked = false;
     
-    let initial_mousedown_x = 0;
-    let initial_mousedown_y = 0;
-    let previous_mousedown_x = 0;
-    let previous_mousedown_y = 0;
-    let previous_translate_x = 0;
-    let previous_translate_y = 0;
 
-    document.getElementById('zoom_layer').addEventListener('mousedown', (event) => {
-      mouse_clicked = true;
-      initial_mousedown_x = event.clientX
-      initial_mousedown_y = event.clientY
-      console.log(mouse_clicked);
-    });
-    document.getElementById('zoom_layer').addEventListener('mouseup', (event) => {
-      mouse_clicked = false;
 
-      // If hex_layer is getting shunted too far off screen, bring it back towards center.
-      if(parseFloat(move_x) >= 500 | parseFloat(move_x) <= -500 | parseFloat(move_y) >= 400 | parseFloat(move_y) <= -400){
-        move_x = parseFloat(move_x)*0.5 + 'px';
-        move_y = parseFloat(move_y)*0.5 + 'px';
-        document.getElementById('hex_layer').style.transition = "transform 1s ease-in-out";
-        document.getElementById('hex_layer').style.transform = `translateY(${move_y}) translateX(${move_x})`;
-        document.getElementById('hex_layer').style.zIndex = 1;
-        document.getElementById('hex_layer').style.position = 'relative';
-      }
-
-      // Note that transformation that was applied to the hex_layer div at the moment
-      // of un-clicking the mouse.
-      previous_translate_x = move_x;
-      previous_translate_y = move_y;
-      console.log(mouse_clicked,', and previous translateX was: ' + previous_translate_x);
-    });
-
-    document.getElementById('zoom_layer').addEventListener('mousemove', (event) => {
-
-    // PAN HEXAGON MAP SECTION //
-    if(mouse_clicked){
-      
-      // Calculate how much mouse has moved since it was clicked
-      mouse_delta_x = event.clientX - initial_mousedown_x;
-      mouse_delta_y = event.clientY - initial_mousedown_y;
-      
-      //move_x = event.clientX - initial_mousedown_x + 'px';
-      move_x = mouse_delta_x + previous_mousedown_x;
-      //move_y = event.clientY - initial_mousedown_y + 'px';
-      move_y = mouse_delta_y + previous_mousedown_y;
-      
-      // Apply zoom to reduce speed when zoomed in.
-      move_x = move_x / current_zoom
-      move_y = move_y / current_zoom;
-
-      // Add in whatever translateX / translateY was applied in previous 
-      // pan events, if any.
-      move_x = move_x + parseFloat(previous_translate_x) + 'px';
-      move_y = move_y + parseFloat(previous_translate_y) + 'px';
-
-      document.getElementById('hex_layer').style.transition = "none";
-      document.getElementById('hex_layer').style.transform = `translateY(${move_y}) translateX(${move_x})`;
-      document.getElementById('hex_layer').style.zIndex = 1;
-      document.getElementById('hex_layer').style.position = 'relative';
-    }
-
-    // POP UP HEXAGON UNDER MOUSE CURSOR SECTION //
-
-    // Check if the target is a "hex" div
-    if (event.target && event.target.classList.contains('zoomlayer')) {
-
-        // Get mouse position, adjusted for position inside hex_gen_page.
-        mouse_x = event.clientX; //- (window.innerWidth - document.getElementById('zoom_layer').offsetWidth);
-        mouse_y = event.clientY; //- (window.innerHeight - document.getElementById('zoom_layer').offsetHeight);
-
-        // Calculate which div the mouse is hovering over.
-        const hexagons = document.getElementsByClassName('hex-center');
-
-        // Has a hexagon previously been highlighted, but now is not under the cursor?
-        // If so, remove highlight from such hex.
-        if(hovered_hexagon != null){
-          rect = hovered_hexagon.getBoundingClientRect();
-
-          if (mouse_x < rect.left | mouse_x > rect.right | mouse_y < rect.top | mouse_y > rect.bottom){
-            hovered_hexagon.classList.remove('hovered');
-            hovered_hexagon = null;
-          }
-        }
-
-        for (let i = 0; i < hexagons.length; i++) {
-          const div = hexagons[i];
-          const rect = div.getBoundingClientRect();
-
-          // If the mouse is over hexagon i ...
-          if (mouse_x >= rect.left && mouse_x <= rect.right && mouse_y >= rect.top && mouse_y <= rect.bottom) {
-            // Is this hexagon newly highlighted?
-            if(hovered_hexagon != div){
-              // Remove 'hovered' from previously highlighted div
-              if(hovered_hexagon != null){
-              hovered_hexagon.classList.remove('hovered');
-              }
-              hovered_hexagon = div;
-              if(!div.classList.contains('hovered') && current_zoom <= 2){
-                hovered_hexagon.classList.add('hovered');
-              }
-              break;
-            }
-          }
-        }
-
-        // Move lava background piece to sit behind hovered, floating hexagon.
-        lava_background = document.getElementById('lava-gradient-box');
-        lava_highlights = document.getElementById('lava_goop');
-
-        lava_background.style.top = hovered_hexagon.style.top;
-        lava_background.style.left = hovered_hexagon.style.left;
-        lava_background.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
-        lava_background.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
-
-        lava_highlights.style.top = hovered_hexagon.style.top;
-        lava_highlights.style.left = hovered_hexagon.style.left;
-        lava_highlights.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
-        lava_highlights.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
-    }
-    });
-   // Temporary section for adding scroll zoom.
-   // Resume later!
-    let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
-    let current_zoom_unbinned = 2;
-    let lastKnownScrollPosition = 0;
-    let min_zoom = 1;
-    let max_zoom = 10;
-  
-    // Add mouse scroll event listener to the 'zoom_layer' div.
-    document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
-      current_zoom_unbinned = lastKnownScrollPosition - event.deltaY * 0.01;
-      lastKnownScrollPosition = current_zoom_unbinned;
-      //console.log(`current_zoom_unbinned: ${current_zoom_unbinned}`);
-      // ZOOM OUT
-      if(current_zoom_unbinned <= -1 && current_zoom > min_zoom){
-        current_zoom = current_zoom - 1;
-        current_zoom_unbinned = 0;
-        lastKnownScrollPosition = 0;
-        console.log(`current_zoom ${current_zoom}`);
-        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
-        numRows = number_hex_v.value;
-        numCols = number_hex_h.value;
-      }
-      // ZOOM IN
-      if(current_zoom_unbinned >= 1 && current_zoom < max_zoom){
-        current_zoom = current_zoom + 1;
-        current_zoom_unbinned = 0;
-        lastKnownScrollPosition = 0;
-        console.log(`current_zoom ${current_zoom}`);
-        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom})`;
-        
-        // Check for whoosh
-        if(current_zoom == 6){
-          console.log('whoosh!')
-        }
-        numRows = number_hex_v.value;
-        numCols = number_hex_h.value;
-      }
-
-      // If current zoom unbinned is getting ridiculously negative or positive, set back to 0.
-      if(current_zoom_unbinned < -2.5 | current_zoom_unbinned > 2.5){
-        current_zoom_unbinned = 0;
-        lastKnownScrollPosition = 0;
-      }
-
-      // If already at most zoomed out possible, don't allow negative zoom values to build up.
-      if(current_zoom == 1 & current_zoom_unbinned < 0) {
-        current_zoom_unbinned = 0;
-        lastKnownScrollPosition = 0;
-      }
-
-      event.preventDefault();
-    });
   </script>
 </body>
 </html>

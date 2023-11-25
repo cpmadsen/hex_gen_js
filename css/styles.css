@@ -346,3 +346,8 @@
     left: 0px;
     z-index: 1000;
 }
+
+.a-cell {
+    position: relative;
+    background-image: url(../mats/a_cell_blank.png);
+}
