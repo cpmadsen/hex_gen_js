@@ -135,7 +135,7 @@ function enable_zoom_and_pan(){
           document.getElementById('hex_layer').style.position = 'relative';
         }
     
-        // POP UP HEXAGON UNDER MOUSE CURSOR SECTION //
+        // POP UP HEXAGON UNDER MOUSE CURSOR OR RENDER ARNESON CELLS SECTION //
     
         // Check if the target is a "hex" div
         if (event.target && event.target.classList.contains('zoomlayer')) {
@@ -171,8 +171,17 @@ function enable_zoom_and_pan(){
                   hovered_hexagon.classList.remove('hovered');
                   }
                   hovered_hexagon = div;
-                  if(!div.classList.contains('hovered') && current_zoom <= 2){
-                    hovered_hexagon.classList.add('hovered');
+                  // Render Arneson cells if current_zoom is 6 or more.
+                  if(current_zoom < 6){
+                    if(!div.classList.contains('hovered') && current_zoom <= 2){
+                      hovered_hexagon.classList.add('hovered');
+                    }
+                  }
+                  if(current_zoom >= 6){
+                    if(document.getElementById(hovered_hexagon.id + '-a_cell_1') == null){
+                      console.log('making arneson cells for hexagon ' + hovered_hexagon.id)
+                      make_arneson_cells(hovered_hexagon.id)
+                    }
                   }
                   break;
                 }

@@ -1,9 +1,12 @@
 // TEST for arneson cells
-function make_arneson_cells(){
+function make_arneson_cells(hex_id){
     
     // We will need this to be grabbed by "which hex the user is actually zooming in on."
-    test_hex = document.getElementById('hex_188');
+    // Do this for all hexes?
 
+    //Array.from(document.getElementsByClassName('hex-center')).forEach((test_hex) => {
+      
+    test_hex = document.getElementById(hex_id);
 
     // Set the bounds of the imaginary box containing all the cells within the hex
     arneson_left = test_hex.offsetLeft;
@@ -66,4 +69,4 @@ function make_arneson_cells(){
       //nudge_x =  0.5*flower_container_width
       test_hex.appendChild(arneson_cell);
     }
-  }
+}
