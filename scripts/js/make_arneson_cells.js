@@ -1,33 +1,48 @@
 // TEST for arneson cells
 function make_arneson_cells(){
+    
+    // We will need this to be grabbed by "which hex the user is actually zooming in on."
     test_hex = document.getElementById('hex_188');
-    //arneson_left = test_hex.offsetLeft;
-    arneson_left = 0;
-    //arneson_right = test_hex.offsetLeft + test_hex.offsetWidth;
-    arneson_right = 1000;
-    //arneson_top = test_hex.offsetTop;
-    arneson_top = 0;
-    //arneson_bottom = test_hex.offsetTop + test_hex.offsetHeight;
-    arneson_bottom = 1000;
+
+
+    // Set the bounds of the imaginary box containing all the cells within the hex
+    arneson_left = test_hex.offsetLeft;
+    //arneson_left = 0;
+    arneson_right = test_hex.offsetLeft + test_hex.offsetWidth;
+    //arneson_right = 1000;
+    arneson_top = test_hex.offsetTop;
+    //arneson_top = 0;
+    arneson_bottom = test_hex.offsetTop + test_hex.offsetHeight;
+    //arneson_bottom = 1000;
 
     // Input the number of arneson cells in row, column...
+    // Will need to change based on user-defined size of hex - 22 cells per 5-mile, 32 per 6-mile, x for 8-mile, 88 for 10-mile... 
+    // potentially 1, 2 or 3 mile hexes.
+    // **** different number needed for the total number of cells within the imaginary box. Some will be cut off and never rendered.
+    // Then later use CSS to trim cells that are on diagonal borders.
     number_arn_cells_in_col = 6;
-    number_arn_cells_in_row = 6;
+    number_arn_cells_in_row = 6;  // test, yields 36 cells across the whole box.
     // Calculate total number of arneson cells.
     number_arneson_cells = number_arn_cells_in_col * number_arn_cells_in_row;
 
-    cell_width = (arneson_right - arneson_left) / number_arneson_cells;
-    cell_height = (arneson_bottom - arneson_top) / number_arneson_cells;
+    cell_width = (arneson_right - arneson_left) / number_arn_cells_in_col;
+    cell_height = (arneson_bottom - arneson_top) / number_arn_cells_in_row;
 
     for (i = 1; i <= number_arneson_cells; i++){
-      
-      x_coord = Math.ceil(i / number_arn_cells_in_col);
-      y_coord = (x_coord - 1) * number_arn_cells_in_col + i % number_arn_cells_in_col;
+      x_coord = Math.ceil(i / number_arn_cells_in_row);
+      y_coord = i % number_arn_cells_in_col;
+      if (y_coord = 0) {y_coord = number_arn_cells_in_col;}
+      //y_coord = (x_coord - 1) * number_arn_cells_in_col + i % number_arn_cells_in_col;
 
-      //this_cell_top = arneson_top + (i * cell_height);
-      this_cell_top = (x_coord * cell_height);
-      //this_cell_left = arneson_left + (i * cell_width);
-      this_cell_left = (y_coord * cell_width);
+      this_cell_top = ((y_coord) * cell_height);
+      //this_cell_top = arneson_top + ((y_coord - 1) * cell_height);
+      //              arneson_top     y_coord - 1    cell_height
+      //         ==   hex_anchor      transposed     spacer    
+
+      this_cell_left = ((x_coord) * cell_width);
+      //this_cell_top = (x_coord * cell_height);
+      //this_cell_left = arneson_left + ((x_coord - 1) * cell_width);
+      //this_cell_left = (y_coord * cell_width);
 
       const arneson_cell = document.createElement('div');
       arneson_cell.className = 'a-cell';

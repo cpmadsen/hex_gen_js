@@ -348,6 +348,8 @@
 }
 
 .a-cell {
-    position: relative;
+    position: absolute;
     background-image: url(../mats/a_cell_blank.png);
+    background-size: contain;
+    background-repeat: no-repeat;
 }

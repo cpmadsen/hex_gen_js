@@ -1,4 +1,8 @@
 function render_hexagons(numCols, numRows, container_height, container_width, current_zoom = 1, rerender = false) {
+
+    // Within the container (which is set to take up a % of screen size), we use a nested loop to fill out an imaginary grid 
+    // with "hex-centers", which are actually top-left anchors for the hex .pngs, and these anchors are set to a pixel in the container
+    // which is later scaled according to user zoom (mousewheel). 
     
     let max_y = container_height * current_zoom;
     let max_x = container_width * current_zoom;
@@ -47,7 +51,7 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
 
     // For each row...
     for (let xCoord = 1; xCoord <= numCols; xCoord++) {
-    // Fill out column with hexagons
+    // Fills out column with hexagons, from top to bottom, left to right in terms of columns
         for (let yCoord = 1; yCoord <= numRows; yCoord++) {
             // Calculate a unique ID
             const uniqueID = (numRows) * (xCoord - 1) + yCoord;
