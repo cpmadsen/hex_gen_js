@@ -208,6 +208,7 @@ function enable_zoom_and_pan(){
     let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
     let current_zoom_unbinned = 2;
     let lastKnownScrollPosition = 0;
+    // Zoom Levels
     let min_zoom = 1;
     let max_zoom = 10;
 
@@ -216,49 +217,130 @@ function enable_zoom_and_pan(){
       current_zoom_unbinned = lastKnownScrollPosition - event.deltaY * 0.01;
       lastKnownScrollPosition = current_zoom_unbinned;
       //console.log(`current_zoom_unbinned: ${current_zoom_unbinned}`);
+
       // ZOOM OUT
-      if(current_zoom_unbinned <= -1 && current_zoom > min_zoom){
+      if(current_zoom_unbinned <= -1 && current_zoom > min_zoom) {
         current_zoom = current_zoom - 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
-        console.log(`current_zoom ${current_zoom}`);
+        //console.log(`current_zoom ${current_zoom}`);
         if(current_zoom == 6){
-            if(document.getElementsByClassName('hex-center').length > 1){ 
-                Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
-                    //hexagon.classList.remove('hex-faded');
-                    //hexagon.children[0].classList.remove('hex-invisible');
-                    document.getElementById('lava-gradient-box').classList.remove('hex-invisible');
-                    lava_box.style.transition = '2s ease';
-                  });
+          console.log("Reverse whoosh!!");
+          if(document.getElementsByClassName('hex-center').length > 1){ 
+            Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
+                  //hexagon.classList.remove('hex-faded');
+                  //hexagon.children[0].classList.remove('hex-invisible');
+                  document.getElementById('lava-gradient-box').classList.remove('hex-invisible');
+                  lava_box.style.transition = '2s ease';
+                });
               }
         }
+        /*
         if(current_zoom < 5){
             current_zoom_transformed = current_zoom;
         } else {
             current_zoom_transformed = current_zoom ** (1.25);
         }
         document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        REPLACED THE ABOVE AND BELOW MATCHING CODE WITH THE SWITCH STATEMENT BELOW */
+        
+        switch (current_zoom) {
+          case 1:
+            current_zoom_transformed = 1;
+            break;
+          case 2:
+            current_zoom_transformed = 1.5;
+            break;
+          case 3:
+            current_zoom_transformed = 2.25;
+            break;
+          case 4:
+            current_zoom_transformed = 3.5;
+            break;
+          case 5:
+            current_zoom_transformed = 5;
+            break;
+          case 6:
+            current_zoom_transformed = 5.75;
+            break;
+          case 7:
+            current_zoom_transformed = 7.25;
+            break;
+          case 8:
+            current_zoom_transformed = 9;
+            break;
+          case 9:
+            current_zoom_transformed = 12;
+            break;
+          case 10:
+            current_zoom_transformed = 15;
+            break;
+        
+          default:
+            console.log("Not a valid zoom integer");
+        } 
+        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease';   // introduces a bad blur on the transition but looks better
         numRows = number_hex_v.value;
         numCols = number_hex_h.value;
       }
+
       // ZOOM IN
-      if(current_zoom_unbinned >= 1 && current_zoom < max_zoom){
+      if(current_zoom_unbinned >= 1 && current_zoom < max_zoom) {
         current_zoom = current_zoom + 1;
         current_zoom_unbinned = 0;
         lastKnownScrollPosition = 0;
-        console.log(`current_zoom ${current_zoom}`);
+        //console.log(`current_zoom ${current_zoom}`);
+        /*
         if(current_zoom < 5){
             current_zoom_transformed = current_zoom;
         } else {
             current_zoom_transformed = current_zoom ** (1.25);
         }
         document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        */
+        
+        switch (current_zoom) {
+          case 1:
+            current_zoom_transformed = 1;
+            break;
+          case 2:
+            current_zoom_transformed = 1.5;
+            break;
+          case 3:
+            current_zoom_transformed = 2.25;
+            break;
+          case 4:
+            current_zoom_transformed = 3.5;
+            break;
+          case 5:
+            current_zoom_transformed = 5;
+            break;
+          case 6:
+            current_zoom_transformed = 5.75;
+            break;
+          case 7:
+            current_zoom_transformed = 7.25;
+            break;
+          case 8:
+            current_zoom_transformed = 9;
+            break;
+          case 9:
+            current_zoom_transformed = 12;
+            break;
+          case 10:
+            current_zoom_transformed = 15;
+            break;
+        
+          default:
+            console.log("Not a valid zoom integer");
+        }
+        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease'; 
         
         // Check for whoosh
         if(current_zoom == 6){
-
           console.log('whoosh!');
-          
           if(document.getElementsByClassName('hex-center').length > 1){ 
             Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
                 //hexagon.classList.add('hex-faded');
