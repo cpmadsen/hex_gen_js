@@ -210,7 +210,7 @@ function enable_zoom_and_pan(){
     let lastKnownScrollPosition = 0;
     // Zoom Levels
     let min_zoom = 1;
-    let max_zoom = 10;
+    let max_zoom = 15;
 
     // Add mouse scroll event listener to the 'zoom_layer' div.
     document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
@@ -258,7 +258,7 @@ function enable_zoom_and_pan(){
             current_zoom_transformed = 3.5;
             break;
           case 5:
-            current_zoom_transformed = 5;
+            current_zoom_transformed = 4.5;
             break;
           case 6:
             current_zoom_transformed = 5.75;
@@ -270,10 +270,25 @@ function enable_zoom_and_pan(){
             current_zoom_transformed = 9;
             break;
           case 9:
-            current_zoom_transformed = 12;
+            current_zoom_transformed = 11;
             break;
           case 10:
+            current_zoom_transformed = 12.75;
+            break;
+          case 11:
+            current_zoom_transformed = 13.75;
+            break;
+          case 12:
+            current_zoom_transformed = 14.5;
+            break;
+          case 13:
             current_zoom_transformed = 15;
+            break;
+          case 14:
+            current_zoom_transformed = 15.5;
+            break;
+          case 15:
+            current_zoom_transformed = 16;
             break;
         
           default:
@@ -314,7 +329,7 @@ function enable_zoom_and_pan(){
             current_zoom_transformed = 3.5;
             break;
           case 5:
-            current_zoom_transformed = 5;
+            current_zoom_transformed = 4.5;
             break;
           case 6:
             current_zoom_transformed = 5.75;
@@ -326,10 +341,25 @@ function enable_zoom_and_pan(){
             current_zoom_transformed = 9;
             break;
           case 9:
-            current_zoom_transformed = 12;
+            current_zoom_transformed = 11;
             break;
           case 10:
+            current_zoom_transformed = 12.75;
+            break;
+          case 11:
+            current_zoom_transformed = 13.75;
+            break;
+          case 12:
+            current_zoom_transformed = 14.5;
+            break;
+          case 13:
             current_zoom_transformed = 15;
+            break;
+          case 14:
+            current_zoom_transformed = 15.5;
+            break;
+          case 15:
+            current_zoom_transformed = 16;
             break;
         
           default:

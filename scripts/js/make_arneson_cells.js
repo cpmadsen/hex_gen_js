@@ -24,13 +24,15 @@ function make_arneson_cells(hex_id){
 
     // **** different number needed for the total number of cells within the imaginary box. Some will be cut off and never rendered.
     
-    // *** until hexes are pixel-perfect, arneson cells will not quite line up...
+    // *** until hexes are pixel-perfect, arneson cells will not quite line up... nor will number of cells per col/row yield correct number.
     // *** also, the hex-shadow underneath & the 1.06 width will cause issues that will need to be corrected for (ie. setting box
     // such that it lines up with edges of hex correctly.) 
     
     // *** Then later we use CSS to trim cells that are on diagonal borders.
-    number_arn_cells_in_col = 6;
-    number_arn_cells_in_row = 6;  // test, yields 36 cells across the whole box.
+    number_arn_cells_in_col = 12;
+    number_arn_cells_in_row = 12;  // will need to be a variable that changes depending on miles/hex.
+    // 6 cells per col/row is close to 22 per 5-mile hex; 12 per col/row is close to the 88 per 10-mile hex.
+
     // Calculate total number of arneson cells.
     number_arneson_cells = number_arn_cells_in_col * number_arn_cells_in_row;
 
