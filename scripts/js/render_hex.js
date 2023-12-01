@@ -41,6 +41,10 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
     // Hexagon width must always be slightly larger than hexagon height, for the PNG to not get cut off.
     hexagon_size_x = 1.075 * hexagon_size_y;
 
+    // Rounding may help with reducing artifacts when the hexes render.
+    hexagon_size_x = Math.round(hexagon_size_x);
+    hexagon_size_y = Math.round(hexagon_size_y);
+
     // Determine gutter width (margin on left and right of hex map)
     hex_map_width = hexagon_size_x * numCols;
     hex_map_height = hexagon_size_y * numRows;

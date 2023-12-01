@@ -1,5 +1,5 @@
 .hex-center {
-    background: url(../mats/blank_hex_w_base_small.png);
+    background: url(../mats/New_Hexes/Blank_Hex_250px.png);
     background-size: cover !important;
     transition: transform 0.3s ease;
 }
@@ -22,7 +22,7 @@
 }
 
 .desert {
-    background: url(../mats/desert_hex.png) !important;
+    background: url(../mats/New_Hexes/Desert_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -30,14 +30,14 @@
 }
 
 .mountain {
-    background: url(../mats/mountain_hex.png) !important;
+    background: url(../mats/New_Hexes/Mountain_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
     background-repeat: no-repeat;
 }
 .open {
-    background: url(../mats/open_hex.png) !important;
+    background: url(../mats/New_Hexes/Open_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -45,7 +45,7 @@
 }
 
 .swamp {
-    background: url(../mats/swamp_hex.png) !important;
+    background: url(../mats/New_Hexes/Swamp_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -53,7 +53,7 @@
 }
 
 .wooded {
-    background: url(../mats/wooded_hex.png) !important;
+    background: url(../mats/New_Hexes/Woods_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -149,7 +149,7 @@
 }
 
 .wooded_hills {
-    background: url(../mats/wooded_hills_hex.png) !important;
+    background: url(../mats/New_Hexes/WoodedHills_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
