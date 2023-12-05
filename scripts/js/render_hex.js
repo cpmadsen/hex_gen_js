@@ -94,8 +94,9 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
                 hex_for_mods.style.top = (yCoord - 0.5) * hexagon_size_y - (yCoord)*hexagon_size_y*0.085 + 10 + 'px';
             }
 
+            // Hex Labels
             hex_label = document.getElementById('hex_label_' + uniqueID);
-            hex_label.style.zIndex = hex_for_mods.style.zIndex + 1;
+            hex_label.style.zIndex = hex_for_mods.style.zIndex + 2;
             let current_hex_row = uniqueID % numRows;
             if (current_hex_row == 0) {
                 current_hex_row = numRows;
@@ -106,7 +107,13 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
             // THE ABOVE IS FOR THE HEX LABEL TO DISPLAY NICELY AS COL/ROW. 
             // When debugging it can be useful to switch this off and turn on the "Hex xyz" label found in init_hex.
             
-            hex_label.style.fontSize = hexagon_size_y*0.25 + 'px';            
+            hex_label.style.fontSize = hexagon_size_y*0.25 + 'px'; 
+            
+            // Hex Illustrations
+            hex_illus = document.getElementById('hex_doodle_' + uniqueID);
+            hex_illus.style.zIndex = hex_for_mods.style.zIndex + 1;
+            hex_illus.style.width = hexagon_size_x + 'px';
+            hex_illus.style.height = hexagon_size_y + 'px';
         }
     }
 }

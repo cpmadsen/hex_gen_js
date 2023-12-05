@@ -21,6 +21,15 @@ function initialize_hexagons(number_of_hexes) {
 
         hexagon.appendChild(hex_label);
 
+        // ILLUSTRATION FOR HEX
+        hex_doodle = document.createElement('div');
+        hex_doodle.id = 'hex_doodle_' + i;
+        hex_doodle.className = 'hex-doodle';
+        hex_doodle.style.width = '100px';
+        hex_doodle.style.height = '100px';
+
+        hexagon.appendChild(hex_doodle);
+
         // Append the hexagon div to the document body or another container
         //hex_gen_page = document.getElementById('hex_gen_page');
         //hex_gen_page.appendChild(hexagon);

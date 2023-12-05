@@ -408,67 +408,30 @@ function apply_illustrations(terrain_type) {
     
     //all_hexes_of_type.forEach((hex) => 
     for (let i = 0; i < all_hexes_of_type.length; i++) {
+        /*
         doodle = document.createElement('div');
         doodle.id = 'doodle ' + i;
         doodle.className = 'doodle';
-        doodle.style.background = url(`../mats/New_Hexes/${terrain_type}_Illus.png`);
-        /*
-        switch (terrain_type) {
-            case 1:
-              current_zoom_transformed = 1;
-              break;
-            case 2:
-              current_zoom_transformed = 1.5;
-              break;
-            case 3:
-              current_zoom_transformed = 2.25;
-              break;
-            case 4:
-              current_zoom_transformed = 3.5;
-              break;
-            case 5:
-              current_zoom_transformed = 4.5;
-              break;
-            case 6:
-              current_zoom_transformed = 5.75;
-              break;
-            case 7:
-              current_zoom_transformed = 7.25;
-              break;
-            case 8:
-              current_zoom_transformed = 9;
-              break;
-            case 9:
-              current_zoom_transformed = 11;
-              break;
-            case 10:
-              current_zoom_transformed = 12.75;
-              break;
-            case 11:
-              current_zoom_transformed = 13.75;
-              break;
-            case 12:
-              current_zoom_transformed = 14.5;
-              break;
-            case 13:
-              current_zoom_transformed = 15;
-              break;
-            case 14:
-              current_zoom_transformed = 15.5;
-              break;
-            case 15:
-              current_zoom_transformed = 16;
-              break;
-          
-            default:
-              console.log("Not a valid zoom integer");
-          }
-          */
-
-
-        //doodle.style.position = 'absolute';
+        let urlstring = `../mats/New_Hexes/${terrain_type}_Illus.png`;
+        //console.log(urlstring);
+        doodle.style.background = 'url(urlstring)';
+        
+        doodle.style.position = 'absolute';
         doodle.style.zIndex = 1000;
         all_hexes_of_type[i].appendChild(doodle);    
+        */
+        let hex = all_hexes_of_type[i];
+        console.log(hex);
+
+        let illus = hex.querySelector('.hex-doodle');
+        console.log(illus);
+
+        let urlstring = `../mats/New_Hexes/${terrain_type}_Illus.png`;
+        console.log(urlstring);
+        
+        illus.style.background = `url(${urlstring})`;
+        illus.style.position = 'absolute';
+        illus.style.zIndex = '1000';
     }
     console.log(`Applied ${terrain_type} illustrations.`);
 }
