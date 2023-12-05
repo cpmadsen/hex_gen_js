@@ -381,7 +381,7 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     mountain_counter += 1;
                     if (mountain_counter == 6) {
                         if (Math.random(0,1) <= chance_for_snowcaps) {
-                            target_mountain.classList.remove('mountain');
+                            //target_mountain.classList.remove('mountain');
                             target_mountain.classList.add('snowcap');
                             target_mountain.classList.remove('elevation_6');
                             target_mountain.classList.add('elevation_7');
@@ -401,6 +401,77 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     target_mountain.classList.add('elevation_5');
 }   }   }   }   }
 
+function apply_illustrations(terrain_type) {
+    // Gets all the hexes of the terrain type, finds correct illustration, then appends it.
+
+    all_hexes_of_type = Array.from(document.getElementsByClassName(terrain_type));
+    
+    //all_hexes_of_type.forEach((hex) => 
+    for (let i = 0; i < all_hexes_of_type.length; i++) {
+        doodle = document.createElement('div');
+        doodle.id = 'doodle ' + i;
+        doodle.className = 'doodle';
+        doodle.style.background = url(`../mats/New_Hexes/${terrain_type}_Illus.png`);
+        /*
+        switch (terrain_type) {
+            case 1:
+              current_zoom_transformed = 1;
+              break;
+            case 2:
+              current_zoom_transformed = 1.5;
+              break;
+            case 3:
+              current_zoom_transformed = 2.25;
+              break;
+            case 4:
+              current_zoom_transformed = 3.5;
+              break;
+            case 5:
+              current_zoom_transformed = 4.5;
+              break;
+            case 6:
+              current_zoom_transformed = 5.75;
+              break;
+            case 7:
+              current_zoom_transformed = 7.25;
+              break;
+            case 8:
+              current_zoom_transformed = 9;
+              break;
+            case 9:
+              current_zoom_transformed = 11;
+              break;
+            case 10:
+              current_zoom_transformed = 12.75;
+              break;
+            case 11:
+              current_zoom_transformed = 13.75;
+              break;
+            case 12:
+              current_zoom_transformed = 14.5;
+              break;
+            case 13:
+              current_zoom_transformed = 15;
+              break;
+            case 14:
+              current_zoom_transformed = 15.5;
+              break;
+            case 15:
+              current_zoom_transformed = 16;
+              break;
+          
+            default:
+              console.log("Not a valid zoom integer");
+          }
+          */
+
+
+        //doodle.style.position = 'absolute';
+        doodle.style.zIndex = 1000;
+        all_hexes_of_type[i].appendChild(doodle);    
+    }
+    console.log(`Applied ${terrain_type} illustrations.`);
+}
 
 async function select_terrain_type(
     terrain_types,
@@ -425,6 +496,7 @@ async function select_terrain_type(
                 if (i < terrain_types.length) {            
                     assign_terrain(this_terrain, this_proportion, this_replacement_list, this_elevation, this_elevation_replace_list);
                     delay;
+                    
                     i++;                                    
                     terrain_application_loop();             
                          } else {
@@ -446,21 +518,28 @@ async function select_terrain_type(
                         terrain_table.push({TerrainType: terrain_types[k], Proportion: final_count_proportion(terrain_types[k])});
                     }
                     console.table(terrain_table);  
-                    delay;
+                    delay;   
 
                     // Adjacent hexes to swamps and deserts are turned into certain types. //
                     // (type to look at, disallowed neighbors, replacement type, disallowed elevations, replacement elevation)
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
                     cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
-                    delay;
                     // Snowcaps and wooded hills are applied around mountains. //
                     apply_special_mountains(.5, 1);
                     delay;
+                    
+                    terrain_types.forEach((ttype) => {
+                        apply_illustrations(ttype); 
+                    });
+                    
                 }
             }, delay)
         }
         terrain_application_loop();
+
+        
+        })
         resolve();
-    });
+    
 }            

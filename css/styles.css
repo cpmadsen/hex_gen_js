@@ -327,6 +327,13 @@
     border:2px solid goldenrod;
 }
 
+.doodle {
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    top: 12%;
+    left: 12%;
+}
+
 .waterways {
     background: lightblue;
     opacity: 0.1;
