@@ -381,7 +381,7 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     mountain_counter += 1;
                     if (mountain_counter == 6) {
                         if (Math.random(0,1) <= chance_for_snowcaps) {
-                            //target_mountain.classList.remove('mountain');
+                            target_mountain.classList.remove('mountain');
                             target_mountain.classList.add('snowcap');
                             target_mountain.classList.remove('elevation_6');
                             target_mountain.classList.add('elevation_7');
@@ -405,33 +405,11 @@ function apply_illustrations(terrain_type) {
     // Gets all the hexes of the terrain type, finds correct illustration, then appends it.
 
     all_hexes_of_type = Array.from(document.getElementsByClassName(terrain_type));
-    
-    //all_hexes_of_type.forEach((hex) => 
     for (let i = 0; i < all_hexes_of_type.length; i++) {
-        /*
-        doodle = document.createElement('div');
-        doodle.id = 'doodle ' + i;
-        doodle.className = 'doodle';
-        let urlstring = `../mats/New_Hexes/${terrain_type}_Illus.png`;
-        //console.log(urlstring);
-        doodle.style.background = 'url(urlstring)';
-        
-        doodle.style.position = 'absolute';
-        doodle.style.zIndex = 1000;
-        all_hexes_of_type[i].appendChild(doodle);    
-        */
         let hex = all_hexes_of_type[i];
-        console.log(hex);
-
         let illus = hex.querySelector('.hex-doodle');
-        console.log(illus);
-
-        let urlstring = `../mats/New_Hexes/${terrain_type}_Illus.png`;
-        console.log(urlstring);
-        
-        illus.style.background = `url(${urlstring})`;
+        illus.style.background = `url(../mats/New_Hexes/${terrain_type}_Illus.png)`;
         illus.style.position = 'absolute';
-        illus.style.zIndex = '1000';
     }
     console.log(`Applied ${terrain_type} illustrations.`);
 }
@@ -488,10 +466,14 @@ async function select_terrain_type(
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
                     cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
+                    
                     // Snowcaps and wooded hills are applied around mountains. //
                     apply_special_mountains(.5, 1);
                     delay;
                     
+                    apply_illustrations('wooded_hills');
+                    apply_illustrations('snowcap');
+
                     terrain_types.forEach((ttype) => {
                         apply_illustrations(ttype); 
                     });

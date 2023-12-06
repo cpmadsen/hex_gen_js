@@ -43,6 +43,7 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+
 .open {
     background: url(../mats/New_Hexes/Open_Hex.png) !important;
     top: 12%;
@@ -67,6 +68,15 @@
     background-repeat: no-repeat;
 }
 
+.snowcap {
+    background: url(../mats/New_Hexes/Snowcap.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+
+/*
 .desert_stronghold {
     background: url(../mats/desert_stronghold.png) !important;
     top: 12%;
@@ -146,7 +156,9 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
 
+/*
 .snowcap {
     background: url(../mats/snowcap_hex.png) !important;
     top: 12%;
@@ -154,7 +166,8 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
-
+*/
+/*
 .wooded_hills {
     background: url(../mats/New_Hexes/WoodedHills_Hex.png) !important;
     top: 12%;
@@ -176,7 +189,7 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
-
+*/
 .open_farm {
     background: url(../mats/open_farm.png) !important;
     top: 12%;
@@ -185,6 +198,7 @@
     background-repeat: no-repeat;
 }
 
+/*
 .vector_wooded   {background: url(../mats/vector_wooded_hex.png) !important;
     background-size: cover !important;
     background-repeat: no-repeat;
@@ -205,6 +219,7 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
 
 
 .hex-center:hover {
