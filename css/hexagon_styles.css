@@ -76,6 +76,14 @@
     background-repeat: no-repeat;
 }
 
+.wooded_hills {
+    background: url(../mats/New_Hexes/WoodedHills_Hex.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+
 /*
 .desert_stronghold {
     background: url(../mats/desert_stronghold.png) !important;
@@ -168,13 +176,7 @@
 }
 */
 /*
-.wooded_hills {
-    background: url(../mats/New_Hexes/WoodedHills_Hex.png) !important;
-    top: 12%;
-    left: 12%;
-    background-size: cover !important;
-    background-repeat: no-repeat;
-}
+
 .wooded_hills_stronghold {
     background: url(../mats/wooded_hills_stronghold.png) !important;
     top: 12%;
@@ -190,6 +192,7 @@
     background-repeat: no-repeat;
 }
 */
+
 .open_farm {
     background: url(../mats/open_farm.png) !important;
     top: 12%;

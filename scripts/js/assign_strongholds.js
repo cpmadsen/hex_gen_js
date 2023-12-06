@@ -165,7 +165,7 @@ function delete_features(terrain_types) {
     let previous_town_farms = [];
         for (let i = 0; i < terrain_types.length; i++) {
             let terrain = terrain_types[i];
-            //console.log(`removing settlements from ${terrain}`);
+            console.log(`removing settlements from ${terrain}`);
             previous_strongholds = Array.from(document.getElementsByClassName(`${terrain}_stronghold`));  
             if (previous_strongholds.length > 0) {
                     console.log(`removing strongholds from ${terrain}`);
@@ -173,9 +173,9 @@ function delete_features(terrain_types) {
                         let hex = previous_strongholds[i];
                         hex.classList.remove(`${terrain}_stronghold`);
                         //hex.classList.add(terrain);
-                        let illus = hex_to_mod.querySelector('.hex-doodle');
+                        let illus = hex.querySelector('.hex-doodle');
                         illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
-                        illus.style.position = 'absolute';
+                        //illus.style.position = 'absolute';
                         //console.log(`removed SH from ${previous_strongholds[i].id}`);
                     }
                 }
@@ -186,9 +186,9 @@ function delete_features(terrain_types) {
                         let hex = previous_towns[i];
                         hex.classList.remove(`${terrain}_town`);
                         //hex.classList.add(terrain);
-                        let illus = hex_to_mod.querySelector('.hex-doodle');
+                        let illus = hex.querySelector('.hex-doodle');
                         illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
-                        illus.style.position = 'absolute';
+                        //illus.style.position = 'absolute';
                         //console.log(`removed town from ${previous_towns[i].id}`);
                     }
                 }
@@ -198,9 +198,9 @@ function delete_features(terrain_types) {
                     let hex = previous_town_farms[i];
                     hex.classList.remove(`${terrain}_farm`);
                     //hex.classList.add(terrain);
-                    let illus = hex_to_mod.querySelector('.hex-doodle');
-                        illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
-                        illus.style.position = 'absolute';
+                    let illus = hex.querySelector('.hex-doodle');
+                    illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
+                    //illus.style.position = 'absolute';
                 }
             }
         delay;
