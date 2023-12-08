@@ -177,11 +177,13 @@ function enable_zoom_and_pan(){
                       hovered_hexagon.classList.add('hovered');
                     }
                   }
-                  if(current_zoom >= 6){
-                    if(document.getElementById(hovered_hexagon.id + '-a_cell_1') == null){
-                      console.log('making arneson cells for hexagon ' + hovered_hexagon.id)
-                      make_arneson_cells(hovered_hexagon.id)
+                  if (current_zoom >= 7) {
+                    if (document.getElementById(hovered_hexagon.id + '-a_cell_1') == null) {
+                      console.log('making arneson cells for hexagon ' + hovered_hexagon.id);
+                      make_arneson_cells(hovered_hexagon.id);
                     }
+                  } else if (current_zoom < 6) {
+                    clear_arneson_cells();
                   }
                   break;
                 }
@@ -205,12 +207,12 @@ function enable_zoom_and_pan(){
     });
 
     // Add zoom tracking and effects
-    let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
+    let current_zoom = 4; // Farthest out is 1
     let current_zoom_unbinned = 2;
     let lastKnownScrollPosition = 0;
     // Zoom Levels
     let min_zoom = 1;
-    let max_zoom = 15;
+    let max_zoom = 20;
 
     // Add mouse scroll event listener to the 'zoom_layer' div.
     document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
@@ -226,6 +228,9 @@ function enable_zoom_and_pan(){
         //console.log(`current_zoom ${current_zoom}`);
         if(current_zoom == 6){
           console.log("Reverse whoosh!!");
+
+          clear_arneson_cells();
+
           if(document.getElementsByClassName('hex-center').length > 1){ 
             Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
                   //hexagon.classList.remove('hex-faded');
@@ -246,56 +251,76 @@ function enable_zoom_and_pan(){
         
         switch (current_zoom) {
           case 1:
-            current_zoom_transformed = 1;
+            current_zoom_transformed = 0.25;
             break;
           case 2:
-            current_zoom_transformed = 1.5;
+            current_zoom_transformed = 0.5;
             break;
           case 3:
-            current_zoom_transformed = 2.25;
+            current_zoom_transformed = 1;
             break;
           case 4:
-            current_zoom_transformed = 3.5;
+            current_zoom_transformed = 1;
             break;
           case 5:
-            current_zoom_transformed = 4.5;
+            current_zoom_transformed = 1;
             break;
           case 6:
-            current_zoom_transformed = 5.75;
+            current_zoom_transformed = 1.5;
             break;
           case 7:
-            current_zoom_transformed = 7.25;
+            current_zoom_transformed = 2.25;
             break;
           case 8:
-            current_zoom_transformed = 9;
+            current_zoom_transformed = 3.5;
             break;
           case 9:
-            current_zoom_transformed = 11;
+            current_zoom_transformed = 4.5;
             break;
           case 10:
-            current_zoom_transformed = 12.75;
+            current_zoom_transformed = 5.75;
             break;
           case 11:
-            current_zoom_transformed = 13.75;
+            current_zoom_transformed = 7.25;
             break;
           case 12:
-            current_zoom_transformed = 14.5;
+            current_zoom_transformed = 9;
             break;
           case 13:
-            current_zoom_transformed = 15;
+            current_zoom_transformed = 11;
             break;
           case 14:
-            current_zoom_transformed = 15.5;
+            current_zoom_transformed = 12.75;
             break;
           case 15:
+            current_zoom_transformed = 13.75;
+            break;
+          case 16:
+            current_zoom_transformed = 14.5;
+            break;
+          case 17:
+            current_zoom_transformed = 15;
+            break;
+          case 18:
+            current_zoom_transformed = 15.5;
+            break;
+          case 19:
             current_zoom_transformed = 16;
+            break;
+          case 20:
+            current_zoom_transformed = 16.5;
             break;
         
           default:
             console.log("Not a valid zoom integer");
         } 
-        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
-        document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease';   // introduces a bad blur on the transition but looks better
+        //if (current_zoom < 1) {
+          document.getElementById('hex_layer').style.transform = `scale(${current_zoom_transformed})`;
+          document.getElementById('hex_layer').style.transition = 'transform 0.2s ease';
+        //} else {
+        //  document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        //  document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease';   // introduces a bad blur on the transition but looks better
+        //}
         numRows = number_hex_v.value;
         numCols = number_hex_h.value;
       }
@@ -317,56 +342,76 @@ function enable_zoom_and_pan(){
         
         switch (current_zoom) {
           case 1:
-            current_zoom_transformed = 1;
+            current_zoom_transformed = 0.25;
             break;
           case 2:
-            current_zoom_transformed = 1.5;
+            current_zoom_transformed = 0.5;
             break;
           case 3:
-            current_zoom_transformed = 2.25;
+            current_zoom_transformed = 1;
             break;
           case 4:
-            current_zoom_transformed = 3.5;
+            current_zoom_transformed = 1;
             break;
           case 5:
-            current_zoom_transformed = 4.5;
+            current_zoom_transformed = 1;
             break;
           case 6:
-            current_zoom_transformed = 5.75;
+            current_zoom_transformed = 1.5;
             break;
           case 7:
-            current_zoom_transformed = 7.25;
+            current_zoom_transformed = 2.25;
             break;
           case 8:
-            current_zoom_transformed = 9;
+            current_zoom_transformed = 3.5;
             break;
           case 9:
-            current_zoom_transformed = 11;
+            current_zoom_transformed = 4.5;
             break;
           case 10:
-            current_zoom_transformed = 12.75;
+            current_zoom_transformed = 5.75;
             break;
           case 11:
-            current_zoom_transformed = 13.75;
+            current_zoom_transformed = 7.25;
             break;
           case 12:
-            current_zoom_transformed = 14.5;
+            current_zoom_transformed = 9;
             break;
           case 13:
-            current_zoom_transformed = 15;
+            current_zoom_transformed = 11;
             break;
           case 14:
-            current_zoom_transformed = 15.5;
+            current_zoom_transformed = 12.75;
             break;
           case 15:
+            current_zoom_transformed = 13.75;
+            break;
+          case 16:
+            current_zoom_transformed = 14.5;
+            break;
+          case 17:
+            current_zoom_transformed = 15;
+            break;
+          case 18:
+            current_zoom_transformed = 15.5;
+            break;
+          case 19:
             current_zoom_transformed = 16;
+            break;
+          case 20:
+            current_zoom_transformed = 16.5;
             break;
         
           default:
             console.log("Not a valid zoom integer");
-        }
-        document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
-        document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease'; 
+        } 
+        //if (current_zoom < 1) {
+          document.getElementById('hex_layer').style.transform = `scale(${current_zoom_transformed})`;
+          document.getElementById('hex_layer').style.transition = 'transform 0.2s ease';
+        //} else {
+        //  document.getElementById('hex_gen_page').style.transform = `scale(${current_zoom_transformed})`;
+        //  document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease';   // introduces a bad blur on the transition but looks better
+        //}
         
         // Check for whoosh
         if(current_zoom == 6){

@@ -282,10 +282,13 @@
 }
 
 .hex-layer {
-    display: block;
+    /* display: block; */
     position: absolute;
     z-index: 1;
     transition: transform ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .zoomed {

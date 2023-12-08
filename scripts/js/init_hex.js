@@ -34,6 +34,6 @@ function initialize_hexagons(number_of_hexes) {
         //hex_gen_page = document.getElementById('hex_gen_page');
         //hex_gen_page.appendChild(hexagon);
         hex_layer = document.getElementById('hex_layer');           // CAN WE MOVE THIS OUTSIDE THE FOR LOOP TO SAVE TIME?
-        hex_layer.appendChild(hexagon)
+        hex_layer.appendChild(hexagon);
     }
 }

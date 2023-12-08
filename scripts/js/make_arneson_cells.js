@@ -72,3 +72,16 @@ function make_arneson_cells(hex_id){
       test_hex.appendChild(arneson_cell);
     }
 }
+
+function clear_arneson_cells () {
+  // This could be elaborated such that 'saved' cells are merely made invisible.
+  // Currently it is called inside the add_mouse_ef and so only triggers when the user moves the mouse. 
+
+  let total = Array.from(document.getElementsByClassName('hex-center'));
+  total.forEach (hex => {
+    let cells = Array.from(hex.getElementsByClassName('a-cell'));
+    cells.forEach (cell => {
+      cell.remove();
+    });
+  });
+}

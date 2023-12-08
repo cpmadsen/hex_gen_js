@@ -4,6 +4,7 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
     // with "hex-centers", which are actually top-left anchors for the hex .pngs, and these anchors are set to a pixel in the container
     // which is later scaled according to user zoom (mousewheel). 
     
+    /*
     let max_y = container_height * current_zoom;
     let max_x = container_width * current_zoom;
 
@@ -44,6 +45,11 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
     // Rounding may help with reducing artifacts when the hexes render.
     hexagon_size_x = Math.round(hexagon_size_x);
     hexagon_size_y = Math.round(hexagon_size_y);
+    */
+
+    // Trying out constant hex size, with the zoom code in add_mouse_ef handling all scaling. 
+    hexagon_size_x = 50;
+    hexagon_size_y = 46;
 
     // Determine gutter width (margin on left and right of hex map)
     hex_map_width = hexagon_size_x * numCols;
