@@ -177,10 +177,13 @@ function enable_zoom_and_pan(){
                     hovered_hexagon.classList.add('hovered');
                   }
                 }
-                if(current_zoom >= 6){
+                if(current_zoom >= 7){
                   if(document.getElementById(hovered_hexagon.id + '-a_cell_1') == null){
                     console.log('making arneson cells for hexagon ' + hovered_hexagon.id)
-                    make_arneson_cells(hovered_hexagon.id)
+                    make_arneson_cells(hovered_hexagon.id);
+                  }
+                  else if (current_zoom < 6) {
+                    clear_arneson_cells();
                   }
                 }
                 break;
@@ -205,12 +208,12 @@ function enable_zoom_and_pan(){
   });
 
   // Add zoom tracking and effects
-  let current_zoom = 1; // Farthest out is 1, farthest in could be 10.
+  let current_zoom = 4; // Farthest out is 1, farthest in could be 10.
   let current_zoom_unbinned = 2;
   let lastKnownScrollPosition = 0;
   // Zoom Levels
   let min_zoom = 1;
-  let max_zoom = 15;
+  let max_zoom = 20;
 
   // Add mouse scroll event listener to the 'zoom_layer' div.
   document.getElementById('zoom_layer').addEventListener('wheel', (event) => {
@@ -224,17 +227,18 @@ function enable_zoom_and_pan(){
       current_zoom_unbinned = 0;
       lastKnownScrollPosition = 0;
       //console.log(`current_zoom ${current_zoom}`);
-      if(current_zoom == 6){
+      if(current_zoom < 6){
         console.log("Reverse whoosh!!");
-        if(document.getElementsByClassName('hex-center').length > 1){ 
-          Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
-                //hexagon.classList.remove('hex-faded');
-                //hexagon.children[0].classList.remove('hex-invisible');
-                document.getElementById('lava-gradient-box').classList.remove('hex-invisible');
-                lava_box.style.transition = '2s ease';
-              });
-            }
-      }
+        clear_arneson_cells();
+        ///if(document.getElementsByClassName('hex-center').length > 1){ 
+        ///  Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
+        ///        //hexagon.classList.remove('hex-faded');
+        ///        //hexagon.children[0].classList.remove('hex-invisible');
+        ///        document.getElementById('lava-gradient-box').classList.remove('hex-invisible');
+        ///        lava_box.style.transition = '2s ease';
+        ///      });
+        ///    }
+        }
       /*
       if(current_zoom < 5){
           current_zoom_transformed = current_zoom;
@@ -369,7 +373,7 @@ function enable_zoom_and_pan(){
       document.getElementById('hex_gen_page').style.transition = 'transform 0.2s ease'; 
       
       // Check for whoosh
-      if(current_zoom == 6){
+      if(current_zoom >= 6){
         console.log('whoosh!');
         if(document.getElementsByClassName('hex-center').length > 1){ 
           Array.from(document.getElementsByClassName('hex-center')).forEach((hexagon) => {
