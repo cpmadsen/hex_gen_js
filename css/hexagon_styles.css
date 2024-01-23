@@ -1,5 +1,5 @@
 .hex-center {
-    background: url(../mats/blank_hex_w_base_small.png);
+    background: url(../mats/New_Hexes/Blank_Hex_250px.png);
     background-size: cover !important;
     transition: transform 0.3s ease;
 }
@@ -8,6 +8,13 @@
     font-family: "Courier New", monospace;
     color: rgb(52, 83, 83);
     padding-left: 24%;
+}
+
+.hex-doodle {
+    position: relative;
+    top: 0px;
+    background-size: cover !important;
+    background-repeat: no-repeat;
 }
 
 .hex-invisible{
@@ -22,7 +29,7 @@
 }
 
 .desert {
-    background: url(../mats/desert_hex.png) !important;
+    background: url(../mats/New_Hexes/Desert_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -30,14 +37,15 @@
 }
 
 .mountain {
-    background: url(../mats/mountain_hex.png) !important;
+    background: url(../mats/New_Hexes/Mountain_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+
 .open {
-    background: url(../mats/open_hex.png) !important;
+    background: url(../mats/New_Hexes/Open_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -45,7 +53,7 @@
 }
 
 .swamp {
-    background: url(../mats/swamp_hex.png) !important;
+    background: url(../mats/New_Hexes/Swamp_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
@@ -53,13 +61,30 @@
 }
 
 .wooded {
-    background: url(../mats/wooded_hex.png) !important;
+    background: url(../mats/New_Hexes/Woods_Hex.png) !important;
     top: 12%;
     left: 12%;
     background-size: cover !important;
     background-repeat: no-repeat;
 }
 
+.snowcap {
+    background: url(../mats/New_Hexes/Snowcap.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+
+.wooded_hills {
+    background: url(../mats/New_Hexes/WoodedHills_Hex.png) !important;
+    top: 12%;
+    left: 12%;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+
+/*
 .desert_stronghold {
     background: url(../mats/desert_stronghold.png) !important;
     top: 12%;
@@ -139,7 +164,9 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
 
+/*
 .snowcap {
     background: url(../mats/snowcap_hex.png) !important;
     top: 12%;
@@ -147,14 +174,9 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
+/*
 
-.wooded_hills {
-    background: url(../mats/wooded_hills_hex.png) !important;
-    top: 12%;
-    left: 12%;
-    background-size: cover !important;
-    background-repeat: no-repeat;
-}
 .wooded_hills_stronghold {
     background: url(../mats/wooded_hills_stronghold.png) !important;
     top: 12%;
@@ -169,6 +191,7 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
 
 .open_farm {
     background: url(../mats/open_farm.png) !important;
@@ -178,6 +201,7 @@
     background-repeat: no-repeat;
 }
 
+/*
 .vector_wooded   {background: url(../mats/vector_wooded_hex.png) !important;
     background-size: cover !important;
     background-repeat: no-repeat;
@@ -198,6 +222,7 @@
     background-size: cover !important;
     background-repeat: no-repeat;
 }
+*/
 
 
 .hex-center:hover {

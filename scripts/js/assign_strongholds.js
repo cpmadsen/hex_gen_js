@@ -53,8 +53,11 @@ function assign_strongholds(this_SH_terrain, stronghold_chance) {
         }); 
 
         if (is_allowed) {
-            hex_to_mod.classList.remove(this_SH_terrain);
-            hex_to_mod.classList.add(`${this_SH_terrain}_stronghold`); 
+            //hex_to_mod.classList.remove(`${this_SH_terrain}`);    // This is a holdover from before SH illustrations applied over top.
+            hex_to_mod.classList.add(`${this_SH_terrain}_stronghold`);
+            let illus = hex_to_mod.querySelector('.hex-doodle');
+            illus.style.background = `url(../mats/New_Hexes/Stronghold.png)`;
+            illus.style.position = 'absolute';
             //console.log(`${anchor_id} is now a SH`);
             previous_hex = hex_to_mod; 
             availableHexes = target_hexes.filter(hex => hex !== previous_hex);     
@@ -122,8 +125,11 @@ function assign_towns(this_town_terrain, town_chance) {
         }); 
 
         if (is_allowed) {
-            hex_to_mod.classList.remove(this_town_terrain);
-            hex_to_mod.classList.add(`${this_town_terrain}_town`); 
+            //hex_to_mod.classList.remove(`${this_town_terrain}`);
+            hex_to_mod.classList.add(`${this_town_terrain}_town`);
+            let illus = hex_to_mod.querySelector('.hex-doodle');
+            illus.style.background = `url(../mats/New_Hexes/Town.png)`;
+            illus.style.position = 'absolute'; 
             //console.log(`${anchor_id} is now a town`);
             previous_hex = hex_to_mod; // Update the previousHex
             availableHexes = target_hexes.filter(hex => hex !== previous_hex);     
@@ -139,8 +145,11 @@ function assign_towns(this_town_terrain, town_chance) {
                     if (hex != null) {
                         if (hex.classList.contains('open')) { 
                             if (Math.random(0, 1) <= farm_chance) {
-                                hex.classList.remove('open');
+                                //hex.classList.remove('open');
                                 hex.classList.add('open_farm');
+                                let illus = hex_to_mod.querySelector('.hex-doodle');
+                                illus.style.background = `url(../mats/New_Hexes/Farm.png)`;
+                                illus.style.position = 'absolute';
                             } 
                         } 
                    }    
@@ -156,14 +165,17 @@ function delete_features(terrain_types) {
     let previous_town_farms = [];
         for (let i = 0; i < terrain_types.length; i++) {
             let terrain = terrain_types[i];
-            //console.log(`removing settlements from ${terrain}`);
+            console.log(`removing settlements from ${terrain}`);
             previous_strongholds = Array.from(document.getElementsByClassName(`${terrain}_stronghold`));  
             if (previous_strongholds.length > 0) {
                     console.log(`removing strongholds from ${terrain}`);
                     for (let i = 0; i < previous_strongholds.length; i++) {
                         let hex = previous_strongholds[i];
                         hex.classList.remove(`${terrain}_stronghold`);
-                        hex.classList.add(terrain);
+                        //hex.classList.add(terrain);
+                        let illus = hex.querySelector('.hex-doodle');
+                        illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
+                        //illus.style.position = 'absolute';
                         //console.log(`removed SH from ${previous_strongholds[i].id}`);
                     }
                 }
@@ -173,7 +185,10 @@ function delete_features(terrain_types) {
                     for (let i = 0; i < previous_towns.length; i++) {
                         let hex = previous_towns[i];
                         hex.classList.remove(`${terrain}_town`);
-                        hex.classList.add(terrain);
+                        //hex.classList.add(terrain);
+                        let illus = hex.querySelector('.hex-doodle');
+                        illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
+                        //illus.style.position = 'absolute';
                         //console.log(`removed town from ${previous_towns[i].id}`);
                     }
                 }
@@ -182,7 +197,10 @@ function delete_features(terrain_types) {
                 for (let i = 0; i < previous_town_farms.length; i++) {
                     let hex = previous_town_farms[i];
                     hex.classList.remove(`${terrain}_farm`);
-                    hex.classList.add(terrain);
+                    //hex.classList.add(terrain);
+                    let illus = hex.querySelector('.hex-doodle');
+                    illus.style.background = `url(../mats/New_Hexes/${terrain}_Illus.png)`;
+                    //illus.style.position = 'absolute';
                 }
             }
         delay;

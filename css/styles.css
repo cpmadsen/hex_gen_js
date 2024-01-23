@@ -282,10 +282,13 @@
 }
 
 .hex-layer {
-    display: block;
+    /* display: block; */
     position: absolute;
     z-index: 1;
     transition: transform ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .zoomed {
@@ -325,6 +328,13 @@
 
 .music-button:hover {
     border:2px solid goldenrod;
+}
+
+.doodle {
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    top: 12%;
+    left: 12%;
 }
 
 .waterways {

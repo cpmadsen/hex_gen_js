@@ -29,8 +29,8 @@ function make_arneson_cells(hex_id){
     // such that it lines up with edges of hex correctly.) 
     
     // *** Then later we use CSS to trim cells that are on diagonal borders.
-    number_arn_cells_in_col = 12;
-    number_arn_cells_in_row = 12;  // will need to be a variable that changes depending on miles/hex.
+    number_arn_cells_in_col = 6;
+    number_arn_cells_in_row = 6;  // will need to be a variable that changes depending on miles/hex.
     // 6 cells per col/row is close to 22 per 5-mile hex; 12 per col/row is close to the 88 per 10-mile hex.
 
     // Calculate total number of arneson cells.
@@ -71,4 +71,17 @@ function make_arneson_cells(hex_id){
       //nudge_x =  0.5*flower_container_width
       test_hex.appendChild(arneson_cell);
     }
+}
+
+function clear_arneson_cells () {
+  // This could be elaborated such that 'saved' cells are merely made invisible.
+  // Currently it is called inside the add_mouse_ef and so only triggers when the user moves the mouse. 
+
+  let total = Array.from(document.getElementsByClassName('hex-center'));
+  total.forEach (hex => {
+    let cells = Array.from(hex.getElementsByClassName('a-cell'));
+    cells.forEach (cell => {
+      cell.remove();
+    });
+  });
 }

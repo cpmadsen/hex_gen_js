@@ -401,6 +401,18 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     target_mountain.classList.add('elevation_5');
 }   }   }   }   }
 
+function apply_illustrations(terrain_type) {
+    // Gets all the hexes of the terrain type, finds correct illustration, then appends it.
+
+    all_hexes_of_type = Array.from(document.getElementsByClassName(terrain_type));
+    for (let i = 0; i < all_hexes_of_type.length; i++) {
+        let hex = all_hexes_of_type[i];
+        let illus = hex.querySelector('.hex-doodle');
+        illus.style.background = `url(../mats/New_Hexes/${terrain_type}_Illus.png)`;
+        illus.style.position = 'absolute';
+    }
+    console.log(`Applied ${terrain_type} illustrations.`);
+}
 
 async function select_terrain_type(
     terrain_types,
@@ -425,6 +437,7 @@ async function select_terrain_type(
                 if (i < terrain_types.length) {            
                     assign_terrain(this_terrain, this_proportion, this_replacement_list, this_elevation, this_elevation_replace_list);
                     delay;
+                    
                     i++;                                    
                     terrain_application_loop();             
                          } else {
@@ -446,21 +459,32 @@ async function select_terrain_type(
                         terrain_table.push({TerrainType: terrain_types[k], Proportion: final_count_proportion(terrain_types[k])});
                     }
                     console.table(terrain_table);  
-                    delay;
+                    delay;   
 
                     // Adjacent hexes to swamps and deserts are turned into certain types. //
                     // (type to look at, disallowed neighbors, replacement type, disallowed elevations, replacement elevation)
                     cleanup_adjacent('swamp', ["desert", "mountain"], 'wooded', ['elevation_2', 'elevation_6'], 'elevation_3');  
                     cleanup_adjacent('desert', ["wooded"], 'open', ['elevation_3'], 'elevation_2'); 
                     delay;
-                    delay;
+                    
                     // Snowcaps and wooded hills are applied around mountains. //
                     apply_special_mountains(.5, 1);
                     delay;
+                    
+                    apply_illustrations('wooded_hills');
+                    apply_illustrations('snowcap');
+
+                    terrain_types.forEach((ttype) => {
+                        apply_illustrations(ttype); 
+                    });
+                    
                 }
             }, delay)
         }
         terrain_application_loop();
+
+        
+        })
         resolve();
-    });
+    
 }            
