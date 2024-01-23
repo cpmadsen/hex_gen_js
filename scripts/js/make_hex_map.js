@@ -5,7 +5,7 @@ function make_hex_map(numRows, numCols, container_height, container_width, make_
     container_width = document.getElementById('hex_gen_page').offsetWidth;
 
     number_of_hexes = numRows * numCols
-    const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
+    ///const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
     
     //remove_old_hexes
     if(document.getElementsByClassName('hex-center').length > 1){
@@ -52,7 +52,7 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
     document.getElementById('number_hex_h').value = numCols;
     document.getElementById('number_hex_v').value = numRows;
 
-    const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
+    ///const terrain_types = ['open','wooded','mountain','swamp','desert']; // Terrain types!
     
     //Remove current hexagons on page, if any.
     if(document.getElementsByClassName('hex-center').length > 1){
@@ -64,6 +64,7 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
             hex_label_for_removal.remove();
         }
     }
+    
     // Remove current lavabox?
     if(document.getElementsByClassName('lava-background').length == 1){
         document.getElementById('lava-gradient-box').remove();
@@ -79,25 +80,74 @@ function make_hex_map_from_loaded_data(loaded_data, container_height, container_
     // Add ripple effect.
     ripple(numCols,numRows);
     // Add lava background
-    add_lava(numCols, numRows);
+    ///add_lava(numCols, numRows);
 
     if(make_clouds == true){
         create_clouds(container_height);
     }
-
-    // Set default terrain type.
-    default_terrain = 'open';
 
     // Add class types from data file to hexagons.
     for(let i = 1; i <= number_of_hexes; i++) {
         // Is this hexagon present in the loaded data?
         if(unique_ids.includes('hex_' + i)){
             // If yes, add its class names.
-            class_to_add = class_names[unique_ids.indexOf('hex_' + i)];
-            document.getElementById('hex_' + i).classList.add(class_to_add);
-        } else {
-            // If no, add 'open'
-            document.getElementById('hex_' + i).classList.add(default_terrain);
+            classes_to_add = class_names[unique_ids.indexOf('hex_' + i)];
+            each_class_to_add = classes_to_add.split(' ');
+            Array.from(each_class_to_add).forEach((class_to_add) => {
+                document.getElementById('hex_' + i).classList.add(class_to_add);
+            });
+            // Test to see if stronghold or town are in this hex's class names;
+            // If they are, the match() function will return the object;
+            // If they are NOT, the match() function will return a NULL!
+            if(classes_to_add.match(/_stronghold/) != null) {
+                console.log('Found a stronghold at hex ' + i + '!');
+                let illus = document.getElementById('hex_' + i).querySelector('.hex-doodle');
+                illus.style.background = `url(../mats/New_Hexes/Stronghold.png)`;
+                illus.style.position = 'absolute';
+            }
+            if(classes_to_add.match(/_town/) != null) {
+                let illus = document.getElementById('hex_' + i).querySelector('.hex-doodle');
+                illus.style.background = `url(../mats/New_Hexes/Town.png)`;
+                illus.style.position = 'absolute';
+            }            
+        }
+    }
+
+    // Find all unique classes for hexagons and then run the add_illustrations function.
+    // Find unique elements in initial array and save as a 'set'
+    const unique_class_names_as_set = new Set(class_names);
+    // Convert the 'set' back to an array so we can do things with it.
+    const class_names_u = Array.from(unique_class_names_as_set);
+    // Remove any mention of elevation!
+    class_names_u.forEach((el) => {
+        illustration_to_apply = el.replace(/[ ]?elevation_\d{1}?/, "");
+        apply_illustrations(illustration_to_apply);
+        ///hex_to_mod.classList.add(`${this_SH_terrain}_stronghold`);
+        ///    let illus = hex_to_mod.querySelector('.hex-doodle');
+        ///    illus.style.background = `url(../mats/New_Hexes/Stronghold.png)`;
+        ///    illus.style.position = 'absolute';
+    });
+
+    // This loop applies strongholds and towns.
+    // Add class types from data file to hexagons.
+    for(let i = 1; i <= number_of_hexes; i++) {
+        // Is this hexagon present in the loaded data?
+        if(unique_ids.includes('hex_' + i)){
+            classes_to_add = class_names[unique_ids.indexOf('hex_' + i)];
+            // Test to see if stronghold or town are in this hex's class names;
+            // If they are, the match() function will return the object;
+            // If they are NOT, the match() function will return a NULL!
+            if(classes_to_add.match(/_stronghold/) != null) {
+                console.log('Found a stronghold at hex ' + i + '!');
+                let illus = document.getElementById('hex_' + i).querySelector('.hex-doodle');
+                illus.style.background = `url(../mats/New_Hexes/Stronghold.png)`;
+                illus.style.position = 'absolute';
+            }
+            if(classes_to_add.match(/_town/) != null) {
+                let illus = document.getElementById('hex_' + i).querySelector('.hex-doodle');
+                illus.style.background = `url(../mats/New_Hexes/Town.png)`;
+                illus.style.position = 'absolute';
+            }            
         }
     }
 };
