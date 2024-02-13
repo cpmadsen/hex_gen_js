@@ -17,6 +17,12 @@
     background-repeat: no-repeat;
 }
 
+.hex-feature {
+    top: 0px;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+}
+
 .hex-invisible{
     visibility: hidden !important;
     pointer-events: none;

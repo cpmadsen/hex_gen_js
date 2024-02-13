@@ -102,7 +102,7 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
 
             // Hex Labels
             hex_label = document.getElementById('hex_label_' + uniqueID);
-            hex_label.style.zIndex = hex_for_mods.style.zIndex + 2;
+            hex_label.style.zIndex = hex_for_mods.style.zIndex + 4;
             let current_hex_row = uniqueID % numRows;
             if (current_hex_row == 0) {
                 current_hex_row = numRows;
@@ -120,6 +120,18 @@ function render_hexagons(numCols, numRows, container_height, container_width, cu
             hex_illus.style.zIndex = hex_for_mods.style.zIndex + 1;
             hex_illus.style.width = hexagon_size_x + 'px';
             hex_illus.style.height = hexagon_size_y + 'px';
+
+            // Hex Waterways
+            hex_waterway = document.getElementById('hex_waterway_' + uniqueID);
+            hex_waterway.style.zIndex = hex_for_mods.style.zIndex + 2;
+            hex_waterway.style.width = hexagon_size_x + 'px';
+            hex_waterway.style.height = hexagon_size_y + 'px';
+
+            // Hex Features
+            hex_feature = document.getElementById('hex_feature_' + uniqueID);
+            hex_feature.style.zIndex = hex_for_mods.style.zIndex + 3;
+            hex_feature.style.width = hexagon_size_x + 'px';
+            hex_feature.style.height = hexagon_size_y + 'px';
         }
     }
 }
