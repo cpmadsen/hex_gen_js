@@ -1,24 +1,26 @@
-function apply_waterways () {
+// Global variables //
+let swamp_hexes = document.getElementsByClassName('swamp');
+let knot_candidates = [];
+
+
+
+function apply_waterways (delay) {
     // To be accurate to the Outdoor Survival map, method is:
     /* 
-    XXX = actionable 
 
-    Rivers are a sprite that sits on top of each hex, not a line that stretches between hex-centers (since that would destroy the hover-up over lava
-        concept)
-            XXX method to attach sprites to hex tile: see init_hex for how it appends hex labels 
-                
-                water_layer = document.getElementById('waterways');           
-                const river_hex = document.createElement('div');
-                // All other river_hex characteristics;
-                // Apply it to the coordinates of the parent hex-center;
-                water_layer.appendChild(river_hex)
-            The waterways/paths will sit underneath hex features such as towns and strongholds, but overtop (or replace entirely) the doodles 
-            that merely illustrate their terrain type.
+    // Rivers are a sprite that sits on top of each hex, not a line that stretches between hex-centers 
+    // (since that would destroy the hover-up over lava concept.) 
+    // They fit over doodles but under features (SHs etc.)
+    // See render_hex.js for the z-index.
+    
+   Method to attach sprites to hex tile: see init_hex for how it appends hex labels            
+        water_layer = document.getElementById('waterways');           
+        const river_hex = document.createElement('div');
+        // All other river_hex characteristics;
+        // Apply it to the coordinates of the parent hex-center;
+        water_layer.appendChild(river_hex)
 
-        Alternate way to implement would be saving various sprites as a single hex tile, ie. open_river_1-3 (from face 1 to face 3 of hex)...
-        But this method will involve a substantial time drain, especially as new tilesets are developed... 
-
-    XXX How the river sprites work:  
+    How the river sprites work:  
         Each will be oriented with the river coming 'in' from the top face and out one of the others.
             Numbered 2-6 on the other faces, so you'd have river types 1-2, 1-3, 1-4, 1-5, 1-6. 
             If branching, both faces listed after, e.g. 1-24.
@@ -27,38 +29,160 @@ function apply_waterways () {
         Depending on changes in direction, branches, etc. the code calls for their numbers like so: `river1-${exit_face}_${randomInt}`
 
     
-    XXX Method
+    Method
         Outdoor Survival Method: 
-        Swamps generate the rivers backwards. Each swamp can be fed by up to (2 to)3 rivers.
-        OS has both swamps fed by 3 rivers. One has 31 hexes, one 15, meaning either a 1/10 chance or a 1/5 for swamp hexes to spawn rivers.
-            (one method.)
+        1. Swamps generate the rivers backwards. Each swamp can be fed by 3 rivers.
+            2. OS has both swamps fed by 3 rivers. One has 31 hexes, one 15, meaning either a 1/10 chance or a 1/5 for swamp hexes to spawn rivers.
+            (another possible method, a simple chance per swamp hex to begin a river.)
         Within swamp, the rivers might join up, forming a knot in the centre, or they might all trail off at the swamp borders in a squiggle graphic.
-            (different method: find a centre hex within the swamp, it becomes the "knot", and there's a 50/50 chance of the rivers inside the swamp
-            being visible or not. Presumably we do not want all swamps to be fed by 3 rivers, so make each knot spawn 2-4.)
-        The rivers travel away in a mostly-straight line to a map edge. In OS, map edges are higher and swamps are lower. 
-        Rivers crawl away from the swamp, preferring lower elevations to higher, travelling in random directions.
-            Thus  
+            (back to the 1st method: find a centre hex within the swamp, it becomes the "knot", and there's a 50/50 chance of the rivers inside the swamp
+            being visible or not. Presumably we do not want all swamps to be fed by 3 rivers, so make each knot spawn 1-4 by default (can be user
+                defined, try to leave room so that can be easily added.))
+        The rivers travel away in a mostly-straight line to a map edge. In OS, map edges are higher and swamps are lower, so the river 'runs backwards.' 
+        The rivers will NEVER go through deserts, and IF they go through mountains they change the tile to Open.
+            If forced through woods adjacent to the swamp, the river lowers their elevation to open level.
+            (Alt: some woods are randomly elevation 2 when generated, so river will sometimes scoot through them.)
+            They will always end at the edge of the map [or by inference, coast.]
+        River randomly meanders within 3 hexes direction change.  Ie. if already going N, it might go NW or NE but not SW or SE.
+            [Exception? If River hits desert. This never happens in OS.]
+            Rivers never get within one hex of a desert.
+            Could call for the waterway function to backtrack if it becomes adjacent to desert, and re-roll direction.
+        Ocasionally the river may split within the direction of travel, ie. the split is cosmetic only and the river still travels as a single river.
+        Or the river actually splits off into another. Chance is quite low; happens once in OS map. (1/98 chance) (or 1/100 obviously)
+        OS has a river going from one swamp to the other, implying an elevation difference between the two. 
+            The simplest way to code this is just to iterate through the swamps, having one spawn rivers outwards before the other(s). 
+        Fords have a 9/98 chance (or 1/10) to show up.
+    
+    */    
+    
+        
 
-    If forced through woods adjacent to the swamp, the river lowers their elevation to open level.
-        (Alt: some woods are randomly elevation 2 when generated, so river will sometimes scoot through them.)
-    River randomly meanders within 3 hexes direction change.  Ie. if already going N, it might go NW or NE but not SW or SE.
-    Ocasionally the river may split within the direction of travel, ie. the split is cosmetic only and the river still travels as a single river.
-    Or the river actually splits off into another. Chance is quite low; happens once in OS map. (1/98 chance) (or 1/100 obviously)
-    Rivers never get within one hex of a desert.
-    OS has a river going from one swamp to the other, implying an elevation difference between the two. 
-        The simplest way to code this is just to iterate through the swamps, having one spawn rivers outwards before the other(s). 
-    Fords have a 9/98 chance (or 1/10) to show up.
 
 
-    // The Delving Deeper method could work very very similarly, just with the difference that rivers could feed down from snowcaps.
-    // And rivers could end in the ocean, seas, etc.
 
+    /* ALTERNATE GENERATION RULESETS        
+            Delving Deeper (v5) style has them 'spawn' from mountains [snowcaps?] and end either at swamp/body of water/map edge.
+            However, the real spawn event for our purposes is a simple 1/6 chance in Open or Swamp, or 1/20 in Wooded, to contain a river, 
+                    which would then proceed in either direction away.
+                    The meander of rivers is controlled by a[n equal weighted random chance between available open, woods or swamp hexes.]
+                    [There is only a 1/3 chance of it continuing from one Swamp to another, so a 2/3 chance it ends in a "squiggle."]
+    
+            FFC style assumes a more lowland, mixed elevation. 
+                Every hex may spawn a river (15%) which ends in a lake or swamp cell if its exit hex-face is the same as its entry.
+                Lakes are also generated by each hex.
+                Rivers avoid hills; if they stop at the hill [then they go underground.] 
+                Every lake may spawn streams, which meander, can join, [and stop.]
+                The Rivers proceed "towards the coast," with the random meander occuring only if "unsure of direction." Difficult to nail down!
 
 
     */
+        
+        // Pseudocode
+        // Find a random point inside swamps to be the knot.
+        // Use the knot_candidate list, then find an adjacent swamp that is also an 'inner' swamp ie. surrounded by swamps.
+        // This/these is now the knot.
+        // If knot_candidates is 0, or if there are swamp morphs on the edge of the map whose knots have been clipped off, 
+        // spawn a single river coming from that edge swamp. This may mean tracking a list of swamp morphs or iterating through the swamp list.
+        
+        // From version that first assigns knot candidates using 2s in morph:
+        // console.log(`Swamp river-knot candidates are: `);
+        // let filtered_knot_candidates = knot_candidates.filter(hex => hex.classList.contains('swamp'));
+        // console.log(filtered_knot_candidates);
+
+    find_swamp_knots();
+    delay;
+    assign_knots(2, 4, 1);   //min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp //
+    return true;    
+           
 }
 
-function apply_paths () {
+
+function find_swamp_knots () {      // working
+    for (let i = 0; i < swamp_hexes.length; i++) { 
+        const target_swamp = swamp_hexes[i];     // pull out div
+        hex_name = target_swamp.id;              // access "hex_xyz"
+        id_number = hex_name.slice(4);  // just the ID number
+        let swamp_counter = 0;
+        neighboring_hexes = Array.from(find_adjacent(id_number)); 
+        for (let i = 0; i < neighboring_hexes.length; i++) {
+            if (neighboring_hexes[i] == null) {                     // intended behavior: knots may appear on map edge.
+                swamp_counter += 1; 
+                if (swamp_counter === 6) {
+                    knot_candidates.push(target_swamp);
+                }  
+            }   
+            else if (neighboring_hexes[i] != null) {
+                if (neighboring_hexes[i].classList.contains('swamp')) {
+                    swamp_counter += 1;
+                    if (swamp_counter === 6) {
+                        knot_candidates.push(target_swamp);
+                    }                        
+                }
+            }
+        }
+    }
+    console.log(`Swamp river-knot candidates are: `);
+    console.log(knot_candidates);
+}
+    
+function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp) {
+    // For every 23 swamps on the map, we place one knot (default: 3 rivers.)
+    // We round to the nearest integer, and if result is 0 then we apply just one.
+    // We place the knots inside of swamp clusters using our list of candidates.
+    // We make sure that knots are not within 2 hexes of each other using find_adjacent_two.
+
+    // Another possible implementation: have each swamp morph saved to a global list. Apply one knot to each.
+    // Code to do that is in sel_terrain, but commented out.  Can be found easily by searching for "=== 2" as it depends on 2s in morph.
+    // The trouble with this approach is that if the swamp is on a map edge and gets cut off, we have the same problem of orphaned, edge swamps.
+
+    console.log(`Applying swamp/river knots at ${min_rivers_per_knot} to ${max_rivers_per_knot} rivers per knot, ${knots_per_swamp} knots per swamp.`);
+
+    let knot_count = Math.round(swamp_hexes.length / 23);
+    if (knot_count === 0) { knot_count = 1; }
+    console.log(`Knot count: ${knot_count}`);
+
+    let knots_placed = 0;
+    let is_allowed = true;
+    while (knots_placed < knot_count) {
+        let hex_to_mod = knot_candidates[Math.floor(Math.random() * knot_candidates.length)]; // choose random inner swamp
+        
+        anchor_id = hex_to_mod.id.slice(4);  // just the ID number
+        surrounds = find_adjacent_two(anchor_id);
+        surrounds.forEach((hex) => {        
+            if (hex != null) {
+                if (!hex.classList.contains('river_knot')) {
+                    is_allowed = false;
+                }
+            }    
+        }); 
+        
+        if (is_allowed) {
+            hex_to_mod.classList.add('river_knot');
+            let knot_illus = hex_to_mod.querySelector('.hex-waterway');
+            knot_illus.style.background = `url(../mats/Waterways/River_Knot.png)`;
+            knot_illus.style.position = 'absolute';  
+            knots_placed += 1;
+            knot_candidates = knot_candidates.filter(hex => hex !== hex_to_mod);
+        }
+
+
+    }
+    
+
+
+}
+
+function orphaned_swamp_rivers () {
+    // If swamp hexes are on the edge of the map then they receive a single river.
+    // Create list of 'orphaned' swamps. find_adjacent with at least 1 null hex neighbor.
+    // If the list is larger than zero, spawn a single river.
+    // If there are multiple orphaned swamps, use find_adjacent and hex coordinate math to determine if they are discontinuous 
+    // and apply one river to each. 
+
+}
+
+
+    function apply_paths () {
     // Some paths run across mutliple morphs of different types, clearly linking several settlements or fords.
     // Paths can travel across open or desert but will not render as anything in those hex types.
     // That's to stay true to OS. Other rulesets, e.g. JG or ACKS, will have roads that are clearly visible on open terrain (toggle on/off.)

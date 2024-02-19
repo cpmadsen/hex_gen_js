@@ -78,7 +78,9 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {    
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
+                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2 // 2 added for swamp knots, paths etc.
+                                ) {               
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -90,6 +92,12 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                             }
                                         })
                                     }
+
+                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
+                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
+                                    //     knot_candidates.push(hex_to_mod);
+                                    // }
+
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
                                     hex_to_mod.classList.add(elevation_type);
@@ -149,7 +157,9 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {    
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
+                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2
+                                ) {
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -161,9 +171,16 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                             }
                                         })
                                     }
+                                    
+                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
+                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
+                                    //     knot_candidates.push(hex_to_mod);
+                                    // }
+
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
                                     hex_to_mod.classList.add(elevation_type);
+            
                                     // Remove this hexagon from the list of viable choices for a new anchor (for next loop iteration) //
                                     viable_hexes_for_terrain.filter(k => k !== hex_to_mod);   
                                 }
@@ -221,7 +238,9 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {    
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
+                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2
+                                ) { 
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -233,6 +252,12 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                             }
                                         })
                                     }
+                                    
+                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
+                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
+                                    //     knot_candidates.push(hex_to_mod);
+                                    // }
+
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
                                     hex_to_mod.classList.add(elevation_type);
@@ -376,7 +401,18 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
         neighboring_hexes = Array.from(find_adjacent(id_number)); 
         let mountain_counter = 1;
         for (let i = 0; i < neighboring_hexes.length; i++) {
-            if (neighboring_hexes[i] != null) {
+            if (neighboring_hexes[i] == null) {         // This is new. Will add snowcaps to edge of map (intended behavior.)                            
+                mountain_counter += 1;
+                if (mountain_counter == 6) {
+                    if (Math.random(0,1) <= chance_for_snowcaps) {
+                        target_mountain.classList.remove('mountain');
+                        target_mountain.classList.add('snowcap');
+                        target_mountain.classList.remove('elevation_6');
+                        target_mountain.classList.add('elevation_7');
+                    }                        
+                }
+            }   
+            else if (neighboring_hexes[i] != null) {
                 if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
                     mountain_counter += 1;
                     if (mountain_counter == 6) {

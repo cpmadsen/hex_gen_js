@@ -20,15 +20,17 @@ function add_button_effects(){
       container_width = document.getElementById('hex_gen_page').offsetWidth;
 
     select_terrain_type(
-      terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],
+      // terrain_types = ['wooded', 'desert', 'mountain', 'swamp', 'open'],   // Open 'disruptor' morphs disabled for now
+      terrain_types = ['wooded', 'desert', 'mountain', 'swamp'],
       // ideal/finished proportions = [0.2976, 0.0585, 0.1837, 0.0345, 0.4257871064],
-      terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.001], // we increase the earlier types because so many are overwritten                                                                          
+      // terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345, 0.001], // we increase the earlier types because so many are overwritten                                                                          
+      terrain_proportions = [0.4418, 0.0685, 0.1937, 0.0345], // we increase the earlier types because so many are overwritten                                                                         
       terrain_replace_list = [
         [],   // wooded first, replaces nothing 
         ['wooded'], // desert
         ['wooded','desert'], // mountain
         ['wooded','desert','mountain'], // 'swamp' replaces all
-        ['wooded','desert','mountain', 'swamp'] // optional open iteration breaks up some of the geomorphs unpredictably 
+        // ['wooded','desert','mountain', 'swamp'] // optional open iteration breaks up some of the geomorphs unpredictably 
       ],
       elevation_classes = ['elevation_3', 'elevation_4', 'elevation_6', 'elevation_1', 'elevation_2'], // elevation classes for terrain types
       elevation_replacements = [
@@ -36,7 +38,7 @@ function add_button_effects(){
         ['elevation_3'], // desert
         ['elevation_3','elevation_4'], // mountain
         ['elevation_3','elevation_4','elevation_6'], // swamp
-        ['elevation_3','elevation_4','elevation_6','elevation_1'] // optional open 
+        // ['elevation_3','elevation_4','elevation_6','elevation_1'] // optional open 
 
       ], 
       delay = 500 // this number is in milliseconds, and is totally optional; could be 0.
@@ -51,10 +53,7 @@ function add_button_effects(){
       container_height = document.getElementById('hex_gen_page').offsetHeight;
       container_width = document.getElementById('hex_gen_page').offsetWidth;
           
-      apply_waterways(
-        //on_which_terrain_types = ['wooded', 'wooded_hills', 'desert', 'mountain', 'swamp', 'open'],
-        //chance_for_SH = [0.0303030303, 0.01492537313, 0, 0.06140350877, 0.02173913043, 0], 
-        //chance_for_town = [0.002518891688, 0, 0, 0, 0, 0.01408450704],
+      apply_waterways( 250
         //delay = 250 // this number is in milliseconds, and is totally optional; could be 0.
       );
   });
