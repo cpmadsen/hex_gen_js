@@ -89,11 +89,33 @@ function apply_waterways (delay) {
         // let filtered_knot_candidates = knot_candidates.filter(hex => hex.classList.contains('swamp'));
         // console.log(filtered_knot_candidates);
 
+    // Resets 
+    swamp_hexes = document.getElementsByClassName('swamp');
+    knot_candidates = [];
+    reset_waterways();
+
+    // Placement
     find_swamp_knots();
     delay;
     assign_knots(2, 4, 1);   //min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp //
-    return true;    
            
+}
+
+function reset_waterways() {
+    let swamps_to_clear = Array.from(swamp_hexes);
+    swamps_to_clear.forEach((hex) => {        
+        if (hex != null) {
+            if (hex.classList.contains('river_knot')) {
+                hex.classList.remove('river_knot');                
+                let knot_illus = hex.querySelector('.hex-waterway');
+                knot_illus.style.background = `url(../mats/New_Hexes/Clear.png)`;
+                knot_illus.style.position = 'absolute';  
+                console.log(`Knot deleted at`);
+                console.log(hex);
+            }
+        }    
+    }); 
+
 }
 
 
@@ -105,7 +127,7 @@ function find_swamp_knots () {      // working
         let swamp_counter = 0;
         neighboring_hexes = Array.from(find_adjacent(id_number)); 
         for (let i = 0; i < neighboring_hexes.length; i++) {
-            if (neighboring_hexes[i] == null) {                     // intended behavior: knots may appear on map edge.
+            if (neighboring_hexes[i] === null) {                     // intended behavior: knots may appear on map edge.
                 swamp_counter += 1; 
                 if (swamp_counter === 6) {
                     knot_candidates.push(target_swamp);
@@ -129,7 +151,7 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
     // For every 23 swamps on the map, we place one knot (default: 3 rivers.)
     // We round to the nearest integer, and if result is 0 then we apply just one.
     // We place the knots inside of swamp clusters using our list of candidates.
-    // We make sure that knots are not within 2 hexes of each other using find_adjacent_two.
+    // We make sure that knots are not within 3 hexes of each other using nested find_adjacent and find_adjacent_two (inefficient...)
 
     // Another possible implementation: have each swamp morph saved to a global list. Apply one knot to each.
     // Code to do that is in sel_terrain, but commented out.  Can be found easily by searching for "=== 2" as it depends on 2s in morph.
@@ -140,29 +162,56 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
     let knot_count = Math.round(swamp_hexes.length / 23);
     if (knot_count === 0) { knot_count = 1; }
     console.log(`Knot count: ${knot_count}`);
-
     let knots_placed = 0;
+
     let is_allowed = true;
+
+    var previous_hex = null;
+    var availableHexes = knot_candidates;
+
     while (knots_placed < knot_count) {
-        let hex_to_mod = knot_candidates[Math.floor(Math.random() * knot_candidates.length)]; // choose random inner swamp
+        is_allowed = true;  // reset
         
-        anchor_id = hex_to_mod.id.slice(4);  // just the ID number
-        surrounds = find_adjacent_two(anchor_id);
+        availableHexes = knot_candidates.filter(hex => hex !== previous_hex); // Filter out the previously selected hex
+        if (availableHexes.length === 0) { // All hexes have been selected at least once, so reset the process or break the loop.
+            break;
+        }
+
+        delay;
+        console.log(`Available hexes: ${availableHexes.length}`);
+        let swamp_chooser_float = Math.random() * availableHexes.length;
+        console.log(`Float: ${swamp_chooser_float}`);
+        let swamp_choice_int = Math.floor(swamp_chooser_float);
+        console.log(`Int: ${swamp_choice_int}`);
+        let hex_to_mod = availableHexes[swamp_choice_int]; // choose random inner swamp
+        let anchor_id = hex_to_mod.id.slice(4);  // just the ID number
+        let surrounds = find_adjacent_two(anchor_id);
         surrounds.forEach((hex) => {        
             if (hex != null) {
-                if (!hex.classList.contains('river_knot')) {
+                if (hex.classList.contains('river_knot')) {
                     is_allowed = false;
+                    console.log(`Knot disallowed at`); 
+                    console.log(hex_to_mod); 
+                    console.log(`because of `);
+                    console.log(hex);
                 }
             }    
         }); 
         
         if (is_allowed) {
+
+            console.log(`Knot is allowed at:`); 
+            console.log(hex_to_mod);
+
             hex_to_mod.classList.add('river_knot');
             let knot_illus = hex_to_mod.querySelector('.hex-waterway');
             knot_illus.style.background = `url(../mats/Waterways/River_Knot.png)`;
             knot_illus.style.position = 'absolute';  
+
+            previous_hex = hex_to_mod; 
+            availableHexes = knot_candidates.filter(hex => hex !== hex_to_mod);
+
             knots_placed += 1;
-            knot_candidates = knot_candidates.filter(hex => hex !== hex_to_mod);
         }
 
 
