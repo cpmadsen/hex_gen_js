@@ -413,7 +413,7 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                 }
             }   
             else if (neighboring_hexes[i] != null) {
-                if (neighboring_hexes[i].classList.contains('mountain') | neighboring_hexes[i].classList.contains('snowcap')) {
+                if (neighboring_hexes[i].classList.contains('mountain') || neighboring_hexes[i].classList.contains('snowcap')) {
                     mountain_counter += 1;
                     if (mountain_counter == 6) {
                         if (Math.random(0,1) <= chance_for_snowcaps) {
@@ -436,6 +436,46 @@ function apply_special_mountains (chance_for_snowcaps, chance_wooded_hills) {
                     target_mountain.classList.remove('elevation_6'); // lower mountain to foothill
                     target_mountain.classList.add('elevation_5');
 }   }   }   }   }
+
+function woods_between_swamp_mountains() {
+    let all_open = document.getElementsByClassName('open');
+    for (let i = 0; i < all_open.length; i++) { 
+        const target_open = all_open[i];     // pull out div
+        hex_name = target_open.id;              // access "hex_xyz"
+        id_number = hex_name.slice(4);  // just the ID number
+        neighboring_hexes = Array.from(find_adjacent(id_number)); 
+        let mountain_counter = 0;
+        let swamp_counter = 0;
+
+        for (let i = 0; i < neighboring_hexes.length; i++) {
+            if (neighboring_hexes[i] != null) {
+                if (neighboring_hexes[i].classList.contains('mountain') || neighboring_hexes[i].classList.contains('snowcap')) {
+                    mountain_counter += 1;
+                    if (mountain_counter > 0 && swamp_counter > 0) {
+                        target_open.classList.remove('open');
+                        target_open.classList.add('wooded');
+                        target_open.classList.remove('elevation_2');
+                        target_open.classList.add('elevation_3');
+                        // console.log(`Swamp Mountain Woods added at`);
+                        // console.log(target_open);
+                        break;
+                        }                        
+                    }
+                else if (neighboring_hexes[i].classList.contains('swamp')) {
+                    swamp_counter += 1;
+                    if (mountain_counter > 0 && swamp_counter > 0) {
+                        target_open.classList.remove('open');
+                        target_open.classList.add('wooded');
+                        target_open.classList.remove('elevation_2');
+                        target_open.classList.add('elevation_3');
+                        // console.log(`Swamp Mountain Woods added at`);
+                        // console.log(target_open);
+                        break;
+                        }                        
+                    }
+            }        
+}   }   }      
+
 
 function apply_illustrations(terrain_type) {
     // Gets all the hexes of the terrain type, finds correct illustration, then appends it.
@@ -505,6 +545,8 @@ async function select_terrain_type(
                     
                     // Snowcaps and wooded hills are applied around mountains. //
                     apply_special_mountains(.5, 1);
+                    delay;
+                    woods_between_swamp_mountains();
                     delay;
                     
                     apply_illustrations('wooded_hills');

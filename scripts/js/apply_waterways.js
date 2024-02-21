@@ -95,7 +95,7 @@ function apply_waterways (delay) {
     reset_waterways();
 
     // Placement
-    find_swamp_knots();
+    find_inner_swamps();
     delay;
     assign_knots(2, 4, 1);   //min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp //
            
@@ -119,7 +119,7 @@ function reset_waterways() {
 }
 
 
-function find_swamp_knots () {      // working
+function find_inner_swamps () {      // working
     for (let i = 0; i < swamp_hexes.length; i++) { 
         const target_swamp = swamp_hexes[i];     // pull out div
         hex_name = target_swamp.id;              // access "hex_xyz"
@@ -151,7 +151,7 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
     // For every 23 swamps on the map, we place one knot (default: 3 rivers.)
     // We round to the nearest integer, and if result is 0 then we apply just one.
     // We place the knots inside of swamp clusters using our list of candidates.
-    // We make sure that knots are not within 3 hexes of each other using nested find_adjacent and find_adjacent_two (inefficient...)
+    // We make sure that knots are not within 3 hexes of each other using nested find_adjacent and find_adjacent_two (inefficient...?)
 
     // Another possible implementation: have each swamp morph saved to a global list. Apply one knot to each.
     // Code to do that is in sel_terrain, but commented out.  Can be found easily by searching for "=== 2" as it depends on 2s in morph.
@@ -159,11 +159,11 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
 
     console.log(`Applying swamp/river knots at ${min_rivers_per_knot} to ${max_rivers_per_knot} rivers per knot, ${knots_per_swamp} knots per swamp.`);
 
-    let knot_count = Math.round(swamp_hexes.length / 23);
+    let knot_count = Math.round((swamp_hexes.length * knots_per_swamp) / 23);
     if (knot_count === 0) { knot_count = 1; }
     console.log(`Knot count: ${knot_count}`);
+    
     let knots_placed = 0;
-
     let is_allowed = true;
 
     var previous_hex = null;
@@ -185,8 +185,31 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
         console.log(`Int: ${swamp_choice_int}`);
         let hex_to_mod = availableHexes[swamp_choice_int]; // choose random inner swamp
         let anchor_id = hex_to_mod.id.slice(4);  // just the ID number
-        let surrounds = find_adjacent_two(anchor_id);
-        surrounds.forEach((hex) => {        
+        // let surrounding_three = find_adjacent_two(anchor_id);
+        
+        let surrounding_three = Array();
+        find_adjacent_two(anchor_id).forEach((el) => {
+            if (el != null) {
+                find_adjacent(parseInt(el.id.replace('hex_',''))).forEach((el) => {
+                    if (el != null) {
+                    surrounding_three.push(el.id);
+                    }
+              });
+
+            }
+        });
+        surrounding_three = surrounding_three.filter((v, i) => surrounding_three.indexOf(v) === i); // eliminate duplicates
+        console.log(surrounding_three);
+
+        let surrounding_three_hexes = [];
+        surrounding_three.forEach((hex) => {
+            let target = document.getElementById(hex);
+            surrounding_three_hexes.push(target);
+        });
+
+        console.log(surrounding_three_hexes);
+
+        surrounding_three_hexes.forEach((hex) => {        
             if (hex != null) {
                 if (hex.classList.contains('river_knot')) {
                     is_allowed = false;
@@ -213,12 +236,7 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
 
             knots_placed += 1;
         }
-
-
     }
-    
-
-
 }
 
 function orphaned_swamp_rivers () {
