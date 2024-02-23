@@ -196,13 +196,13 @@ function enable_zoom_and_pan(){
   
           lava_background.style.top = hovered_hexagon.style.top;
           lava_background.style.left = hovered_hexagon.style.left;
-          lava_background.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
-          lava_background.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
+          lava_background.style.width = hovered_hexagon.offsetWidth + 'px';
+          lava_background.style.height = hovered_hexagon.offsetHeight + 'px';
   
           lava_highlights.style.top = hovered_hexagon.style.top;
           lava_highlights.style.left = hovered_hexagon.style.left;
-          lava_highlights.style.width = hovered_hexagon.offsetWidth * 2 + 'px';
-          lava_highlights.style.height = hovered_hexagon.offsetHeight * 2 + 'px';
+          lava_highlights.style.width = hovered_hexagon.offsetWidth + 'px';
+          lava_highlights.style.height = hovered_hexagon.offsetHeight + 'px';
       }
   });
 

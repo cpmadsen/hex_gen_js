@@ -5,8 +5,8 @@ function assign_strongholds(this_SH_terrain, stronghold_chance) {
     const target_hexes = Array.from(document.getElementsByClassName(this_SH_terrain));
     let running_total_SHs = 0;
     let running_total_SH_prop = 0;  
-    var previous_hex = null;
-    var availableHexes = target_hexes;
+    let previous_hex = null;
+    let availableHexes = target_hexes;
 
     while (running_total_SH_prop < stronghold_chance) {
         availableHexes = target_hexes.filter(hex => hex !== previous_hex); // Filter out the previously selected hex
@@ -14,7 +14,7 @@ function assign_strongholds(this_SH_terrain, stronghold_chance) {
             break;
         }
 
-        var randomIndex = Math.floor(Math.random() * availableHexes.length);
+        let randomIndex = Math.floor(Math.random() * availableHexes.length);
         const hex_to_mod = availableHexes[randomIndex];
         anchor_id = hex_to_mod.id.slice(4);  // just the ID number
        
@@ -77,8 +77,8 @@ function assign_towns(this_town_terrain, town_chance) {
     const target_hexes = Array.from(document.getElementsByClassName(this_town_terrain));
     let running_total_towns = 0;
     let running_total_town_prop = 0;  
-    var previous_hex = null;
-    var availableHexes = target_hexes;
+    let previous_hex = null;
+    let availableHexes = target_hexes;
 
     while (running_total_town_prop < town_chance) {
         availableHexes = target_hexes.filter(hex => hex !== previous_hex); // Filter out the previously selected hex
@@ -86,7 +86,7 @@ function assign_towns(this_town_terrain, town_chance) {
             break;
         }
 
-        var randomIndex = Math.floor(Math.random() * availableHexes.length);
+        let randomIndex = Math.floor(Math.random() * availableHexes.length);
         const hex_to_mod = availableHexes[randomIndex];
         anchor_id = hex_to_mod.id.slice(4);  // just the ID number
        

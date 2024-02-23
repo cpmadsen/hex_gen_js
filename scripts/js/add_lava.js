@@ -14,7 +14,8 @@ console.log(`lava box height ${lava_box_height}px and width ${lava_box_width}px.
 lava_background.style.height = lava_box_height + 'px';
 lava_background.style.width = lava_box_width + 'px';
 
-lava_background.style.animation = 'smooth 5s ease-in';
+// lava_background.style.animation = 'smooth 5s ease-in';
+lava_background.style.animation = 'marquee 3s linear infinite';
 
 const rect = first_hex.getBoundingClientRect();
 

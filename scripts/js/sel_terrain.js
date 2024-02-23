@@ -78,9 +78,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
-                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2 // 2 added for swamp knots, paths etc.
-                                ) {               
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {               
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -93,10 +91,6 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                         })
                                     }
 
-                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
-                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
-                                    //     knot_candidates.push(hex_to_mod);
-                                    // }
 
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
@@ -157,9 +151,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
-                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2
-                                ) {
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) {
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -171,11 +163,6 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                             }
                                         })
                                     }
-                                    
-                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
-                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
-                                    //     knot_candidates.push(hex_to_mod);
-                                    // }
 
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
@@ -238,9 +225,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                 row_check = map_row;    // Save the currect map_row to check again next iteration
 
                                 // Check the geomorph grid's value; if it's 1, apply it to the hexagon //
-                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1 
-                                // || m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2
-                                ) { 
+                                if(m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 1) { 
                                     for (i in terrain_replace_list) {       // Check: any other terrain types to replace? 
                                         terrain_to_replace = terrain_replace_list[i];
                                         if(hex_to_mod.classList.contains(terrain_to_replace)) {
@@ -252,12 +237,7 @@ function assign_terrain(terrain_type, target_proportion, terrain_replace_list, e
                                             }
                                         })
                                     }
-                                    
-                                    // Conditional logic to make use of 2s in the morph for rivers, paths...
-                                    // if (morph_name_no_suffix == 'swamp' && m_geo_stock[morph_name]['row_' + geo_row_value][temp_col_number] === 2) {
-                                    //     knot_candidates.push(hex_to_mod);
-                                    // }
-
+                                
                                     // After the check of other terrain types above, add terrain class to targeted hex //
                                     hex_to_mod.classList.add(morph_name_no_suffix);
                                     hex_to_mod.classList.add(elevation_type);
@@ -288,7 +268,53 @@ function find_adjacent (hex_id) {
     hex_id_as_int = parseInt(hex_id);
     num_row_count = parseInt(numRows);
     
-    // if the current hex is on an even (sagging) column:
+    // If the hex is on the lower edge of the map:
+    if(hex_id_as_int % num_row_count === 0) {
+        if(current_hex_col % 2 === 0) { // even (sagging) column
+            let neighbors = [
+            document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+            null,                                                                           // SE
+            null,                                                                           // S
+            null,                                                                           // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows}`)]                      // NW
+            return neighbors;
+        } else {    // hex is odd
+            let neighbors = [
+            document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N
+            document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),            // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+            null,                                                                           // S
+            document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)]                  // NW
+            return neighbors;         
+        }
+    }
+
+    // If the hex is on the upper edge of the map:
+    if(hex_id_as_int % num_row_count === 1) {
+        if(current_hex_col % 2 === 0) { // even (sagging) column
+            let neighbors = [
+            null,                                                                           // N  
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),            // SE
+            document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+            document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                  // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows}`)]                      // NW
+            return neighbors;
+        } else {    // hex is odd
+            let neighbors = [
+            null,                                                                           // N
+            null,                                                                           // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+            document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+            document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+            null]                                                                           // NW
+            return neighbors;         
+        }
+    }
+
+    // If the current hex is on an even (sagging) column:
     if(current_hex_col % 2 === 0) {
         let neighbors = [
         document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  

@@ -1,6 +1,8 @@
 // Global variables //
-let swamp_hexes = document.getElementsByClassName('swamp');
-let knot_candidates = [];
+let swamp_hexes = Array();
+let knot_candidates = Array();
+let orphan_river_candidates = Array();
+let final_orphan_swamps = Array();
 
 
 
@@ -97,21 +99,34 @@ function apply_waterways (delay) {
     // Placement
     find_inner_swamps();
     delay;
-    assign_knots(2, 4, 1);   //min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp //
-           
+    assign_knots(1);   // x = knots_per_swamp, ie. x / 23 swamps //
+    
+    find_orphaned_swamp_river_candidates();
+    delay;
+    place_orphaned_swamp_rivers(1);     // x = rivers_per_map, ie. x / 360 hexes //
+    // NEXT: use find adjacent 3 to prevent orphaned rivers spawning too near knots
+    // THEN: begin spawning river tokens on hexes
 }
 
 function reset_waterways() {
     let swamps_to_clear = Array.from(swamp_hexes);
-    swamps_to_clear.forEach((hex) => {        
+    swamps_to_clear.forEach((hex) => {   
         if (hex != null) {
             if (hex.classList.contains('river_knot')) {
                 hex.classList.remove('river_knot');                
                 let knot_illus = hex.querySelector('.hex-waterway');
                 knot_illus.style.background = `url(../mats/New_Hexes/Clear.png)`;
                 knot_illus.style.position = 'absolute';  
-                console.log(`Knot deleted at`);
-                console.log(hex);
+                // console.log(`River knot deleted at`);
+                // console.log(hex);
+            }
+            if (hex.classList.contains('orphan_river')) {
+                hex.classList.remove('orphan_river');                
+                let knot_illus = hex.querySelector('.hex-waterway');
+                knot_illus.style.background = `url(../mats/New_Hexes/Clear.png)`;
+                knot_illus.style.position = 'absolute';  
+                // console.log(`Orphan river deleted at`);
+                // console.log(hex);
             }
         }    
     }); 
@@ -147,17 +162,11 @@ function find_inner_swamps () {      // working
     console.log(knot_candidates);
 }
     
-function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp) {
+function assign_knots (knots_per_swamp) {
     // For every 23 swamps on the map, we place one knot (default: 3 rivers.)
     // We round to the nearest integer, and if result is 0 then we apply just one.
     // We place the knots inside of swamp clusters using our list of candidates.
     // We make sure that knots are not within 3 hexes of each other using nested find_adjacent and find_adjacent_two (inefficient...?)
-
-    // Another possible implementation: have each swamp morph saved to a global list. Apply one knot to each.
-    // Code to do that is in sel_terrain, but commented out.  Can be found easily by searching for "=== 2" as it depends on 2s in morph.
-    // The trouble with this approach is that if the swamp is on a map edge and gets cut off, we have the same problem of orphaned, edge swamps.
-
-    console.log(`Applying swamp/river knots at ${min_rivers_per_knot} to ${max_rivers_per_knot} rivers per knot, ${knots_per_swamp} knots per swamp.`);
 
     let knot_count = Math.round((swamp_hexes.length * knots_per_swamp) / 23);
     if (knot_count === 0) { knot_count = 1; }
@@ -166,8 +175,8 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
     let knots_placed = 0;
     let is_allowed = true;
 
-    var previous_hex = null;
-    var availableHexes = knot_candidates;
+    let previous_hex = null;
+    let availableHexes = knot_candidates;
 
     while (knots_placed < knot_count) {
         is_allowed = true;  // reset
@@ -178,28 +187,27 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
         }
 
         delay;
-        console.log(`Available hexes: ${availableHexes.length}`);
+        // console.log(`Available hexes: ${availableHexes.length}`);
         let swamp_chooser_float = Math.random() * availableHexes.length;
-        console.log(`Float: ${swamp_chooser_float}`);
+        // console.log(`Float: ${swamp_chooser_float}`);
         let swamp_choice_int = Math.floor(swamp_chooser_float);
-        console.log(`Int: ${swamp_choice_int}`);
+        // console.log(`Int: ${swamp_choice_int}`);
         let hex_to_mod = availableHexes[swamp_choice_int]; // choose random inner swamp
         let anchor_id = hex_to_mod.id.slice(4);  // just the ID number
-        // let surrounding_three = find_adjacent_two(anchor_id);
         
         let surrounding_three = Array();
-        find_adjacent_two(anchor_id).forEach((el) => {
-            if (el != null) {
-                find_adjacent(parseInt(el.id.replace('hex_',''))).forEach((el) => {
-                    if (el != null) {
-                    surrounding_three.push(el.id);
+        find_adjacent_two(anchor_id).forEach((hex) => {
+            if (hex != null) {
+                find_adjacent(parseInt(hex.id.replace('hex_',''))).forEach((hex) => {
+                    if (hex != null) {
+                    surrounding_three.push(hex.id);
                     }
               });
 
             }
         });
         surrounding_three = surrounding_three.filter((v, i) => surrounding_three.indexOf(v) === i); // eliminate duplicates
-        console.log(surrounding_three);
+        // console.log(surrounding_three);
 
         let surrounding_three_hexes = [];
         surrounding_three.forEach((hex) => {
@@ -207,23 +215,23 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
             surrounding_three_hexes.push(target);
         });
 
-        console.log(surrounding_three_hexes);
+        // console.log(surrounding_three_hexes);
 
         surrounding_three_hexes.forEach((hex) => {        
             if (hex != null) {
                 if (hex.classList.contains('river_knot')) {
                     is_allowed = false;
-                    console.log(`Knot disallowed at`); 
-                    console.log(hex_to_mod); 
-                    console.log(`because of `);
-                    console.log(hex);
+                    // console.log(`Knot disallowed at`); 
+                    // console.log(hex_to_mod); 
+                    // console.log(`because of `);
+                    // console.log(hex);
                 }
             }    
         }); 
         
         if (is_allowed) {
 
-            console.log(`Knot is allowed at:`); 
+            console.log(`Knot placed at:`); 
             console.log(hex_to_mod);
 
             hex_to_mod.classList.add('river_knot');
@@ -239,14 +247,211 @@ function assign_knots (min_rivers_per_knot, max_rivers_per_knot, knots_per_swamp
     }
 }
 
-function orphaned_swamp_rivers () {
+function find_orphaned_swamp_river_candidates () {
     // If swamp hexes are on the edge of the map then they receive a single river.
     // Create list of 'orphaned' swamps. find_adjacent with at least 1 null hex neighbor.
     // If the list is larger than zero, spawn a single river.
     // If there are multiple orphaned swamps, use find_adjacent and hex coordinate math to determine if they are discontinuous 
     // and apply one river to each. 
 
+    orphan_river_candidates = Array();   // reset 
+    final_orphan_swamps = Array();   // reset
+    let swamps_to_triple_check = Array();
+
+    let swamps_to_check = Array.from(swamp_hexes);
+    swamps_to_check.forEach((hex) => {        
+        if (hex != null) {
+            hex_name = hex.id;              // access "hex_xyz"
+            id_number = hex_name.slice(4);  // just the ID number
+            let swamp_counter_one = 0;
+            let neighboring_hexes_one = Array.from(find_adjacent(id_number)); 
+            for (let i = 0; i < neighboring_hexes_one.length; i++) {
+                if (neighboring_hexes_one[i] != null) {
+                    if (neighboring_hexes_one[i].classList.contains('swamp')) {
+                    swamp_counter_one += 1;
+                    if (swamp_counter_one > 2) {
+                            // console.log(`Hex ${hex_name} is not an orphan.`);
+                            break;
+                        }                        
+                    }
+                }    
+            }
+            if(swamp_counter_one <= 2) {
+                orphan_river_candidates.push(hex);
+            }
+        }    
+    }); 
+    console.log(`First pass swamp river candidates are: `);
+    console.log(orphan_river_candidates);
+
+    let swamps_to_double_check = Array.from(orphan_river_candidates);
+    swamps_to_double_check.forEach((hex) => {        
+        if (hex != null) {
+            hex_name = hex.id;              // access "hex_xyz"
+            id_number = hex_name.slice(4);  // just the ID number
+            let swamp_counter_two = 0;
+            let neighboring_hexes_two = Array.from(find_adjacent_two(id_number)); 
+            for (let i = 0; i < neighboring_hexes_two.length; i++) {
+                if (neighboring_hexes_two[i] != null) {
+                    if (neighboring_hexes_two[i].classList.contains('swamp')) {
+                    swamp_counter_two += 1;
+                    if (swamp_counter_two > 4) {
+                            // console.log(`Hex ${hex_name} is not an orphan.`);
+                            break;
+                        }                        
+                    }
+                }    
+            }
+            if(swamp_counter_two <= 4) {
+                swamps_to_triple_check.push(hex);
+            }
+        }    
+    }); 
+    console.log(`2nd pass swamp river candidates are: `);
+    console.log(swamps_to_triple_check);
+
+    // Check within 3 hexes for 6 or more swamps. If so, disqualify.
+    swamps_to_triple_check.forEach((hex) => {
+        let is_allowed = true;
+        let triple_check_swamp_count = 0;
+        let surrounding_three = Array();
+        
+        if (hex != null) {
+            let anchor_id = hex.id.slice(4);  // just the ID number
+            find_adjacent_two(anchor_id).forEach((hex) => {
+                if (hex != null) {
+                    find_adjacent(parseInt(hex.id.replace('hex_',''))).forEach((hex) => {
+                        if (hex != null) {
+                            surrounding_three.push(hex.id);
+                        }
+                    });
+                }
+            });
+        }    
+                        
+        surrounding_three = surrounding_three.filter((v, i) => surrounding_three.indexOf(v) === i); // eliminate duplicates
+        // console.log(surrounding_three);
+
+        let surrounding_three_hexes = [];
+        surrounding_three.forEach((hex) => {
+            let target = document.getElementById(hex);
+            surrounding_three_hexes.push(target);
+        });
+        // console.log(surrounding_three_hexes);
+
+        surrounding_three_hexes.forEach((hex) => {        
+            if (hex != null) {
+                if (hex.classList.contains('swamp')) {
+                    triple_check_swamp_count += 1;
+                    // console.log(`Knot disallowed at`); 
+                    // console.log(hex_to_mod); 
+                    // console.log(`because of `);
+                    // console.log(hex);
+                    if (triple_check_swamp_count > 5) {
+                        is_allowed = false;
+                    }
+                }
+            }    
+        }); 
+
+        if (is_allowed) {
+            final_orphan_swamps.push(hex);
+        }
+        
+    }); 
+    
+    console.log(`Final swamp river candidates are: `);
+    console.log(final_orphan_swamps);
 }
+
+
+
+function place_orphaned_swamp_rivers(rivers_per_map) {
+    // For every 360 hexes on the map, we place one orphaned river (default: 1 river.)
+    // We round to the nearest integer, and if result is 0 then we apply just one.
+    // The rivers should only spawn if swamps are on the edge of the map and have been largely cut off, so many maps will have 0.
+    // We make sure that rivers are not within 3 hexes of knots.
+
+    let orphan_count = Math.round(rivers_per_map / 360);
+    if (orphan_count === 0) { orphan_count = 1; }
+    console.log(`Orphaned swamp river maximum: ${orphan_count}`);
+    
+    let orphans_placed = 0;
+    let is_allowed = true;
+    let previous_hex = null;
+    let availableHexes = final_orphan_swamps;
+
+    while (orphans_placed < orphan_count) {
+    // for (let i = 0; knots_placed < knot_count; i++) {
+        is_allowed = true;  // reset
+        
+        availableHexes = final_orphan_swamps.filter(hex => hex !== previous_hex); // Filter out the previously selected hex
+        if (availableHexes.length === 0) { // All hexes have been selected at least once, so reset the process or break the loop.
+            console.log("No possible orphans to spawn a river in.");
+            break;
+        }
+
+        delay;
+        // console.log(`Available hexes: ${availableHexes.length}`);
+        let swamp_chooser_float = Math.random() * availableHexes.length;
+        // console.log(`Float: ${swamp_chooser_float}`);
+        let swamp_choice_int = Math.floor(swamp_chooser_float);
+        // console.log(`Int: ${swamp_choice_int}`);
+        let hex_to_mod = availableHexes[swamp_choice_int]; // choose random inner swamp
+        let anchor_id = hex_to_mod.id.slice(4);  // just the ID number
+        
+        let surrounding_three = Array();
+        find_adjacent_two(anchor_id).forEach((hex) => {
+            if (hex != null) {
+                find_adjacent(parseInt(hex.id.replace('hex_',''))).forEach((hex) => {
+                    if (hex != null) {
+                    surrounding_three.push(hex.id);
+                    }
+              });
+
+            }
+        });
+        surrounding_three = surrounding_three.filter((v, i) => surrounding_three.indexOf(v) === i); // eliminate duplicates
+        // console.log(surrounding_three);
+
+        let surrounding_three_hexes = [];
+        surrounding_three.forEach((hex) => {
+            let target = document.getElementById(hex);
+            surrounding_three_hexes.push(target);
+        });
+
+        // console.log(surrounding_three_hexes);
+
+        surrounding_three_hexes.forEach((hex) => {        
+            if (hex != null) {
+                if (hex.classList.contains('river_knot')) {
+                    is_allowed = false;
+                    // console.log(`Knot disallowed at`); 
+                    // console.log(hex_to_mod); 
+                    // console.log(`because of `);
+                    // console.log(hex);
+                }
+            }    
+        }); 
+        
+        if (is_allowed) {
+
+            console.log(`Orphan river placed at:`); 
+            console.log(hex_to_mod);
+
+            hex_to_mod.classList.add('orphan_river');
+            let knot_illus = hex_to_mod.querySelector('.hex-waterway');
+            knot_illus.style.background = `url(../mats/Waterways/river_token.png)`;
+            knot_illus.style.position = 'absolute';  
+
+            previous_hex = hex_to_mod; 
+            availableHexes = knot_candidates.filter(hex => hex !== hex_to_mod);
+
+            orphans_placed += 1;
+        }
+    }
+}
+
 
 
     function apply_paths () {
