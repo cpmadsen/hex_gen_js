@@ -100,12 +100,14 @@ function apply_waterways (delay) {
     find_inner_swamps();
     delay;
     assign_knots(1);   // x = knots_per_swamp, ie. x / 23 swamps //
-    
+
+
     find_orphaned_swamp_river_candidates();
     delay;
     place_orphaned_swamp_rivers(1);     // x = rivers_per_map, ie. x / 360 hexes //
-    // NEXT: use find adjacent 3 to prevent orphaned rivers spawning too near knots
-    // THEN: begin spawning river tokens on hexes
+    
+
+
 }
 
 function reset_waterways() {
@@ -231,13 +233,97 @@ function assign_knots (knots_per_swamp) {
         
         if (is_allowed) {
 
+            /*
+            let number_knot_rivers = 3;
+            let roll = Math.random();
+            let weight_two = 0.1;
+            let weight_four = 0.9;
+            if (roll <= weight_two) {number_knot_rivers = 2;} else if (roll >= weight_four) {number_knot_rivers = 4;} 
+
+            if (number_knot_rivers === 2) {
+
+            }
+            */
+            let knot_selector = Math.random() * 8;
+            let knot_selector_int = Math.ceil(knot_selector);
+            let knot_choice = 135;
+
+            switch (knot_selector_int) {
+                case 1:
+                    knot_choice = 135;
+                    break;
+                case 2:
+                    knot_choice = 134;
+                    break;
+                case 3:
+                    knot_choice = 145;
+                    break;
+                case 4:
+                    knot_choice = 124;
+                    break;
+                case 5:
+                    knot_choice = 146;
+                    break;
+                case 6:
+                    knot_choice = 1346;
+                    break;
+                case 7:
+                    knot_choice = 1245;
+                    break;
+                case 8:
+                    knot_choice = 2356;
+                    break;    
+
+                default: 
+                    console.log("Not a valid knot selection integer");
+            } 
+
             console.log(`Knot placed at:`); 
             console.log(hex_to_mod);
 
             hex_to_mod.classList.add('river_knot');
+            hex_to_mod.classList.add(`knot_${knot_choice}`);
+
             let knot_illus = hex_to_mod.querySelector('.hex-waterway');
-            knot_illus.style.background = `url(../mats/Waterways/River_Knot.png)`;
-            knot_illus.style.position = 'absolute';  
+            switch (knot_choice) {
+                case 135:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_135.png)`;
+                    knot_illus.style.position = 'absolute';  
+                    break;
+                case 134:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_134.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 145:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_145.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 124:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_124.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 146:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_146.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 1346:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_1346.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 1245:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_1245.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                case 2356:
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_2356.png)`;
+                    knot_illus.style.position = 'absolute';
+                    break;
+                default: 
+                    console.log("Not a valid knot choice, going with default type: 135");
+                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_135.png)`;
+                    knot_illus.style.position = 'absolute';  
+            } 
+            
 
             previous_hex = hex_to_mod; 
             availableHexes = knot_candidates.filter(hex => hex !== hex_to_mod);
