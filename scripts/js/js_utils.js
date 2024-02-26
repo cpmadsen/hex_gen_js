@@ -3,6 +3,12 @@ function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
+function choose (myArray) {
+    const randomIndex = Math.floor(Math.random() * myArray.length);
+    const randomValue = myArray[randomIndex];
+    return randomValue;
+}
+
 function remove_old_hexes() {
     old_hexes = Array.from(document.getElementsByClassName('hex-center'));
     for (let i = old_hexes.length; i > 0; i--) {
@@ -13,15 +19,131 @@ function remove_old_hexes() {
     }
 }
 
-function choose (myArray) {
-    // Generate a random index within the valid range
-    const randomIndex = Math.floor(Math.random() * myArray.length);
+function find_adjacent (hex_id) {                               
+    let current_hex_col = Math.ceil(hex_id / numRows);
+    hex_id_as_int = parseInt(hex_id);
+    num_row_count = parseInt(numRows);
+    
+    // If the hex is on the lower edge of the map:
+    if(hex_id_as_int % num_row_count === 0) {
+        if(current_hex_col % 2 === 0) { // even (sagging) column
+            let neighbors = [
+            document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+            null,                                                                           // SE
+            null,                                                                           // S
+            null,                                                                           // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows}`)]                      // NW
+            return neighbors;
+        } else {    // hex is odd
+            let neighbors = [
+            document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N
+            document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),            // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+            null,                                                                           // S
+            document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)]                  // NW
+            return neighbors;         
+        }
+    }
 
-    // Use the random index to get a random value from the array
-    const randomValue = myArray[randomIndex];
+    // If the hex is on the upper edge of the map:
+    if(hex_id_as_int % num_row_count === 1) {
+        if(current_hex_col % 2 === 0) { // even (sagging) column
+            let neighbors = [
+            null,                                                                           // N  
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),            // SE
+            document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+            document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                  // SW
+            document.getElementById(`hex_${hex_id_as_int - numRows}`)]                      // NW
+            return neighbors;
+        } else {    // hex is odd
+            let neighbors = [
+            null,                                                                           // N
+            null,                                                                           // NE
+            document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+            document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+            document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+            null]                                                                           // NW
+            return neighbors;         
+        }
+    }
 
-    return randomValue;
+    // If the current hex is on an even (sagging) column:
+    if(current_hex_col % 2 === 0) {
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),            // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                  // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows}`)]                      // NW
+        return neighbors;
+    } else {    // hex is odd
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),            // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)]                  // NW
+        return neighbors;         
+}   }
 
-    //console.log(%c'randomValue'; 'font-weight: bold, font-color: red');
+function find_adjacent_two (hex_id) {                               
+    let current_hex_col = Math.ceil(hex_id / numRows);
+    hex_id_as_int = parseInt(hex_id);
+    num_row_count = parseInt(numRows);
+    
+    // if the current hex is on an even (sagging) column:
+    if(current_hex_col % 2 === 0) {
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N  
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`),            // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),                  // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // NW
+        document.getElementById(`hex_${hex_id_as_int - 2}`),
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),   
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count)}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) + 1}`),             
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 2}`), 
+        document.getElementById(`hex_${hex_id_as_int + 2}`),                           
+        document.getElementById(`hex_${hex_id_as_int - numRows + 2}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows)}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) + 1}`),                  
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`)
+        ]
+        return neighbors;
+    } else {    // hex is odd
+        let neighbors = [
+        document.getElementById(`hex_${hex_id_as_int - 1}`),                            // N
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`),            // NE
+        document.getElementById(`hex_${hex_id_as_int + num_row_count}`),                // SE
+        document.getElementById(`hex_${hex_id_as_int + 1}`),                            // S
+        document.getElementById(`hex_${hex_id_as_int - numRows}`),                      // SW
+        document.getElementById(`hex_${hex_id_as_int - numRows - 1}`),                  // NW
+        document.getElementById(`hex_${hex_id_as_int - 2}`),
+        document.getElementById(`hex_${hex_id_as_int + num_row_count - 2}`),   
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count)}`),
+        document.getElementById(`hex_${hex_id_as_int + (2 * num_row_count) + 1}`),             
+        document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`), 
+        document.getElementById(`hex_${hex_id_as_int + 2}`),                           
+        document.getElementById(`hex_${hex_id_as_int - numRows + 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) - 1}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows)}`),
+        document.getElementById(`hex_${hex_id_as_int - (2 * numRows) + 1}`),                  
+        document.getElementById(`hex_${hex_id_as_int - numRows - 2}`)
+        ] 
+        return neighbors;         
+}   }
 
+function rotate_hex_face(face, rotation_angle) {
+    // for every 60 degrees of rotation, the hex face increases by 1. Use %7 to keep values within 1-6 range.
 }
+

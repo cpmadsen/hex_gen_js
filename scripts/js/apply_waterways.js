@@ -11,21 +11,12 @@ function apply_waterways (delay) {
     /* 
 
     // Rivers are a sprite that sits on top of each hex, not a line that stretches between hex-centers 
-    // (since that would destroy the hover-up over lava concept.) 
-    // They fit over doodles but under features (SHs etc.)
-    // See render_hex.js for the z-index.
+    // They fit over doodles but under features (SHs etc.) See render_hex.js for the z-index.
     
-   Method to attach sprites to hex tile: see init_hex for how it appends hex labels            
-        water_layer = document.getElementById('waterways');           
-        const river_hex = document.createElement('div');
-        // All other river_hex characteristics;
-        // Apply it to the coordinates of the parent hex-center;
-        water_layer.appendChild(river_hex)
-
     How the river sprites work:  
         Each will be oriented with the river coming 'in' from the top face and out one of the others.
             Numbered 2-6 on the other faces, so you'd have river types 1-2, 1-3, 1-4, 1-5, 1-6. 
-            If branching, both faces listed after, e.g. 1-24.
+            If branching, all faces listed: e.g. River_Knot_124.
             Then all the variants must be saved too. Perhaps river_1-2_1.png, 1-2_2, 1-2_3 etc.
         They get rotated the proper number of degrees (60, 120, 180...) so that their 1 matches up with their origin, ie. previous hex with river.
         Depending on changes in direction, branches, etc. the code calls for their numbers like so: `river1-${exit_face}_${randomInt}`
@@ -38,22 +29,22 @@ function apply_waterways (delay) {
             (another possible method, a simple chance per swamp hex to begin a river.)
         Within swamp, the rivers might join up, forming a knot in the centre, or they might all trail off at the swamp borders in a squiggle graphic.
             (back to the 1st method: find a centre hex within the swamp, it becomes the "knot", and there's a 50/50 chance of the rivers inside the swamp
-            being visible or not. Presumably we do not want all swamps to be fed by 3 rivers, so make each knot spawn 1-4 by default (can be user
+            being visible or not. Presumably we do not want all swamps to be fed by 3 rivers, so make each knot spawn 3-4 by default (can be user
                 defined, try to leave room so that can be easily added.))
         The rivers travel away in a mostly-straight line to a map edge. In OS, map edges are higher and swamps are lower, so the river 'runs backwards.' 
         The rivers will NEVER go through deserts, and IF they go through mountains they change the tile to Open.
             If forced through woods adjacent to the swamp, the river lowers their elevation to open level.
             (Alt: some woods are randomly elevation 2 when generated, so river will sometimes scoot through them.)
             They will always end at the edge of the map [or by inference, coast.]
-        River randomly meanders within 3 hexes direction change.  Ie. if already going N, it might go NW or NE but not SW or SE.
+        Rivers mostly meander within 1 hex's direction change.  Ie. if already going N, it might go NW or NE but not SW or SE.
+        The turns alternate between right and left. Always start right.
             [Exception? If River hits desert. This never happens in OS.]
             Rivers never get within one hex of a desert.
             Could call for the waterway function to backtrack if it becomes adjacent to desert, and re-roll direction.
         Ocasionally the river may split within the direction of travel, ie. the split is cosmetic only and the river still travels as a single river.
-        Or the river actually splits off into another. Chance is quite low; happens once in OS map. (1/98 chance) (or 1/100 obviously)
+        Or the river actually splits off into another. Chance is quite low; happens once in OS map.
         OS has a river going from one swamp to the other, implying an elevation difference between the two. 
-            The simplest way to code this is just to iterate through the swamps, having one spawn rivers outwards before the other(s). 
-        Fords have a 9/98 chance (or 1/10) to show up.
+            
     
     */    
     
@@ -101,11 +92,11 @@ function apply_waterways (delay) {
     delay;
     assign_knots(1);   // x = knots_per_swamp, ie. x / 23 swamps //
 
-
     find_orphaned_swamp_river_candidates();
     delay;
     place_orphaned_swamp_rivers(1);     // x = rivers_per_map, ie. x / 360 hexes //
     
+    // river_meander(origin_hex, from_face);
 
 
 }
@@ -244,7 +235,7 @@ function assign_knots (knots_per_swamp) {
 
             }
             */
-            let knot_selector = Math.random() * 8;
+            let knot_selector = Math.random() * 7;
             let knot_selector_int = Math.ceil(knot_selector);
             let knot_choice = 135;
 
@@ -269,9 +260,6 @@ function assign_knots (knots_per_swamp) {
                     break;
                 case 7:
                     knot_choice = 1245;
-                    break;
-                case 8:
-                    knot_choice = 2356;
                     break;    
 
                 default: 
@@ -282,7 +270,7 @@ function assign_knots (knots_per_swamp) {
             console.log(hex_to_mod);
 
             hex_to_mod.classList.add('river_knot');
-            hex_to_mod.classList.add(`knot_${knot_choice}`);
+            // hex_to_mod.classList.add(`knot_${knot_choice}`); // Causes the program to crash
 
             let knot_illus = hex_to_mod.querySelector('.hex-waterway');
             switch (knot_choice) {
@@ -312,10 +300,6 @@ function assign_knots (knots_per_swamp) {
                     break;
                 case 1245:
                     knot_illus.style.background = `url(../mats/Waterways/River_Knot_1245.png)`;
-                    knot_illus.style.position = 'absolute';
-                    break;
-                case 2356:
-                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_2356.png)`;
                     knot_illus.style.position = 'absolute';
                     break;
                 default: 
