@@ -143,7 +143,17 @@ function find_adjacent_two (hex_id) {
         return neighbors;         
 }   }
 
-function rotate_hex_face(face, rotation_angle) {
-    // for every 60 degrees of rotation, the hex face increases by 1. Use %7 to keep values within 1-6 range.
-}
+function exit_to_entry_face (exit, rotation) {
+    // Account for rotation (positive is clockwise):
+    let face_increment = rotation / 60;
+    let final_exit = (exit + face_increment) % 6;
+    // if (final_exit === 0) {final_exit = }
+    let next_entry = 0;
+    if (final_exit <= 3) {
+        next_entry = final_exit + 3;
+    } else {
+        next_entry = final_exit - 3;
+    }
+    return next_entry;
 
+}
