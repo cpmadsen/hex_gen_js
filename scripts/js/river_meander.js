@@ -6,7 +6,7 @@
 
         roll for next segment to try - 
                 0.597826087 straight, 
-                0.3695652174 loose bend,
+                0.3695652174 loose bend,        (0.9673913044 sum)
                 0.03260869565 sharp bend 
             check to see if elevation allows this choice. If not re-roll. 
             Woods allow a 0.08695652174 chance (8.7%) of river climbing 'up' in. 
@@ -36,6 +36,142 @@
 
     */
 
-function river_meander () {
+// Global variables
+let right_turn = true;   // all rivers take a right turn to begin with, then alternate.
+
+function river_meander (prev_hex, exit_face_of_prev) {
+    console.log(`River spawning from parent (previous) hex:`)
+    console.log(prev_hex);
+    prev_anchor_id = prev_hex.id.slice(4);  // just the ID number
+    console.log(`Previous anchor id: ${prev_anchor_id}`);
+
+    // test if find_adj works. This cannot be taken out or get_next_hex stops working below for some reason. 
+    let neighbors = [];
+    neighbors = find_adjacent(prev_anchor_id);
+    console.log('Find adjacent returns:')
+    console.log(neighbors);
+
+
+    console.log(`Exit face from knot: ${exit_face_of_prev}`);
+    let this_hex = [];
+    this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev);
+    console.log('This river segment:')
+    console.log(this_hex);
+
+    if (this_hex === null) {
+        return;
+    }
+
+    let river_illus = this_hex.querySelector('.hex-waterway');
+    let this_river_rotation = 0;
+
+    //console.log(`Spawning river. Exit face of knot: ${exit_face_of_prev}`);
+    let river_entry = exit_to_entry_face(exit_face_of_prev);
+    //console.log(`Entry face into first river hex: ${river_entry}`);
+    let river_exit = 0;
+
+
+    let river_type = 'straight';
+
+    let river_choice = Math.random();
+    if (river_choice <= 0.597826087) {
+        river_exit = straight_river_faces(river_entry);
+        river_illus.style.background = `url(../mats/Waterways/river_1-4_1.png)`;
+        river_illus.style.position = 'absolute'; 
+        this_river_rotation = find_rotation(river_entry);
+        river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+
+    } else if (river_choice > 0.597826087 && river_choice <= 0.9673913044) {
+        river_type = 'loose_bend';
+        if (right_turn) {
+            river_exit = loose_bend_right(river_entry);
+            right_turn = false;
+            river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;
+            river_illus.style.position = 'absolute'; 
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        } else {
+            river_exit = loose_bend_left(river_entry);
+            right_turn = true;
+            river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;
+            river_illus.style.position = 'absolute'; 
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        }
+        
+    } else if (river_choice > 0.9673913044) {
+        river_type = 'sharp_bend';
+        if (right_turn) {
+            river_exit = sharp_bend_right(river_entry);
+            right_turn = false;
+            river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;
+            river_illus.style.position = 'absolute'; 
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        } else {
+            river_exit = sharp_bend_left(river_entry);
+            right_turn = true;
+            river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;
+            river_illus.style.position = 'absolute'; 
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        }
+    }
+    console.log(`River segment: ${river_type}`);
+    console.log(`Entry ${river_entry} exit ${river_exit}`);
+
+    river_meander(this_hex, river_exit);
 
 }
+
+
+function straight_river_faces(entry) {
+    let exit = 0;
+    if (entry <= 3) {
+        exit = entry + 3;
+    } else if (entry > 3) {
+        exit = entry - 3;
+    }
+    return exit;
+}
+
+function loose_bend_left(entry) {
+    let exit = 0;
+    if (entry <= 4) {
+        exit = entry + 2;
+    } else if (entry > 4) {
+        exit = entry - 4;
+    }
+    return exit;
+}
+
+function loose_bend_right(entry) {
+    let exit = 0;
+    if (entry <= 2) {
+        exit = entry + 4;
+    } else if (entry > 2) {
+        exit = entry - 2;
+    }
+    return exit;
+}
+
+function sharp_bend_left(entry) {
+    let exit = 0;
+    if (entry <= 5) {
+        exit = entry + 1;
+    } else if (entry === 6) {
+        exit = 1;
+    }
+    return exit;
+}
+
+function sharp_bend_right(entry) {
+    let exit = 0;
+    if (entry === 1) {
+        exit = 6;
+    } else if (entry > 1) {
+        exit = entry - 1;
+    }
+    return exit;
+}
+

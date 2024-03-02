@@ -102,6 +102,7 @@ function apply_waterways (delay) {
 }
 
 function reset_waterways() {
+    
     let swamps_to_clear = Array.from(swamp_hexes);
     swamps_to_clear.forEach((hex) => {   
         if (hex != null) {
@@ -123,6 +124,14 @@ function reset_waterways() {
             }
         }    
     }); 
+    
+    all_hexes = Array.from(document.getElementsByClassName('hex-center'));
+    all_hexes.forEach((hex) => {
+        let water_illus = hex.querySelector('.hex-waterway');
+        water_illus.style.background = `url(../mats/New_Hexes/Clear.png)`; 
+        water_illus.style.position = 'absolute'; 
+    });
+
 
 }
 
@@ -151,8 +160,8 @@ function find_inner_swamps () {      // working
             }
         }
     }
-    console.log(`Swamp river-knot candidates are: `);
-    console.log(knot_candidates);
+    //console.log(`Swamp river-knot candidates are: `);
+    //console.log(knot_candidates);
 }
     
 function assign_knots (knots_per_swamp) {
@@ -235,7 +244,7 @@ function assign_knots (knots_per_swamp) {
 
             }
             */
-            let knot_selector = Math.random() * 7;
+            let knot_selector = Math.random() * 4;
             let knot_selector_int = Math.ceil(knot_selector);
             let knot_choice = 135;
 
@@ -250,27 +259,23 @@ function assign_knots (knots_per_swamp) {
                     knot_choice = 145;
                     break;
                 case 4:
-                    knot_choice = 124;
-                    break;
-                case 5:
-                    knot_choice = 146;
-                    break;
-                case 6:
-                    knot_choice = 1346;
-                    break;
-                case 7:
                     knot_choice = 1245;
                     break;    
 
                 default: 
                     console.log("Not a valid knot selection integer");
             } 
-
-            console.log(`Knot placed at:`); 
-            console.log(hex_to_mod);
+            // console.log(`Knot placed at:`); 
+            // console.log(hex_to_mod);
 
             hex_to_mod.classList.add('river_knot');
-            // hex_to_mod.classList.add(`knot_${knot_choice}`); // Causes the program to crash
+            hex_to_mod.setAttribute("knot_type", knot_choice); // data
+
+            // To retrieve data:
+            // // Retrieve the div element
+            // var myDiv = document.getElementById("myDiv");
+            // Get the integer value stored in the data-myinteger attribute
+            // var myInteger = parseInt(myDiv.getAttribute("knot_choice"));
 
             let knot_illus = hex_to_mod.querySelector('.hex-waterway');
             switch (knot_choice) {
@@ -286,18 +291,6 @@ function assign_knots (knots_per_swamp) {
                     knot_illus.style.background = `url(../mats/Waterways/River_Knot_145.png)`;
                     knot_illus.style.position = 'absolute';
                     break;
-                case 124:
-                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_124.png)`;
-                    knot_illus.style.position = 'absolute';
-                    break;
-                case 146:
-                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_146.png)`;
-                    knot_illus.style.position = 'absolute';
-                    break;
-                case 1346:
-                    knot_illus.style.background = `url(../mats/Waterways/River_Knot_1346.png)`;
-                    knot_illus.style.position = 'absolute';
-                    break;
                 case 1245:
                     knot_illus.style.background = `url(../mats/Waterways/River_Knot_1245.png)`;
                     knot_illus.style.position = 'absolute';
@@ -308,6 +301,22 @@ function assign_knots (knots_per_swamp) {
                     knot_illus.style.position = 'absolute';  
             } 
             
+            let rotation = random_rotation();
+            knot_illus.style.transform = `rotate(${rotation}deg)`;
+
+            // Get digits of knot as array
+            let exit_faces_string = knot_choice.toString();
+            let exit_faces_array = extract_digits(exit_faces_string);
+            // Iterate through, for each exit face generate a river
+            for(let i = 0; i < exit_faces_array.length; i++) {
+                
+                let face = exit_faces_array[i];
+                let final_face = rotate_face(face, rotation);
+                // console.log(`Final face: ${final_face}`);
+                right_turn = true; // reset 
+                river_meander(hex_to_mod, final_face);
+
+            }
 
             previous_hex = hex_to_mod; 
             availableHexes = knot_candidates.filter(hex => hex !== hex_to_mod);
@@ -351,8 +360,8 @@ function find_orphaned_swamp_river_candidates () {
             }
         }    
     }); 
-    console.log(`First pass swamp river candidates are: `);
-    console.log(orphan_river_candidates);
+    //console.log(`First pass swamp river candidates are: `);
+    //console.log(orphan_river_candidates);
 
     let swamps_to_double_check = Array.from(orphan_river_candidates);
     swamps_to_double_check.forEach((hex) => {        
@@ -377,8 +386,8 @@ function find_orphaned_swamp_river_candidates () {
             }
         }    
     }); 
-    console.log(`2nd pass swamp river candidates are: `);
-    console.log(swamps_to_triple_check);
+    //console.log(`2nd pass swamp river candidates are: `);
+    //console.log(swamps_to_triple_check);
 
     // Check within 3 hexes for 6 or more swamps. If so, disqualify.
     swamps_to_triple_check.forEach((hex) => {
@@ -437,14 +446,9 @@ function find_orphaned_swamp_river_candidates () {
 
 
 function place_orphaned_swamp_rivers(rivers_per_map) {
-    // For every 360 hexes on the map, we place one orphaned river (default: 1 river.)
-    // We round to the nearest integer, and if result is 0 then we apply just one.
-    // The rivers should only spawn if swamps are on the edge of the map and have been largely cut off, so many maps will have 0.
-    // We make sure that rivers are not within 3 hexes of knots.
-
     let orphan_count = Math.round(rivers_per_map / 360);
     if (orphan_count === 0) { orphan_count = 1; }
-    console.log(`Orphaned swamp river maximum: ${orphan_count}`);
+    //console.log(`Orphaned swamp river maximum: ${orphan_count}`);
     
     let orphans_placed = 0;
     let is_allowed = true;
@@ -509,7 +513,7 @@ function place_orphaned_swamp_rivers(rivers_per_map) {
             console.log(`Orphan river placed at:`); 
             console.log(hex_to_mod);
 
-            hex_to_mod.classList.add('orphan_river');
+            hex_to_mod.classList.add('river_orphan');
             let knot_illus = hex_to_mod.querySelector('.hex-waterway');
             knot_illus.style.background = `url(../mats/Waterways/river_token.png)`;
             knot_illus.style.position = 'absolute';  
@@ -518,6 +522,7 @@ function place_orphaned_swamp_rivers(rivers_per_map) {
             availableHexes = knot_candidates.filter(hex => hex !== hex_to_mod);
 
             orphans_placed += 1;
+
         }
     }
 }
