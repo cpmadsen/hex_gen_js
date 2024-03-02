@@ -52,7 +52,7 @@ function river_meander (prev_hex, exit_face_of_prev) {
     console.log(neighbors);
 
 
-    console.log(`Exit face from knot: ${exit_face_of_prev}`);
+    console.log(`Exit face from previous: ${exit_face_of_prev}`);
     let this_hex = [];
     this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev);
     console.log('This river segment:')
@@ -61,6 +61,8 @@ function river_meander (prev_hex, exit_face_of_prev) {
     if (this_hex === null) {
         return;
     }
+
+    // All terrain-based logic goes here, based on various checks of find_adj's neigbors.
 
     let river_illus = this_hex.querySelector('.hex-waterway');
     let this_river_rotation = 0;
