@@ -16,22 +16,8 @@
                 Cosmetic tributaries (bifurcated straights) to be figured out once it's working.
             Use another function to determine river illus based on entrance and exit faces.
 
-        carry forward the rotation from the previous segment. 
-        and/or
-        carry forward: the exit face of the previous segment becomes the entry face of this segment. 
-                A function to translate rotation and faces: ie. if 134 is rotated 60 deg. to 245... exit 5 is now entry 2... 
 
-
-        check to see that the river does not come within 1 of a desert, 
-        check to see it is not hemmed in by multiple mountains in a row 
-            (can break thru a single row of mountains, but not 2 mountains in a row ie. not a whole morph)
-            save as a boolean: "broke_through_mountains" rather than find_adj_two? 
-            or whenever a river hits a mountain, use find_adj and find_adj_2 to see if it breaks thru or glances off?
-        check to see if river has broken up into woods elevation for 2 hexes already. it cannot do a third and must dismount into open if 
-            possible. 
-        If any of these checks fail, backtrack and reroll. If that fails, backtrack farther (rare case of being 'cornered'). 
-        If a certain number of backtracks fail, the river either "dies on the vine" and becomes a swamp squiggle (upper right of OS), or 
-                it breaks some rules and carves through over 2 woods, turning them all to open (see lower left of OS).
+        
 
 
     */
@@ -51,7 +37,6 @@ function river_meander (prev_hex, exit_face_of_prev) {
     console.log('Find adjacent returns:')
     console.log(neighbors);
 
-
     console.log(`Exit face from previous: ${exit_face_of_prev}`);
     let this_hex = [];
     this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev);
@@ -61,8 +46,6 @@ function river_meander (prev_hex, exit_face_of_prev) {
     if (this_hex === null) {
         return;
     }
-
-    // All terrain-based logic goes here, based on various checks of find_adj's neigbors.
 
     let river_illus = this_hex.querySelector('.hex-waterway');
     let this_river_rotation = 0;
@@ -78,6 +61,19 @@ function river_meander (prev_hex, exit_face_of_prev) {
     let river_choice = Math.random();
     if (river_choice <= 0.597826087) {
         river_exit = straight_river_faces(river_entry);
+
+        /*
+
+        let putative_next_hex = get_next_hex(this_hex, river_exit);   // test to make sure this is correct
+        
+        let suitability_for_rivers = river_tests(putative_next_hex);
+        if(suitability_for_rivers === false) { break out of this if statement and re-roll river_choice. Do this x times or start re-writing terrain.}
+        else {
+            all the stuff below to apply river_illus etc.
+        }
+
+
+        */
         river_illus.style.background = `url(../mats/Waterways/river_1-4_1.png)`;
         river_illus.style.position = 'absolute'; 
         this_river_rotation = find_rotation(river_entry);
@@ -177,3 +173,21 @@ function sharp_bend_right(entry) {
     return exit;
 }
 
+
+function river_tests(test_hex) {
+    /*
+    check to see that the river does not come within 1 of a desert, 
+    
+    check to see it is not hemmed in by multiple mountains in a row 
+        (can break thru a single row of mountains, but not 2 mountains in a row ie. not a whole morph)
+        save as a boolean: "broke_through_mountains" rather than find_adj_two? 
+        or whenever a river hits a mountain, use find_adj and find_adj_2 to see if it breaks thru or glances off?
+    
+    check to see if river has broken up into woods elevation for 2 hexes already. it cannot do a third and must dismount into open if 
+        possible. 
+    
+        If any of these checks fail, backtrack and reroll. If that fails, backtrack farther (rare case of being 'cornered'). 
+    If a certain number of backtracks fail, the river either "dies on the vine" and becomes a swamp squiggle (upper right of OS), or 
+            it breaks some rules and carves through over 2 woods, turning them all to open (see lower left of OS).
+            */
+}
