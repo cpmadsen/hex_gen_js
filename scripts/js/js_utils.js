@@ -202,10 +202,10 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
         if(current_hex_col % 2 === 0) { // even (sagging) column
             switch(exit_face) {
                 case 1:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - 1}`);                            // N 
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
                     break;
                 case 2:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // NE
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
                     break;
                 case 3: 
                     next_hex =  null;                                                                           // SE
@@ -217,7 +217,7 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
                     next_hex = null;                                                                           // SW
                     break;
                 case 6:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                       // NW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                       // NW
                     break;    
 
                 default: 
@@ -227,22 +227,22 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
         } else {    // hex is odd
             switch(exit_face) {
                 case 1:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - 1}`);                            // N
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N
                     break;
                 case 2:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`);            // NE
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count - 1}`);            // NE
                     break;
                 case 3: 
-                    next_hex =  document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // SE
+                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
                     break;
                 case 4: 
                     next_hex =  null;                                                                           // S
                     break;
                 case 5:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                      // SW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
                     break;
                 case 6:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows - 1}`);                  // NW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows - 1}`);                  // NW
                     break;    
 
                 default: 
@@ -260,19 +260,19 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
                     next_hex = null;                                                                           // N
                     break;
                 case 2:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // NE
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
                     break;
                 case 3: 
-                    next_hex =  document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`);            // SE
+                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count + 1}`);            // SE
                     break;
                 case 4: 
-                    next_hex =  document.getElementById(`hex_${hex_id_as_int + 1}`);                            // S
+                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
                     break;
                 case 5:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows + 1}`);                  // SW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows + 1}`);                  // SW
                     break;
                 case 6:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                      // NW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // NW
                     break;    
 
                 default: 
@@ -288,13 +288,13 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
                     next_hex = null;                                                                           // NE
                     break;
                 case 3: 
-                    next_hex =  document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // SE
+                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
                     break;
                 case 4: 
-                    next_hex =  document.getElementById(`hex_${hex_id_as_int + 1}`);                            // S
+                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
                     break;
                 case 5:
-                    next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                      // SW
+                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
                     break;
                 case 6:
                     next_hex = null;                                                                           // NW
@@ -311,22 +311,22 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
     if(current_hex_col % 2 === 0) {
         switch(exit_face) {
             case 1:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - 1}`);                            // N 
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
                 break;
             case 2:
-                next_hex = document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // NE
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
                 break;
             case 3: 
-                next_hex =  document.getElementById(`hex_${hex_id_as_int + num_row_count + 1}`);            // SE
+                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count + 1}`);            // SE
                 break;
             case 4: 
-                next_hex =  document.getElementById(`hex_${hex_id_as_int + 1}`);                            // S
+                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
                 break;
             case 5:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - numRows + 1}`);                  // SW
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows + 1}`);                  // SW
                 break;
             case 6:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                       // NW
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                       // NW
                 break;    
 
             default: 
@@ -336,22 +336,22 @@ function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
     } else {    // hex is odd
         switch(exit_face) {
             case 1:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - 1}`);                            // N 
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
                 break;
             case 2:
-                next_hex = document.getElementById(`hex_${hex_id_as_int + num_row_count - 1}`);            // NE
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count - 1}`);            // NE
                 break;
             case 3: 
-                next_hex =  document.getElementById(`hex_${hex_id_as_int + num_row_count}`);                // SE
+                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
                 break;
             case 4: 
-                next_hex =  document.getElementById(`hex_${hex_id_as_int + 1}`);                            // S
+                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
                 break;
             case 5:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - numRows}`);                      // SW
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
                 break;
             case 6:
-                next_hex = document.getElementById(`hex_${hex_id_as_int - numRows - 1}`);                       // NW
+                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows - 1}`);                       // NW
                 break;    
 
             default: 
