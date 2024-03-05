@@ -191,171 +191,20 @@ function exit_to_entry_face (exit) {
     return next_entry;
 }
 
-function get_next_hex (prev_hex_id, exit_face) {    // Alt: directional face
-    let current_hex_col = Math.ceil(prev_hex_id / numRows);
-    prev_hex_id_as_int = parseInt(prev_hex_id);
-    num_row_count = parseInt(numRows);
-    let next_hex = [];
-    
-    // If the hex is on the lower edge of the map:
-    if(prev_hex_id_as_int % num_row_count === 0) {
-        if(current_hex_col % 2 === 0) { // even (sagging) column
-            switch(exit_face) {
-                case 1:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
-                    break;
-                case 2:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
-                    break;
-                case 3: 
-                    next_hex =  null;                                                                           // SE
-                    break;
-                case 4: 
-                    next_hex =  null;                                                                           // S
-                    break;
-                case 5:
-                    next_hex = null;                                                                           // SW
-                    break;
-                case 6:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                       // NW
-                    break;    
 
-                default: 
-                    console.log("No valid next hex");
-            } 
-            return next_hex;
-        } else {    // hex is odd
-            switch(exit_face) {
-                case 1:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N
-                    break;
-                case 2:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count - 1}`);            // NE
-                    break;
-                case 3: 
-                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
-                    break;
-                case 4: 
-                    next_hex =  null;                                                                           // S
-                    break;
-                case 5:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
-                    break;
-                case 6:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows - 1}`);                  // NW
-                    break;    
 
-                default: 
-                    console.log("No valid next hex");
-            } 
-            return next_hex;        
-        }
-    }
+function get_next_hex (prev_hex_id, exit_face) {
+    let neighbors = find_adjacent(prev_hex_id);
+    let face_hex_match = exit_face - 1;
+    let next_hex = neighbors[face_hex_match];
+    return next_hex;
+}
 
-    // If the hex is on the upper edge of the map:
-    if(prev_hex_id_as_int % num_row_count === 1) {
-        if(current_hex_col % 2 === 0) { // even (sagging) column
-            switch(exit_face) {
-                case 1:
-                    next_hex = null;                                                                           // N
-                    break;
-                case 2:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
-                    break;
-                case 3: 
-                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count + 1}`);            // SE
-                    break;
-                case 4: 
-                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
-                    break;
-                case 5:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows + 1}`);                  // SW
-                    break;
-                case 6:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // NW
-                    break;    
-
-                default: 
-                    console.log("No valid next hex");
-            } 
-            return next_hex;
-        } else {    // hex is odd
-            switch(exit_face) {
-                case 1:
-                    next_hex = null;                                                                           // N
-                    break;
-                case 2:
-                    next_hex = null;                                                                           // NE
-                    break;
-                case 3: 
-                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
-                    break;
-                case 4: 
-                    next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
-                    break;
-                case 5:
-                    next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
-                    break;
-                case 6:
-                    next_hex = null;                                                                           // NW
-                    break;    
-
-                default: 
-                    console.log("No valid next hex");
-            } 
-            return next_hex;       
-        }
-    }
-
-    // If the current hex is on an even (sagging) column:
-    if(current_hex_col % 2 === 0) {
-        switch(exit_face) {
-            case 1:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
-                break;
-            case 2:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // NE
-                break;
-            case 3: 
-                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count + 1}`);            // SE
-                break;
-            case 4: 
-                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
-                break;
-            case 5:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows + 1}`);                  // SW
-                break;
-            case 6:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                       // NW
-                break;    
-
-            default: 
-                console.log("No valid next hex");
-        } 
-        return next_hex;
-    } else {    // hex is odd
-        switch(exit_face) {
-            case 1:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - 1}`);                            // N 
-                break;
-            case 2:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int + num_row_count - 1}`);            // NE
-                break;
-            case 3: 
-                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + num_row_count}`);                // SE
-                break;
-            case 4: 
-                next_hex =  document.getElementById(`hex_${prev_hex_id_as_int + 1}`);                            // S
-                break;
-            case 5:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows}`);                      // SW
-                break;
-            case 6:
-                next_hex = document.getElementById(`hex_${prev_hex_id_as_int - numRows - 1}`);                       // NW
-                break;    
-
-            default: 
-                console.log("No valid next hex");
-        } 
-        return next_hex;       
-}   }
+function get_all_other_faces (hex_id, entry_face) {
+    let neighbors = find_adjacent(hex_id);
+    let face_hex_match = entry_face - 1;
+    let entry_hex = neighbors[face_hex_match];
+    console.log(entry_hex);
+    let other_faces = neighbors.filter(hex => hex !== entry_hex);
+    return other_faces;
+}

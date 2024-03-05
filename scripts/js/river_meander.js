@@ -26,26 +26,32 @@
 let right_turn = true;   // all rivers take a right turn to begin with, then alternate.
 
 function river_meander (prev_hex, exit_face_of_prev) {
-    console.log(`River spawning from parent (previous) hex:`)
-    console.log(prev_hex);
+    //console.log(`River spawning from parent (previous) hex:`)
+    //console.log(prev_hex);
     prev_anchor_id = prev_hex.id.slice(4);  // just the ID number
-    console.log(`Previous anchor id: ${prev_anchor_id}`);
+    //console.log(`Previous anchor id: ${prev_anchor_id}`);
 
     // test if find_adj works. This cannot be taken out or get_next_hex stops working below for some reason. 
-    let neighbors = [];
-    neighbors = find_adjacent(prev_anchor_id);
-    console.log('Find adjacent returns:')
-    console.log(neighbors);
+    //let neighbors = [];
+    //neighbors = find_adjacent(prev_anchor_id);
+    //console.log('Find adjacent returns:')
+    //console.log(neighbors);
 
-    console.log(`Exit face from previous: ${exit_face_of_prev}`);
+    //console.log(`Exit face from previous: ${exit_face_of_prev}`);
     let this_hex = [];
     this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev);
-    console.log('This river segment:')
-    console.log(this_hex);
+    //console.log('This river segment:')
+    //console.log(this_hex);
 
     if (this_hex === null) {
         return;
     }
+    
+    // A function to merge rivers that collide into a knot
+    // Save entry and exit faces as hex data
+    // if this_hex has a waterway, combine the 2 existing faces with the incoming 3rd face. 
+    // Do some math to find the knot pattern (135, 145...) and rotate accordingly.
+    // return to terminate the river.
 
     let river_illus = this_hex.querySelector('.hex-waterway');
     let this_river_rotation = 0;
@@ -60,24 +66,35 @@ function river_meander (prev_hex, exit_face_of_prev) {
 
     let river_choice = Math.random();
     if (river_choice <= 0.597826087) {
+        river_type = 'straight';
         river_exit = straight_river_faces(river_entry);
 
         /*
 
-        let putative_next_hex = get_next_hex(this_hex, river_exit);   // test to make sure this is correct
-        
-        let suitability_for_rivers = river_tests(putative_next_hex);
-        if(suitability_for_rivers === false) { break out of this if statement and re-roll river_choice. Do this x times or start re-writing terrain.}
+        let putative_next_hex = get_next_hex(this_hex, river_exit);  
+        let suitable_for_rivers = river_tests(putative_next_hex);
+        if(!suitable_for_rivers) { break out of this if statement and re-roll river_choice. Do this x times or start re-writing terrain.}
         else {
             all the stuff below to apply river_illus etc.
         }
 
+        new plan
+        test adjacent hexes for suitability
+        then apply a weighted chance to the eligible options (same %s)
+            60 straight, 37 loose bend, 3 sharp bend
+            8.7% chance of cutting into woods from open... // this one may require more thought. See how it looks
+                Then a 3 in 5 chance of going thru woods again, if choice is between woods and open
+                Then it MUST exit woods. ie. cannot go thru a third woods tile. If it can't reach open, backtrack.
+            The chances expand to fill 100%. So if the options are 4 mountains and 1 woods, 8.69% --> 100%.
+                chance / Sum of chances
+        if the river has dead-ended itself, bakctrack and try again. 1 backtrack is allowed per hex? Then if they fail it squiggles in the parent swamp.
+        save the river segments as hexes in an array so that extensive backtracking is possible
+        river must eventually get to a swamp or null
+            exceptions: trailing off in a squiggle, cutting through mountains (altho we will try without that for now, since morphs are pre-cut)
+
 
         */
         river_illus.style.background = `url(../mats/Waterways/river_1-4_1.png)`;
-        river_illus.style.position = 'absolute'; 
-        this_river_rotation = find_rotation(river_entry);
-        river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
 
     } else if (river_choice > 0.597826087 && river_choice <= 0.9673913044) {
         river_type = 'loose_bend';
@@ -85,16 +102,10 @@ function river_meander (prev_hex, exit_face_of_prev) {
             river_exit = loose_bend_right(river_entry);
             right_turn = false;
             river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;
-            river_illus.style.position = 'absolute'; 
-            this_river_rotation = find_rotation(river_entry);
-            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         } else {
             river_exit = loose_bend_left(river_entry);
             right_turn = true;
             river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;
-            river_illus.style.position = 'absolute'; 
-            this_river_rotation = find_rotation(river_entry);
-            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         }
         
     } else if (river_choice > 0.9673913044) {
@@ -103,20 +114,19 @@ function river_meander (prev_hex, exit_face_of_prev) {
             river_exit = sharp_bend_right(river_entry);
             right_turn = false;
             river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;
-            river_illus.style.position = 'absolute'; 
-            this_river_rotation = find_rotation(river_entry);
-            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         } else {
             river_exit = sharp_bend_left(river_entry);
             right_turn = true;
             river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;
-            river_illus.style.position = 'absolute'; 
-            this_river_rotation = find_rotation(river_entry);
-            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         }
     }
+    river_illus.style.position = 'absolute'; 
+    this_river_rotation = find_rotation(river_entry);
+    river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+
     console.log(`River segment: ${river_type}`);
     console.log(`Entry ${river_entry} exit ${river_exit}`);
+    console.log(this_hex);
 
     river_meander(this_hex, river_exit);
 

@@ -53,8 +53,10 @@ function apply_waterways (delay) {
     find_orphaned_swamp_river_candidates();
     delay;
     place_orphaned_swamp_rivers(1);     // x = rivers_per_map, ie. x / 360 hexes //
-    
-    // A function to merge rivers that collide into a knot
+    // KNOT COUNT IS NOT YET SATISFACTORY
+    // try x / 31 (+ 1 if total swamps >= 46)
+
+
 
 
 }
