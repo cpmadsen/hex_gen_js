@@ -477,10 +477,14 @@ function place_orphaned_swamp_rivers(rivers_per_map) {
 
             // THIS BLOCK IS NOT WORKING
             /*
+            need to get null direction, use it as entry face, get a valid direction, call for a river illus using the 2.
+
+
             let opposite_dir = exit_to_entry_face(off_map_hex_dir);
             let off_map_hex = ... and that's the problem, it's null.  So really we need to spawn a river, then overwrite the hex illus. with it bent in a random direction off-map.
 
             // set that option as the origin of a river
+            // make sure river is progressing into map, not off-map
             right_turn = true; // reset 
             river_meander(off_map_hex, opposite_dir);
             */

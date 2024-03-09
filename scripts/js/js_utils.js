@@ -208,3 +208,87 @@ function get_all_other_faces (hex_id, entry_face) {
     let other_faces = neighbors.filter(hex => hex !== entry_hex);
     return other_faces;
 }
+
+function straight_river_faces(entry) {
+    let exit = 0;
+    if (entry <= 3) {
+        exit = entry + 3;
+    } else if (entry > 3) {
+        exit = entry - 3;
+    }
+    return exit;
+}
+
+function loose_bend_left(entry) {
+    let exit = 0;
+    if (entry <= 4) {
+        exit = entry + 2;
+    } else if (entry > 4) {
+        exit = entry - 4;
+    }
+    return exit;
+}
+
+function loose_bend_right(entry) {
+    let exit = 0;
+    if (entry <= 2) {
+        exit = entry + 4;
+    } else if (entry > 2) {
+        exit = entry - 2;
+    }
+    return exit;
+}
+
+function sharp_bend_left(entry) {
+    let exit = 0;
+    if (entry <= 5) {
+        exit = entry + 1;
+    } else if (entry === 6) {
+        exit = 1;
+    }
+    return exit;
+}
+
+function sharp_bend_right(entry) {
+    let exit = 0;
+    if (entry === 1) {
+        exit = 6;
+    } else if (entry > 1) {
+        exit = entry - 1;
+    }
+    return exit;
+}
+
+
+function get_river_options (hex_id, river_entry) {
+    let options = Array();
+    
+    //straight
+    let straight_exit = straight_river_faces(river_entry);
+    let straight_hex = get_next_hex (hex_id, straight_exit);
+    options.push(straight_hex);
+
+    //loose bend
+    if (right_turn) {
+        let loose_right_exit = loose_bend_right(river_entry);
+        let loose_right_hex = get_next_hex (hex_id, loose_right_exit);
+        options.push(loose_right_hex);
+    } else {
+        let loose_left_exit = loose_bend_left(river_entry);
+        let loose_left_hex = get_next_hex (hex_id, loose_left_exit);
+        options.push(loose_left_hex);
+    }
+
+    //sharp bend
+    if (right_turn) {
+        let sharp_right_exit = sharp_bend_right(river_entry);
+        let sharp_right_hex = get_next_hex (hex_id, sharp_right_exit);
+        options.push(sharp_right_hex);
+    } else {
+        let sharp_left_exit = sharp_bend_left(river_entry);
+        let sharp_left_hex = get_next_hex (hex_id, sharp_left_exit);
+        options.push(sharp_left_hex);
+    }
+
+    return (options);
+}

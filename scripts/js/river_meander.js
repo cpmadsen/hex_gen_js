@@ -15,7 +15,8 @@
                 Then it MUST exit woods. ie. cannot go thru a third woods tile. If it can't reach open, backtrack.
             The chances expand to fill 100%. So if the options are 4 mountains and 1 woods, 8.69% --> 100%.
                 chance / Sum of chances
-        if the river has dead-ended itself, bakctrack and try again. 1 backtrack is allowed per hex? Then if they fail it squiggles in the parent swamp.
+        if the river has dead-ended itself, bakctrack and try again. the bad option is not allowable. 
+        Then if all attempts fail it squiggles in the parent swamp.
         save the river segments as hexes in an array so that extensive backtracking is possible
         river must eventually get to a swamp or null
             exceptions: trailing off in a squiggle, cutting through mountains (altho we will try without that for now, since morphs are pre-cut)
@@ -122,109 +123,95 @@ function river_meander (prev_hex, exit_face_of_prev) {
 
 }
 
-
-function straight_river_faces(entry) {
-    let exit = 0;
-    if (entry <= 3) {
-        exit = entry + 3;
-    } else if (entry > 3) {
-        exit = entry - 3;
-    }
-    return exit;
-}
-
-function loose_bend_left(entry) {
-    let exit = 0;
-    if (entry <= 4) {
-        exit = entry + 2;
-    } else if (entry > 4) {
-        exit = entry - 4;
-    }
-    return exit;
-}
-
-function loose_bend_right(entry) {
-    let exit = 0;
-    if (entry <= 2) {
-        exit = entry + 4;
-    } else if (entry > 2) {
-        exit = entry - 2;
-    }
-    return exit;
-}
-
-function sharp_bend_left(entry) {
-    let exit = 0;
-    if (entry <= 5) {
-        exit = entry + 1;
-    } else if (entry === 6) {
-        exit = 1;
-    }
-    return exit;
-}
-
-function sharp_bend_right(entry) {
-    let exit = 0;
-    if (entry === 1) {
-        exit = 6;
-    } else if (entry > 1) {
-        exit = entry - 1;
-    }
-    return exit;
-}
-
-
-function get_river_options (hex_id, river_entry) {
-    let options = Array();
+function is_valid_river_hex (test_hex) {
+    let is_valid = true; 
+    if (test_hex != null) {
+        // test hex is a mountain?
+        if (test_hex.classList.contains('mountain') || test_hex.classList.contains('desert')) {
+            is_valid = false;
+        }
     
-    //straight
-    let straight_exit = straight_river_faces(river_entry);
-    let straight_hex = get_next_hex (hex_id, straight_exit);
-    console.log(straight_hex);
-    options.push(straight_hex);
-
-    //loose bend
-    if (right_turn) {
-        let loose_right_exit = loose_bend_right(river_entry);
-        let loose_right_hex = get_next_hex (hex_id, loose_right_exit);
-        console.log(loose_right_hex);
-        options.push(loose_right_hex);
-    } else {
-        let loose_left_exit = loose_bend_left(river_entry);
-        let loose_left_hex = get_next_hex (hex_id, loose_left_exit);
-        options.push(loose_left_hex);
+        // desert within 1 hex?
+        let neighbors = [];
+        neighbors = find_adjacent(test_hex.id.slice(4));
+        neighbors.forEach((hex) => {        
+            if (hex != null) {
+                if (hex.classList.contains('desert')) {
+                        //console.log(`${test_hex.id.slice(4)} is too close to desert.`);
+                        is_valid = false;
+                } 
+           }    
+        }); 
     }
+   
+    return is_valid;
+}
 
-    //sharp bend
-    if (right_turn) {
-        let sharp_right_exit = sharp_bend_right(river_entry);
-        let sharp_right_hex = get_next_hex (hex_id, sharp_right_exit);
-        options.push(sharp_right_hex);
-    } else {
-        let sharp_left_exit = sharp_bend_left(river_entry);
-        let sharp_left_hex = get_next_hex (hex_id, sharp_left_exit);
-        options.push(sharp_left_hex);
-    }
+function get_river_choice (from_hex, entry_face) {          
+    let hex_id = from_hex.id.slice(4);
+    let options = [];
+    options = get_river_options (hex_id, entry_face);
 
-    return (options);
+    let weighted_options = [
+        {value: options[0], probability: 0},        // straight
+        {value: options[1], probability: 0},        // loose bend
+        {value: options[2], probability: 0}         // sharp bend
+    ];
+    
+    // assign probs to the options depending on if they are open/swamp or woods
+    if (weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
+        weighted_options[0].probability = 59.7826087;          
+    } 
+    if (weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
+        weighted_options[1].probability = 36.95652174;
+    } 
+    if (weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
+        weighted_options[2].probability = 3.260869565;
+    }  
+    weighted_options.forEach(option => {
+        if (option.value.classList.contains('wooded') || option.value.classList.contains('wooded_hills')) {
+            option.probability = 8.695652174;
+        } else {
+            // Handle other values if needed, but default probability is already 0.
+            // else if woods_river_count == 2 && option.value.classList.contains('open') or swamp, probability is 1.
+        }
+    });
+    
+    // weight the probabilities such that they total 1.
+    let total_probabilities = weighted_options[0].probability + weighted_options[1].probability + weighted_options[2].probability;
+    weighted_options.forEach(option => {
+        let temp_prob = option.probability;
+        option.probability = temp_prob / total_probabilities;
+    });
+    //console.log(weighted_options);
+
+    // Choose one of the options.
+    let choice = Math.random();
+    if (choice <= weighted_options[0].probability) {return weighted_options[0].value;} 
+    else if (choice <= weighted_options[1].probability) {return weighted_options[1].value;} 
+    else {return weighted_options[2].value;}
 }
 
 
 
-function river_tests(test_hex) {
-    /*
-    check to see that the river does not come within 1 of a desert, 
-    
-    check to see it is not hemmed in by multiple mountains in a row 
-        (can break thru a single row of mountains, but not 2 mountains in a row ie. not a whole morph)
-        save as a boolean: "broke_through_mountains" rather than find_adj_two? 
-        or whenever a river hits a mountain, use find_adj and find_adj_2 to see if it breaks thru or glances off?
-    
-    check to see if river has broken up into woods elevation for 2 hexes already. it cannot do a third and must dismount into open if 
-        possible. 
-    
-        If any of these checks fail, backtrack and reroll. If that fails, backtrack farther (rare case of being 'cornered'). 
-    If a certain number of backtracks fail, the river either "dies on the vine" and becomes a swamp squiggle (upper right of OS), or 
-            it breaks some rules and carves through over 2 woods, turning them all to open (see lower left of OS).
-            */
+
+
+
+
+
+
+function test_is_valid (hex_id) {
+    let test_hex = document.getElementById(`hex_${hex_id}`);
+    console.log(is_valid_river_hex(test_hex));
+    return;
+}
+
+function test_river_choice(hex_id, entry_face) {
+    let test_hex = document.getElementById(`hex_${hex_id}`);
+    console.log(`test hex is`);
+    console.log(test_hex);
+    let choice_hex = get_river_choice(test_hex, entry_face);
+    console.log(`choice is:`);
+    console.log(choice_hex);
+    return;
 }
