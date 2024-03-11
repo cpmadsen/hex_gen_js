@@ -27,6 +27,7 @@ function initialize_hexagons(number_of_hexes) {
         hex_doodle.className = 'hex-doodle';
         hex_doodle.style.width = '100px';
         hex_doodle.style.height = '100px';
+        hex_doodle.style.position = 'absolute';
 
         hexagon.appendChild(hex_doodle);
 
@@ -36,6 +37,7 @@ function initialize_hexagons(number_of_hexes) {
         hex_waterway.className = 'hex-waterway';
         hex_waterway.style.width = '100px';
         hex_waterway.style.height = '100px';
+        hex_waterway.style.position = 'absolute';
 
         hexagon.appendChild(hex_waterway);
 
@@ -46,6 +48,7 @@ function initialize_hexagons(number_of_hexes) {
         hex_feature.className = 'hex-feature';
         hex_feature.style.width = '100px';
         hex_feature.style.height = '100px';
+        hex_feature.style.position = 'absolute';
 
         hexagon.appendChild(hex_feature);
 

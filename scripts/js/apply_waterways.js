@@ -33,7 +33,7 @@ function apply_waterways (delay) {
     // Placement
     find_inner_swamps();
     delay;
-    assign_knots(1);   // x = knots_per_swamp, ie. x / 23 swamps //
+    assign_knots(1, 250);   // x = knots_per_swamp, ie. x / 23 swamps //
 
     find_orphaned_swamp_river_candidates();
     delay;
@@ -106,7 +106,7 @@ function find_inner_swamps () {      // working
     //console.log(knot_candidates);
 }
     
-function assign_knots (knots_per_swamp) {
+function assign_knots (knots_per_swamp, delay) {
     // For every 23 swamps on the map, we place one knot (default: 3 rivers.)
     // We round to the nearest integer, and if result is 0 then we apply just one.
     // We place the knots inside of swamp clusters using our list of candidates.
@@ -257,6 +257,7 @@ function assign_knots (knots_per_swamp) {
                 // console.log(`Final face: ${final_face}`);
                 right_turn = true; // reset 
                 river_meander(hex_to_mod, final_face);
+                delay
 
             }
 

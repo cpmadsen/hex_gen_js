@@ -1,32 +1,15 @@
-/*
-        let putative_next_hex = get_next_hex(this_hex, river_exit);  
-        let suitable_for_rivers = river_tests(putative_next_hex);
-        if(!suitable_for_rivers) { break out of this if statement and re-roll river_choice. Do this x times or start re-writing terrain.}
-        else {
-            all the stuff below to apply river_illus etc.
-        }
-
-        new plan
-        test adjacent hexes for suitability
-        then apply a weighted chance to the eligible options (same %s)
-            60 straight, 37 loose bend, 3 sharp bend
-            8.7% chance of cutting into woods from open... // this one may require more thought. See how it looks
-                Then a 3 in 5 chance of going thru woods again, if choice is between woods and open
-                Then it MUST exit woods. ie. cannot go thru a third woods tile. If it can't reach open, backtrack.
-            The chances expand to fill 100%. So if the options are 4 mountains and 1 woods, 8.69% --> 100%.
-                chance / Sum of chances
-        if the river has dead-ended itself, bakctrack and try again. the bad option is not allowable. 
-        Then if all attempts fail it squiggles in the parent swamp.
-        save the river segments as hexes in an array so that extensive backtracking is possible
-        river must eventually get to a swamp or null
-            exceptions: trailing off in a squiggle, cutting through mountains (altho we will try without that for now, since morphs are pre-cut)
+// To retrieve data:
+            // // Retrieve the div element
+            // var myDiv = document.getElementById("myDiv");
+            // Get the integer value stored in the data-myinteger attribute
+            // var myInteger = parseInt(myDiv.getAttribute("knot_choice"));
 
 
-        */
 
 
 // Global variables
 let right_turn = true;   // all rivers take a right turn to begin with, then alternate.
+let segment_type = 'undefined';
 
 function river_meander (prev_hex, exit_face_of_prev) {
     //console.log(`River spawning from parent (previous) hex:`)
@@ -126,8 +109,8 @@ function river_meander (prev_hex, exit_face_of_prev) {
 function is_valid_river_hex (test_hex) {
     let is_valid = true; 
     if (test_hex != null) {
-        // test hex is a mountain?
-        if (test_hex.classList.contains('mountain') || test_hex.classList.contains('desert')) {
+        // test hex is a mountain/desert?
+        if (test_hex.classList.contains('mountain') || test_hex.classList.contains('snowcap') || test_hex.classList.contains('desert')) {
             is_valid = false;
         }
     
@@ -147,8 +130,8 @@ function is_valid_river_hex (test_hex) {
     return is_valid;
 }
 
-function get_river_choice (from_hex, entry_face) {          
-    let hex_id = from_hex.id.slice(4);
+function get_river_choice (this_hex, entry_face) {          
+    let hex_id = this_hex.id.slice(4);
     let options = [];
     options = get_river_options (hex_id, entry_face);
 
@@ -159,21 +142,26 @@ function get_river_choice (from_hex, entry_face) {
     ];
     
     // assign probs to the options depending on if they are open/swamp or woods
-    if (weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
+    if (weighted_options[0].value === null || weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
         weighted_options[0].probability = 59.7826087;          
     } 
-    if (weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
+    if (weighted_options[1].value === null || weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
         weighted_options[1].probability = 36.95652174;
     } 
-    if (weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
+    if (weighted_options[2].value === null || weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
         weighted_options[2].probability = 3.260869565;
     }  
     weighted_options.forEach(option => {
-        if (option.value.classList.contains('wooded') || option.value.classList.contains('wooded_hills')) {
-            option.probability = 8.695652174;
-        } else {
-            // Handle other values if needed, but default probability is already 0.
-            // else if woods_river_count == 2 && option.value.classList.contains('open') or swamp, probability is 1.
+        if(option.value != null) {
+            if (option.value.classList.contains('wooded') || option.value.classList.contains('wooded_hills')) {
+                option.probability = 8.695652174;                                               
+                // NB this does not differentiate between wooded straight, loose or sharp bends. Ie. odds are 50/50 
+                // Rather the difference is handled with a count of woods tiles the river has traversed through. 
+                // In effect, kicking the river out of the woods after max. two hexes.
+            } else {
+                // Handle other values if needed, but default probability is already 0.
+                // else if woods_river_count == 2 && option.value.classList.contains('open') or swamp, probability is 1.
+            }
         }
     });
     
@@ -187,18 +175,68 @@ function get_river_choice (from_hex, entry_face) {
 
     // Choose one of the options.
     let choice = Math.random();
-    if (choice <= weighted_options[0].probability) {return weighted_options[0].value;} 
-    else if (choice <= weighted_options[1].probability) {return weighted_options[1].value;} 
-    else {return weighted_options[2].value;}
+    if (choice <= weighted_options[0].probability) {
+        segment_type = 'straight';                  // Change segment type in river_meander so that it can be illustrated.
+        return weighted_options[0].value; }         // return next hex.
+    else if (choice > weighted_options[0].probability && choice <= weighted_options[1].probability) {
+        segment_type = 'loose_bend';
+        return weighted_options[1].value; } 
+    else {
+        segment_type = 'sharp_bend';
+        return weighted_options[2].value; }    
 }
 
 
+function apply_river_segment_illus (this_hex, river_entry, segment_type) {
+    let river_illus = this_hex.querySelector('.hex-waterway');
+    let this_river_rotation = 0;
+    let river_exit = 0;
 
+    if (segment_type == 'straight') {
+        river_exit = straight_river_faces(river_entry);
+        river_illus.style.background = `url(../mats/Waterways/river_1-4_1.png)`;
+        river_illus.style.position = 'absolute';
+        this_river_rotation = find_rotation(river_entry);
+        river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+    } else if (segment_type == 'loose_bend') {
+        if (right_turn) {
+            river_exit = loose_bend_right(river_entry);
+            //right_turn = false;
+            console.log('right turn is now false, apply illus.');
+            river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        } else {
+            river_exit = loose_bend_left(river_entry);
+            //right_turn = true;
+            console.log('right turn is now true, apply illus.');
+            river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        }
+    } else if (segment_type == 'sharp_bend') {
+        if (right_turn) {
+            river_exit = sharp_bend_right(river_entry);
+            //right_turn = false;
+            console.log('right turn is now false, apply illus.');
+            river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        } else {
+            river_exit = sharp_bend_left(river_entry);
+            //right_turn = true;
+            console.log('right turn is now true, apply illus.');
+            river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;
+            this_river_rotation = find_rotation(river_entry);
+            river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
+        }
+    }
+    // save river entry and exit as hex data
+    //this_hex.setAttribute("river_entry", river_entry); // data
+    //this_hex.setAttribute("river_exit", river_exit);
 
-
-
-
-
+    return;
+}
 
 function test_is_valid (hex_id) {
     let test_hex = document.getElementById(`hex_${hex_id}`);
@@ -213,5 +251,152 @@ function test_river_choice(hex_id, entry_face) {
     let choice_hex = get_river_choice(test_hex, entry_face);
     console.log(`choice is:`);
     console.log(choice_hex);
+    return;
+}
+
+
+
+
+function river_meander_TWO (prev_hex, exit_face_of_prev) { 
+    prev_anchor_id = prev_hex.id.slice(4);  // just the ID number
+    let this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev); // Can return null.
+    if (this_hex == null) { return; }
+    let this_entry_face = exit_to_entry_face (exit_face_of_prev);
+    let this_exit_face = exit_face_of_prev;
+
+    let river = Array();
+    if (this_hex != null) {
+        river = [this_hex];
+    } else { return; }
+    //console.log('River is:');
+    //console.log(river);
+    
+    if (!is_valid_river_hex(this_hex)) {
+        // squiggle
+        console.log('Not a valid river hex.');
+        //console.log(this_hex);
+        return;
+    } else {
+        console.log('Valid river hex:');
+        console.log(this_hex);
+    }
+    
+    //let river_continues = true;
+    //while (river_continues) {          // indefinite loop
+    for (let i = 0; i < 50; i++) {    
+
+        //entry_face = exit_to_entry_face(exit_face);
+        //console.log(`at beginning of while loop, entry face is ${entry_face}`);
+        
+        
+        // try turning this off
+        if (river.length === 0) {
+            // squiggle
+            return;
+        }
+        
+        const river_head = river[river.length - 1];
+        
+        //console.log('river head:');
+        //console.log(river_head);
+        let next_hex = get_river_choice (this_hex, this_entry_face);
+        console.log('after get_river_choice, next hex is:');
+        console.log(next_hex);
+
+        // List of options
+        let this_id = this_hex.id.slice(4);
+        let neighboring_hexes = get_river_options(this_id, this_entry_face);
+
+        if (!is_valid_river_hex(river_head)) {                      // Has to avoid doubling over itself.
+            // If hitting an obstacle or boundary, backtrack
+            let backtrack = true;                                   
+            // let disallowed_face = exit_to_entry_face (entry_face); // intended: remember that this direction doesn't work. Don't try again.
+            for (let i = 0; i < 4; i++) {                           
+                const new_attempt_hex = get_river_choice(this_hex, this_entry_face);              // TRIES TO AVOID BACKTRACKING. instead of x random checks, could disqualify options (save as data for the hex?)
+                if (is_valid_river_hex(new_attempt_hex)) {
+                    next_hex = new_attempt_hex;
+                    backtrack = false;
+                    break;  // breaks the for loop, not the while loop
+                }
+                /*
+                if (i >= 4) {
+                    river_continues = false;
+                    break;
+                }
+                */
+            }
+
+            if (backtrack) {                                        // ACTUALLY BACKTRACKS WITHIN ARRAY
+                river.pop(); // Backtrack one step
+                console.log('BACKTRACK!!!');
+                if (river.length === 0) {
+                    console.log("River is trapped!"); 
+                    console.log(river);                              // == SQUIGGLE
+                    // ADD SQUIGGLE ILLUS.!!!! must be to first hex outside of knot, ie. 
+                    river_continues = false;
+                    break;
+                }
+            }
+        } else {
+            
+            // Now that testing is complete, apply illustrations.
+            let label = this_hex.querySelector('.hex-label');
+            console.log(`Applying illustration to segment:`);
+            console.log(label);
+            console.log(this_hex);
+            console.log(this_entry_face);
+            console.log(segment_type);
+            apply_river_segment_illus(this_hex, this_entry_face, segment_type);
+            
+
+            // Update values for the next iteration of the while loop.
+            this_hex = next_hex; 
+            
+            
+            if (segment_type == 'straight') { 
+                this_exit_face = straight_river_faces(this_entry_face);  
+            } else if (segment_type == 'loose_bend') {
+                if (right_turn == true) {
+                    right_turn = false;
+                    this_exit_face = loose_bend_right(this_entry_face);
+                } else {
+                    right_turn = true;
+                    this_exit_face = loose_bend_left(this_entry_face);
+                }
+            } else if (segment_type == 'sharp_bend') {
+                if (right_turn == true) {
+                    right_turn = false;
+                    this_exit_face = sharp_bend_right(this_entry_face);
+                } else {
+                    right_turn = true;
+                    this_exit_face = sharp_bend_left(this_entry_face);
+                }
+            } else {
+                console.log('Error in river bend selection.');
+            }
+            //console.log(`during segment type check at end of while loop, exit face is ${exit_face}`);
+
+            this_entry_face = exit_to_entry_face(this_exit_face);
+            //console.log(`then entry face becomes ${entry_face}`);
+            
+
+            river.push(next_hex);
+            if (next_hex === null) {       
+                console.log("River reached the edge.");
+                console.log(river);
+                break;
+            }
+        }
+    }
+
+    return river;
+}
+
+
+function test_river_TWO(hex_id, exit_face) {
+    let test_hex = document.getElementById(`hex_${hex_id}`);
+    //console.log(`Anchor is`);
+    //console.log(test_hex);
+    river_meander_TWO(test_hex, exit_face);
     return;
 }
