@@ -259,6 +259,30 @@ function sharp_bend_right(entry) {
     return exit;
 }
 
+function is_valid_river_hex (test_hex) {
+    let is_valid = true; 
+    if (test_hex != null) {
+        // test hex is a mountain/desert?
+        if (test_hex.classList.contains('mountain') || test_hex.classList.contains('snowcap') || test_hex.classList.contains('desert')) {
+            is_valid = false;
+        }
+    
+        // desert within 1 hex?
+        let neighbors = [];
+        neighbors = find_adjacent(test_hex.id.slice(4));
+        neighbors.forEach((hex) => {        
+            if (hex != null) {
+                if (hex.classList.contains('desert')) {
+                        //console.log(`${test_hex.id.slice(4)} is too close to desert.`);
+                        is_valid = false;
+                } 
+           }    
+        }); 
+    }
+   
+    return is_valid;
+}
+
 
 function get_river_options (hex_id, river_entry) {
     let options = Array();
@@ -291,4 +315,107 @@ function get_river_options (hex_id, river_entry) {
     }
 
     return (options);
+}
+
+function get_river_choice (this_hex, entry_face) {          
+    let hex_id = this_hex.id.slice(4);
+    let options = [];
+    options = get_river_options (hex_id, entry_face);
+
+    let weighted_options = [
+        {value: options[0], probability: 0},        // straight
+        {value: options[1], probability: 0},        // loose bend
+        {value: options[2], probability: 0}         // sharp bend
+    ];
+    
+    // assign probs to the options depending on if they are open/swamp or woods
+    if (weighted_options[0].value === null || weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
+        weighted_options[0].probability = 59.7826087;          
+    } 
+    if (weighted_options[1].value === null || weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
+        weighted_options[1].probability = 36.95652174;
+    } 
+    if (weighted_options[2].value === null || weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
+        weighted_options[2].probability = 3.260869565;
+    }  
+    weighted_options.forEach(option => {
+        if(option.value != null) {
+            if (option.value.classList.contains('wooded') || option.value.classList.contains('wooded_hills')) {
+                option.probability = 8.695652174;                                               
+                // NB this does not differentiate between wooded straight, loose or sharp bends. Ie. odds are 50/50 
+                // Rather the difference is handled with a count of woods tiles the river has traversed through. 
+                // In effect, kicking the river out of the woods after max. two hexes.
+            } else {
+                // Handle other values if needed, but default probability is already 0.
+                // else if woods_river_count == 2 && option.value.classList.contains('open') or swamp, probability is 1.
+            }
+        }
+    });
+    
+    // Check to see if any of these otions have been disallowed.
+    let straight_exit = straight_river_faces(entry_face);
+    if (right_turn) {
+        let loose_right_exit = loose_bend_right(entry_face);
+        let sharp_right_exit = sharp_bend_right(entry_face);
+    } else {
+        let loose_left_exit = loose_bend_left(entry_face);
+        let sharp_left_exit = sharp_bend_left(entry_face);
+    }   
+    let bad_face_choice = parseInt(this_hex.getAttribute("bad_choice"));
+    if (bad_face_choice != null) {
+        // then compare the putative choices to the bad choices and see if there are any matches.
+        if (straight_exit === bad_face_choice) {weighted_options[0].probability = 0;} 
+        else if (loose_right_exit === bad_face_choice || loose_left_exit === bad_face_choice) {weighted_options[1].probability = 0;} 
+        else if (sharp_right_exit === bad_face_choice || sharp_left_exit === bad_face_choice) {weighted_options[2].probability = 0;}
+    }
+
+    // weight the probabilities such that they total 1.
+    let total_probabilities = weighted_options[0].probability + weighted_options[1].probability + weighted_options[2].probability;
+    weighted_options.forEach(option => {
+        let temp_prob = option.probability;
+        option.probability = temp_prob / total_probabilities;
+    });
+    //console.log(weighted_options);
+
+
+    // Choose one of the options.
+    let segment_type = 'undefined';
+    let choice = Math.random();
+    if (choice <= weighted_options[0].probability) {
+        segment_type = 'straight';                  // Change segment type to reflect choice.
+        this_hex.setAttribute("segment_type", segment_type); // data
+        return weighted_options[0].value; }         // return next hex (arrived at by this segment type).
+    else if (choice > weighted_options[0].probability && choice <= weighted_options[1].probability) {
+        segment_type = 'loose_bend';
+        this_hex.setAttribute("segment_type", segment_type); // data
+        return weighted_options[1].value; } 
+    else {
+        segment_type = 'sharp_bend';
+        this_hex.setAttribute("segment_type", segment_type); // data
+        return weighted_options[2].value; }    
+}
+
+
+
+
+function get_exit_face_from_segment_type (segment_type, entry_face) {
+    let exit_face = 0;
+    if (segment_type == 'straight') {
+        exit_face = straight_river_faces(entry_face);   
+    } else if (segment_type == 'loose_bend') {
+        if (right_turn) {
+            exit_face = loose_bend_right(entry_face);
+        } else {
+            exit_face = loose_bend_left(entry_face);
+        }
+    } else if (segment_type == 'sharp_bend') {
+        if (right_turn) {
+            exit_face = sharp_bend_right(entry_face);
+        } else {
+            exit_face = sharp_bend_left(entry_face);
+        }
+    } else {
+        console.log("Problem in get_exit_face_from_segment_type: no match to given segment type.")
+    }
+    return exit_face;
 }
