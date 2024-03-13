@@ -320,7 +320,7 @@ function get_river_options (hex_id, river_entry) {
 function get_river_choice (this_hex, entry_face) {          
     let hex_id = this_hex.id.slice(4);
     let options = [];
-    options = get_river_options (hex_id, entry_face);
+    options = get_river_options (hex_id, entry_face);   // array of hexes
 
     let weighted_options = [
         {value: options[0], probability: 0},        // straight
@@ -354,15 +354,21 @@ function get_river_choice (this_hex, entry_face) {
     
     // Check to see if any of these otions have been disallowed.
     let straight_exit = straight_river_faces(entry_face);
+    let loose_right_exit = 0;
+    let loose_left_exit = 0;
+    let sharp_right_exit = 0;
+    let sharp_left_exit = 0;
+
     if (right_turn) {
-        let loose_right_exit = loose_bend_right(entry_face);
-        let sharp_right_exit = sharp_bend_right(entry_face);
+        loose_right_exit = loose_bend_right(entry_face);
+        sharp_right_exit = sharp_bend_right(entry_face);
     } else {
-        let loose_left_exit = loose_bend_left(entry_face);
-        let sharp_left_exit = sharp_bend_left(entry_face);
+        loose_left_exit = loose_bend_left(entry_face);
+        sharp_left_exit = sharp_bend_left(entry_face);
     }   
     let bad_face_choice = parseInt(this_hex.getAttribute("bad_choice"));
-    if (bad_face_choice != null) {
+    if (!isNaN(bad_face_choice)) {
+    //if (bad_face_choice != null) {
         // then compare the putative choices to the bad choices and see if there are any matches.
         if (straight_exit === bad_face_choice) {weighted_options[0].probability = 0;} 
         else if (loose_right_exit === bad_face_choice || loose_left_exit === bad_face_choice) {weighted_options[1].probability = 0;} 
@@ -376,7 +382,10 @@ function get_river_choice (this_hex, entry_face) {
         option.probability = temp_prob / total_probabilities;
     });
     //console.log(weighted_options);
-
+    if (total_probabilities === 0) {
+        console.log("Error in get_river_choice: no probability above 0.");
+        return;
+    }
 
     // Choose one of the options.
     let segment_type = 'undefined';
