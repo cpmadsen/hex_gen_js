@@ -258,3 +258,127 @@ function river_meander_TWO_old (prev_hex, exit_face_of_prev) {
 
     return river;
 }
+
+
+
+
+// Define the grid dimensions and obstacles
+const gridSize = 10;
+const obstacles = [[2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [7, 3], [7, 4], [7, 5], [6, 5], [5, 5], [5, 6]];
+
+// Function to check if a position is valid
+function isValidPosition(x, y) {
+    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !obstacles.some(([ox, oy]) => ox === x && oy === y);
+}
+
+// Function to get a random valid direction
+function getRandomDirection() {
+    const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]; // Right, Left, Down, Up
+    const randomIndex = Math.floor(Math.random() * directions.length);
+    return directions[randomIndex];
+}
+
+// Main function to move the snake
+function moveSnake() {
+    const snake = [[0, 0]]; // Start position
+    let [dx, dy] = getRandomDirection();
+    const visited = new Set(); // Keep track of visited positions               // NEW
+
+    while (true) {
+        const [headX, headY] = snake[snake.length - 1];
+        const nextX = headX + dx;
+        const nextY = headY + dy;
+
+        if (!isValidPosition(nextX, nextY) || visited.has(`${nextX},${nextY}`)) {               // NEW
+            // If hitting an obstacle, boundary, or already visited position, backtrack
+            let backtrack = true;
+            for (let i = 0; i < 4; i++) {                                                       // Either increase #attempts or test bad_choices to see if it's working
+                const [nx, ny] = getRandomDirection();
+                const newX = headX + nx;
+                const newY = headY + ny;
+                if (isValidPosition(newX, newY) && !visited.has(`${newX},${newY}`)) {           // N
+                    dx = nx;
+                    dy = ny;
+                    backtrack = false;
+                    break;
+                }
+            }
+            if (backtrack) {
+                snake.pop(); // Backtrack one step
+                if (snake.length === 0) {
+                    console.log("Snake is trapped!");
+                    break;
+                }
+            }
+        } else {
+            snake.push([nextX, nextY]);
+            visited.add(`${nextX},${nextY}`);                                                   //N 
+            if (nextX === 0 || nextX === gridSize - 1 || nextY === 0 || nextY === gridSize - 1) {
+                console.log("Snake reached the edge!");
+                break;
+            }
+        }
+    }
+
+    return snake;
+}
+
+// Example usage
+const snakePath = moveSnake();
+console.log(snakePath);
+
+
+
+
+// A single bad_choice array
+// Initialize an object to store bad choices for each hex
+const badChoices = {};
+
+// Function to save a bad choice for a hex
+function saveBadChoice(hexId, face) {
+    // Check if the hex already has bad choices stored
+    if (!badChoices[hexId]) {
+        badChoices[hexId] = []; // Initialize an array for bad choices
+    }
+    // Add the new bad choice to the array
+    badChoices[hexId].push(face);
+}
+
+// Usage example
+let hexId = "hex_1_1"; // Example hex ID
+let deadEndFace = "north"; // Example dead end face
+saveBadChoice(hexId, deadEndFace);
+
+// retrieval example
+// Function to retrieve bad choices for a hex
+function getBadChoices(hexId) {
+    // Check if bad choices exist for the hex
+    if (badChoices[hexId]) {
+        return badChoices[hexId]; // Return the array of bad choices
+    } else {
+        return []; // Return an empty array if no bad choices exist
+    }
+}
+
+// Usage example
+let hexId = "hex_1_1"; // Example hex ID
+let hexBadChoices = getBadChoices(hexId);
+console.log("Bad choices for", hexId + ":", hexBadChoices);
+
+
+
+
+// Function to check if a potential choice matches any of the bad choices for a hex
+function isPotentialChoiceBad(hexId, potentialChoice) {
+    // Get the array of bad choices for the hex
+    let badChoices = getBadChoices(hexId);
+
+    // Check if the potential choice matches any of the bad choices
+    return badChoices.includes(potentialChoice);
+}
+
+// Example usage
+let hexId = "hex_1_1"; // Example hex ID
+let potentialChoice = 3; // Example potential choice
+let isBad = isPotentialChoiceBad(hexId, potentialChoice);
+console.log("Is", potentialChoice, "a bad choice for", hexId + "?", isBad);

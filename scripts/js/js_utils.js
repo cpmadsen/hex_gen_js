@@ -261,7 +261,10 @@ function sharp_bend_right(entry) {
 
 function is_valid_river_hex (test_hex) {
     let is_valid = true; 
-    if (test_hex != null) {
+
+    if (test_hex == 'dead_end') { is_valid = false; }
+
+    if (test_hex != null && test_hex !== 'dead_end') {
         // test hex is a mountain/desert?
         if (test_hex.classList.contains('mountain') || test_hex.classList.contains('snowcap') || test_hex.classList.contains('desert')) {
             is_valid = false;
@@ -366,13 +369,18 @@ function get_river_choice (this_hex, entry_face) {
         loose_left_exit = loose_bend_left(entry_face);
         sharp_left_exit = sharp_bend_left(entry_face);
     }   
+
     let bad_face_choice = parseInt(this_hex.getAttribute("bad_choice"));
-    if (!isNaN(bad_face_choice)) {
-    //if (bad_face_choice != null) {
-        // then compare the putative choices to the bad choices and see if there are any matches.
+    let bad_face_choice_2 = parseInt(this_hex.getAttribute("bad_choice_2"));
+    if (bad_face_choice !== null) {     // then compare the putative choices to the bad choices and see if there are any matches.
         if (straight_exit === bad_face_choice) {weighted_options[0].probability = 0;} 
         else if (loose_right_exit === bad_face_choice || loose_left_exit === bad_face_choice) {weighted_options[1].probability = 0;} 
         else if (sharp_right_exit === bad_face_choice || sharp_left_exit === bad_face_choice) {weighted_options[2].probability = 0;}
+    }
+    if (bad_face_choice_2 !== null) {
+        if (straight_exit === bad_face_choice_2) {weighted_options[0].probability = 0;} 
+        else if (loose_right_exit === bad_face_choice_2 || loose_left_exit === bad_face_choice_2) {weighted_options[1].probability = 0;} 
+        else if (sharp_right_exit === bad_face_choice_2 || sharp_left_exit === bad_face_choice_2) {weighted_options[2].probability = 0;}
     }
 
     // weight the probabilities such that they total 1.
@@ -382,26 +390,43 @@ function get_river_choice (this_hex, entry_face) {
         option.probability = temp_prob / total_probabilities;
     });
     //console.log(weighted_options);
+
     if (total_probabilities === 0) {
-        console.log("Error in get_river_choice: no probability above 0.");
-        return;
+        console.warn("Error in get_river_choice: no probability above 0.");
+        return 'dead_end';
     }
 
     // Choose one of the options.
     let segment_type = 'undefined';
+    let turn_direction = right_turn;
     let choice = Math.random();
     if (choice <= weighted_options[0].probability) {
         segment_type = 'straight';                  // Change segment type to reflect choice.
-        this_hex.setAttribute("segment_type", segment_type); // data
+        this_hex.setAttribute("segment_type", segment_type); // data saved for the illustrations in later fxn.
+        this_hex.setAttribute("turn_direction" = turn_direction); // saved for illustrations.
         return weighted_options[0].value; }         // return next hex (arrived at by this segment type).
     else if (choice > weighted_options[0].probability && choice <= weighted_options[1].probability) {
         segment_type = 'loose_bend';
-        this_hex.setAttribute("segment_type", segment_type); // data
+        this_hex.setAttribute("segment_type", segment_type); 
+        this_hex.setAttribute("turn_direction" = turn_direction);
         return weighted_options[1].value; } 
     else {
         segment_type = 'sharp_bend';
+        this_hex.setAttribute("segment_type", segment_type); 
+        this_hex.setAttribute("turn_direction" = turn_direction);
+        return weighted_options[2].value; } 
+    /*
+    else if (choice > weighted_options[1].probability) {
+        segment_type = 'sharp_bend';
         this_hex.setAttribute("segment_type", segment_type); // data
         return weighted_options[2].value; }    
+    else {
+        this_hex.setAttribute("segment_type", segment_type);
+        console.log("segment type is set to 'undefined'");
+        console.log("river choice returns 'dead end'");
+        return 'dead end';
+    }
+    */
 }
 
 
