@@ -1,102 +1,6 @@
 // Global variables
 let right_turn = true;   // all rivers take a right turn to begin with, then alternate.
 
-
-function river_meander (prev_hex, exit_face_of_prev) {
-    //console.log(`River spawning from parent (previous) hex:`)
-    //console.log(prev_hex);
-    prev_anchor_id = prev_hex.id.slice(4);  // just the ID number
-    //console.log(`Previous anchor id: ${prev_anchor_id}`);
-    //console.log(`Exit face from previous: ${exit_face_of_prev}`);
-    let this_hex = [];
-    this_hex = get_next_hex(prev_anchor_id, exit_face_of_prev);
-    //console.log('This river segment:')
-    //console.log(this_hex);
-    
-    if (this_hex === null) {
-        return;
-    }
-    
-    let neighbors = [];
-    neighbors = find_adjacent(this_hex.id.slice(4));
-    //console.log(this_hex);
-    //console.log('Find adjacent returns:')
-    //console.log(neighbors);
-
-    let river_illus = this_hex.querySelector('.hex-waterway');
-    let this_river_rotation = 0;
-
-    //console.log(`Spawning river. Exit face of knot: ${exit_face_of_prev}`);
-    let river_entry = exit_to_entry_face(exit_face_of_prev);
-    //console.log(`Entry face into first river hex: ${river_entry}`);
-    let river_exit = 0;
-    let river_type = 'undefined';
-
-    // CALL MEANDER FROM WITHIN ANOTHER FUNCTION, spawn_river, which is incharge of saving the meanders' hexes as an array.
-    // We must also be saving disallowed directions for the rivers as they go!  troubling... 
-
-    // has river entered a swamp? Chance to trail off in a Squiggle.
-    // check: has river crossed another? Form knot. 
-        // A function to merge rivers that collide into a knot
-        // Save entry and exit faces as hex data
-        // if this_hex has a waterway, combine the 2 existing faces with the incoming 3rd face. 
-        // Do some math to find the knot pattern (135, 145...) and rotate accordingly.
-        // return to terminate the river.
-
-    // checks complete. River is continuing as normal.    
-    // depending on right_turn, get 3 options for this_hex 
-        // use get_river_options, test to see that right_turn is in sync
-    // suitability tests phase: disqualify mountains, deserts, hexes adjacent to deserts...
-
-    // assign weights to the remaining choices. open/swamp gets the usual split, woods will get a small percentage (less than 8?) 
-    // random roll
-        
-    // assign illus, rotation
-
-    // post-
-
-    let river_choice = Math.random();
-    if (river_choice <= 0.597826087) {
-        river_type = 'straight';
-        river_exit = straight_river_faces(river_entry);
-        river_illus.style.background = `url(../mats/Waterways/river_1-4_1.png)`;
-
-    } else if (river_choice > 0.597826087 && river_choice <= 0.9673913044) {
-        river_type = 'loose_bend';
-        if (right_turn) {
-            river_exit = loose_bend_right(river_entry);
-            right_turn = false;
-            river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;
-        } else {
-            river_exit = loose_bend_left(river_entry);
-            right_turn = true;
-            river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;
-        }
-        
-    } else if (river_choice > 0.9673913044) {
-        river_type = 'sharp_bend';
-        if (right_turn) {
-            river_exit = sharp_bend_right(river_entry);
-            right_turn = false;
-            river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;
-        } else {
-            river_exit = sharp_bend_left(river_entry);
-            right_turn = true;
-            river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;
-        }
-    }
-    river_illus.style.position = 'absolute'; 
-    this_river_rotation = find_rotation(river_entry);
-    river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
-
-    console.log(`River segment: ${river_type}`);
-    console.log(`Entry ${river_entry} exit ${river_exit}`);
-    console.log(this_hex);
-
-    river_meander(this_hex, river_exit);
-
-}
-
 function apply_river_segment_illus (this_hex, river_entry, segment_type, turn_direction) {
     let river_illus = this_hex.querySelector('.hex-waterway');
     let this_river_rotation = 0;
@@ -106,25 +10,29 @@ function apply_river_segment_illus (this_hex, river_entry, segment_type, turn_di
         this_river_rotation = find_rotation(river_entry);
         river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
     } else if (segment_type == 'loose_bend') {
-        if (turn_direction) {
-            river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;
+        if (turn_direction == 'right') {
+            river_illus.style.background = `url(../mats/Waterways/river_1-5_1.png)`;       // right turn
             this_river_rotation = find_rotation(river_entry);
             river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         } else {
-            river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;
+            river_illus.style.background = `url(../mats/Waterways/river_1-3_1.png)`;        // left turn
             this_river_rotation = find_rotation(river_entry);
             river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         }
     } else if (segment_type == 'sharp_bend') {
-        if (turn_direction) {
-            river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;
+        if (turn_direction == 'right') {
+            river_illus.style.background = `url(../mats/Waterways/river_1-6_1.png)`;        // right
             this_river_rotation = find_rotation(river_entry);
             river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         } else {
-            river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;
+            river_illus.style.background = `url(../mats/Waterways/river_1-2_1.png)`;        // left
             this_river_rotation = find_rotation(river_entry);
             river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
         }
+    } else if (segment_type == 'squiggle') {
+        river_illus.style.background = `url(../mats/Waterways/river_squiggle_1.png)`;        // right
+        this_river_rotation = find_rotation(river_entry);
+        river_illus.style.transform = `rotate(${this_river_rotation}deg)`;
     }
 
     return;
@@ -146,24 +54,23 @@ function test_river_choice(hex_id, entry_face) {
     return;
 }
 
-function river_meander_TWO (prev_hex, exit_face_of_prev) { 
+function river_meander_TWO (anchor_hex, exit_face_of_anchor) { 
     //debugger;
     
     // Reset
     right_turn = true;
 
-
     // Declarations of variables
-    prev_anchor_id = prev_hex.id.slice(4);  // just the ID number
-    let first_hex = get_next_hex(prev_anchor_id, exit_face_of_prev); // Can return null.
-    let this_entry_face = exit_to_entry_face (exit_face_of_prev);
+    anchor_id = anchor_hex.id.slice(4);  // just the ID number
+    let first_hex = get_next_hex(anchor_id, exit_face_of_anchor); // Can return null.
+    let this_entry_face = exit_to_entry_face (exit_face_of_anchor);
     
     let river = Array();
     if (first_hex == null) { return; } else { river = [first_hex]; }
     let visited = new Set(); // Keep track of visited positions
 
     if (!is_valid_river_hex(first_hex)) {
-        // add squiggle illus.
+        apply_river_segment_illus (first_hex, this_entry_face, 'squiggle', right_turn);
         console.log('First hex is not a valid river hex.');
         console.log(first_hex);
         return;
@@ -205,15 +112,28 @@ function river_meander_TWO (prev_hex, exit_face_of_prev) {
             if (backtrack) {                                        
                 river.pop(); // Backtrack one step
                 console.warn('Backtrack');
+
+                // get proper entry face 
+                // from saved exit face of prev. hex to new river head, should be river[river.length-2]
+
+                // and segment type. 
+
+
                 if (river.length <= 1) {
                     console.log("River is trapped!"); 
                                                 
                     // ADD SQUIGGLE ILLUS. to river_head, must be to first hex outside of knot 
                     // if river.length == 0, add a squiggle to what the next hex from knot would be.
-
-                    river_continues = false;
-                    console.log(river);
-                    break;
+                    if (river[0] !== null) {
+                        apply_river_segment_illus (river[0], river[0].getAttribute('entry_face'), river[0].getAttribute('segment_type'), river[0].getAttribute('saved_right_turn'));
+                        let squiggle_entry_face = exit_to_entry_face (river[0].getAttribute('exit_face'));
+                        apply_river_segment_illus (river_head, squiggle_entry_face, 'squiggle', right_turn);
+                    } else {
+                        apply_river_segment_illus (river_head, this_entry_face, 'squiggle', right_turn);
+                    }  
+                        river_continues = false;
+                        console.log(river);
+                        break;
                 }
             }
 
@@ -243,8 +163,11 @@ function river_meander_TWO (prev_hex, exit_face_of_prev) {
             } else {
                 console.log('Error at end of river_meander: bad segment_type.');
             }
-            
-            this_entry_face = exit_to_entry_face(this_exit_face); // ie. next river_head will have a correct entry_face
+            // Save exit face 
+            river_head.setAttribute("exit_face", this_exit_face);
+
+            let next_entry = exit_to_entry_face(this_exit_face); 
+            this_entry_face = next_entry; // ie. next river_head will have a correct entry_face
             
             river.push(next_hex);
             visited.add(next_hex);
@@ -255,7 +178,7 @@ function river_meander_TWO (prev_hex, exit_face_of_prev) {
                     if (hex !== null) {
                         let this_segment_type = hex.getAttribute("segment_type"); 
                         let this_entry_face = hex.getAttribute("entry_face");
-                        let this_direction = hex.getAttribute("turn_direction");
+                        let this_direction = hex.getAttribute("saved_right_turn");
                         apply_river_segment_illus(hex, this_entry_face, this_segment_type, this_direction);
                     }
                 });

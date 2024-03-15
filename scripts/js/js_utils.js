@@ -398,35 +398,27 @@ function get_river_choice (this_hex, entry_face) {
 
     // Choose one of the options.
     let segment_type = 'undefined';
-    let turn_direction = right_turn;
+
+    let turn_direction = 'left';
+    if (right_turn) { turn_direction = 'right'; }
+    //console.log(turn_direction);
+
     let choice = Math.random();
     if (choice <= weighted_options[0].probability) {
         segment_type = 'straight';                  // Change segment type to reflect choice.
         this_hex.setAttribute("segment_type", segment_type); // data saved for the illustrations in later fxn.
-        this_hex.setAttribute("turn_direction" = turn_direction); // saved for illustrations.
+        this_hex.setAttribute("saved_right_turn", turn_direction); // saved for illustrations.
         return weighted_options[0].value; }         // return next hex (arrived at by this segment type).
     else if (choice > weighted_options[0].probability && choice <= weighted_options[1].probability) {
         segment_type = 'loose_bend';
         this_hex.setAttribute("segment_type", segment_type); 
-        this_hex.setAttribute("turn_direction" = turn_direction);
+        this_hex.setAttribute("saved_right_turn", turn_direction);
         return weighted_options[1].value; } 
     else {
         segment_type = 'sharp_bend';
         this_hex.setAttribute("segment_type", segment_type); 
-        this_hex.setAttribute("turn_direction" = turn_direction);
+        this_hex.setAttribute("saved_right_turn", turn_direction);
         return weighted_options[2].value; } 
-    /*
-    else if (choice > weighted_options[1].probability) {
-        segment_type = 'sharp_bend';
-        this_hex.setAttribute("segment_type", segment_type); // data
-        return weighted_options[2].value; }    
-    else {
-        this_hex.setAttribute("segment_type", segment_type);
-        console.log("segment type is set to 'undefined'");
-        console.log("river choice returns 'dead end'");
-        return 'dead end';
-    }
-    */
 }
 
 

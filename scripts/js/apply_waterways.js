@@ -256,7 +256,7 @@ function assign_knots (knots_per_swamp, delay) {
                 let final_face = rotate_face(face, rotation);
                 // console.log(`Final face: ${final_face}`);
                 right_turn = true; // reset 
-                river_meander(hex_to_mod, final_face);
+                river_meander_TWO(hex_to_mod, final_face);
                 delay
 
             }
