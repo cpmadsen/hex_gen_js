@@ -113,10 +113,14 @@ function river_meander_TWO (anchor_hex, exit_face_of_anchor) {
                 river.pop(); // Backtrack one step
                 console.warn('Backtrack');
 
+
+                // TEST TEST TEST
                 // get proper entry face 
                 // from saved exit face of prev. hex to new river head, should be river[river.length-2]
+                if (river[river.length - 2] !== undefined) {
+                    this_entry_face = exit_to_entry_face(river[river.length - 2].getAttribute("exit_face"));
+                }
 
-                // and segment type. 
 
 
                 if (river.length <= 1) {
@@ -124,7 +128,7 @@ function river_meander_TWO (anchor_hex, exit_face_of_anchor) {
                                                 
                     // ADD SQUIGGLE ILLUS. to river_head, must be to first hex outside of knot 
                     // if river.length == 0, add a squiggle to what the next hex from knot would be.
-                    if (river[0] !== null) {
+                    if (river[0] !== undefined) {
                         apply_river_segment_illus (river[0], river[0].getAttribute('entry_face'), river[0].getAttribute('segment_type'), river[0].getAttribute('saved_right_turn'));
                         let squiggle_entry_face = exit_to_entry_face (river[0].getAttribute('exit_face'));
                         apply_river_segment_illus (river_head, squiggle_entry_face, 'squiggle', right_turn);

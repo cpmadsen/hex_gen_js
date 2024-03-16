@@ -332,17 +332,23 @@ function get_river_choice (this_hex, entry_face) {
     ];
     
     // assign probs to the options depending on if they are open/swamp or woods
-    if (weighted_options[0].value === null || weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
-        weighted_options[0].probability = 59.7826087;          
-    } 
-    if (weighted_options[1].value === null || weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
-        weighted_options[1].probability = 36.95652174;
-    } 
-    if (weighted_options[2].value === null || weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
-        weighted_options[2].probability = 3.260869565;
-    }  
+    if (weighted_options[0].value !== undefined) {
+        if (weighted_options[0].value === null || weighted_options[0].value.classList.contains('open') || weighted_options[0].value.classList.contains('swamp')) {
+            weighted_options[0].probability = 59.7826087;          
+        } 
+    }
+    if (weighted_options[1].value !== undefined) {
+        if (weighted_options[1].value === null || weighted_options[1].value.classList.contains('open') || weighted_options[1].value.classList.contains('swamp')) {
+            weighted_options[1].probability = 36.95652174;
+        } 
+    }
+    if (weighted_options[2].value !== undefined) {
+        if (weighted_options[2].value === null || weighted_options[2].value.classList.contains('open') || weighted_options[2].value.classList.contains('swamp')) {
+            weighted_options[2].probability = 3.260869565;
+        }  
+    }
     weighted_options.forEach(option => {
-        if(option.value != null) {
+        if(option.value !== undefined && option.value !== null) {
             if (option.value.classList.contains('wooded') || option.value.classList.contains('wooded_hills')) {
                 option.probability = 8.695652174;                                               
                 // NB this does not differentiate between wooded straight, loose or sharp bends. Ie. odds are 50/50 
